@@ -1,0 +1,376 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\SettingConfig;
+
+$accounting = Accounting::find(Input::segment(6));
+$firm = User::where("firm_nip",$accounting->nip)->first()->firm_name ?? '';
+if($accounting->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+$approve_document = $accounting->approve ? 1 : 0;
+
+
+?>
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-calculator"></span><?= e(trans('eprog.manager::lang.accounting')) ?></li>
+        <li><span  class="oc-icon-file-text-o"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.record')) ?></a></li>
+        <li>ID: <?= Input::segment(6) ?></li>
+        <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+	    <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_accounting")) : ?>
+
+                <button
+                    id="save"
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0;save:1"
+                    data-request-success="refreshAfterSave()"
+                    data-request-update="'value' : '#value'"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+                    >
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>    
+
+                <a id="return" href="<?= Backend::url('eprog/manager/accounting') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar" style="margin-right:50px"><?= e(trans('eprog.manager::lang.return')) ?></a>
+                <div class="checkbox custom-checkbox" style="display:inline-block;position:relative;top:3px;left:-5px"><input id="approve_document" type="checkbox" name="approve_document" <?php if($approve_document) : ?> checked <?php endif ?>> <label for="approve_document"><?= e(trans("eprog.manager::lang.approve_doc")) ?> </label></div>
+
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.accounting_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+
+	     <?php endif ?>
+
+               <span id="status"></span>
+            </div>
+        </div>
+
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a id="return" href="<?= Backend::url('eprog/manager/accounting') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+
+@media (max-width: 450px){
+
+#Form-field-Accounting-value-group {margin-left:-25px}
+
+}
+
+@media (min-width: 768px){
+  
+    #Form-field-Accounting-year-group {width:10%}
+    #Form-field-Accounting-month-group {width:13%}
+    #Form-field-Accounting-off-group {margin-top:26px}
+    #Form-field-Accounting-mode-group {width:10.5%}
+    #Form-field-Accounting-type-group {width:10.5%}
+    #Form-field-Accounting-selltype-group {width:10.5%}
+    #Form-field-Accounting-currency-group {width:10.5%;}
+    #Form-field-Accounting-exchange-group {width:10.5%;}
+    #Form-field-Accounting-lump-group {width:6.5%;}
+    #Form-field-Accounting-place-group {width:13.7%}
+    #Form-field-Accounting-create_at-group {width:10.5%}
+    #Form-field-Accounting-vat_at-group {width:10.5%}
+    #Form-field-Accounting-lp-group {width:5%}
+    #Form-field-Accounting-prefix-group {width:5%}
+    #Form-field-Accounting-nr-group {width:13%}
+    #Form-field-Accounting-user_id-group {width:25%}
+    #Form-field-Accounting-client_name-group {width:25%}
+    #Form-field-Accounting-client_adres1-group {width:25%}
+    #Form-field-Accounting-client_adres2-group {width:25%}
+    #Form-field-Accounting-client_email-group {width:25%}
+    #Form-field-Accounting-client_phone-group {width:25%}
+    #Form-field-Accounting-tax_form-group {width:10.5%}
+
+
+
+    .hide {
+      display: none !important;
+    }
+
+    .show {
+      font-size:15px !important;
+      display: inline-block !important;
+      float: none !important;
+      z-index: 8 !important;
+      vertical-align: bottom !important;
+      position:relative !important;
+      margin-right:-20px !important;
+    }
+
+    .required {baccounting:1px solid red !important}
+
+ 
+}
+
+</style>
+
+
+
+<script>
+
+    var change = false;
+    var xml = <?= $this->xml ? 1: 0;?>; 
+
+    $(function() { 
+
+
+        $('#save').click(function(e){
+       
+              valueValidate();
+
+        });
+
+        //if(xml)
+       // protectFromEdit();
+      
+
+        $('#return').on('click', function(e) {
+            e.preventDefault();
+            var year = $('#Form-field-Accounting-year').val(); 
+            var month = $('#Form-field-Accounting-month').val();
+            var nip = '<?= $accounting->nip ?>';
+            var url = '<?= Backend::url('eprog/manager/accounting') ?>?year=' + year + '&month=' + month + '&nip=' + nip;
+            window.location.href = url; 
+        });
+
+
+        if($('#Form-field-Accounting-currency').val() == "PLN"){             
+            $('#Form-field-Accounting-exchange').prop('readonly', true);
+            $('#Form-field-Accounting-exchange').val("1.0000");          
+        }
+/*
+        
+        $('#Form-field-Accounting-mode').attr("readonly", true);
+        $('#Form-field-Accounting-mode').on('select2:opening', function (e) {
+            if( $(this).attr('readonly') == 'readonly') { 
+                e.preventDefault();
+                $(this).select2('close'); 
+                return false;
+            }
+        });
+
+        $('#Form-field-Accounting-mode').on('mousedown', function(e) {
+           e.preventDefault();
+           this.blur();
+           window.focus();
+        });
+        $('#Form-field-Accounting-mode').parent().find(".select2-selection").attr("style","background-color:#eee !important;cursor:not-allowed !important");
+*/
+        if($('#Form-field-Accounting-mode').val() == "0"){ 
+            $('.sell').show();
+            $('.buy').hide();
+        }
+        else{
+            $('.sell').hide();
+            $('.buy').show();
+        }
+
+        $('#Form-field-Accounting-selltype').on('select2:select', function(e) {
+
+            if($(this).val() == "1") $('#Form-field-Accounting-client_name').val("Sprzedaż detaliczna");
+
+        });
+
+   
+    });
+
+    $('#Form-field-Accounting-mode').on('select2:select', function(e) {
+      
+        if($(this).val() == "0"){
+            $('.sell').show();
+            $('.buy').hide();
+        }
+        else{
+           $('.sell').hide();
+           $('.buy').show();
+        }
+     
+    });
+
+
+    $('#Form-field-Accounting-currency').on('select2:select', function(e) {
+      
+        if($(this).val() == "PLN"){
+            $('#Form-field-Accounting-exchange').val("1.0000");
+            $('#Form-field-Accounting-exchange').prop('readonly', true);
+        }
+        else{
+            $('#Form-field-Accounting-exchange').val("");
+            $('#Form-field-Accounting-exchange').prop('readonly', false);
+        }
+     
+    });
+
+    $('#Form-field-Accounting-exchange').on('paste input', function (e) {
+            
+        inputCourse(this, e);
+        
+    });
+
+    $('#Form-field-Accounting-exchange').on('focusout', function (e) {
+            
+        inputCourseOut(this, e);
+        
+    });
+
+
+    $('#Form-field-Accounting-exchange').on('focusin', function (e) {
+            
+        inputCourseIn(this, e);
+        
+    });
+
+    function refreshAfterSave(){
+
+
+
+    }
+
+    function protectFromEdit1(){
+
+
+        $("#products input").each(function(index) {
+
+            $(this).attr("readonly", true);
+
+            $(this).css("background-color","#eee !important");
+            $(this).css("color","#999");
+            $(this).css("cursor","not-allowed");
+
+
+        });
+
+        $("select").each(function(index) {
+
+            $(this).attr("readonly", true);
+
+            $(this).on('select2:opening', function (e) {
+                if( $(this).attr('readonly') == 'readonly') { 
+                    e.preventDefault();
+                    $(this).select2('close'); 
+                    return false;
+                }
+            });
+
+            $(this).on('mousedown', function(e) {
+               e.preventDefault();
+               this.blur();
+               window.focus();
+            });
+
+            $(this).css("background-color","#eee !important");
+            $(this).css("color","#999");
+            $(this).css("cursor","not-allowed");
+
+
+        });
+
+        $("input[type='checkbox']").each(function(index) {
+
+            if($(this).attr('name') != "Accounting[disp]" && $(this).attr('name') != "approve_document"){
+                $(this).attr("readonly", true);
+                $(this).css("background-color","#eee !important");
+                $(this).css("color","#999");
+                $(this).css("cursor","not-allowed");
+                $(this).click(function(event) {
+                    event.preventDefault();
+                });
+            }
+     
+        });
+
+        $("#products input[type='radio']").prop('disabled', true);
+
+
+
+        //protectFromEditPeriod('#Form-field-Accounting-year');
+        //protectFromEditPeriod('#Form-field-Accounting-month');
+
+
+        $(".delRow").hide();
+        $(".addRow").hide();
+        $(".btnadd").hide();
+    }
+
+
+
+    function protectFromEditPeriod(el){
+
+        $(el).parent().find('.select2-selection').attr("style","background-color:#eee !important;cursor:not-allowed !important");
+
+        
+        $(el).each(function(index) {
+
+            $(this).attr("readonly", true);
+
+            $(this).on('select2:opening', function (e) {
+                if( $(this).attr('readonly') == 'readonly') { 
+                    e.preventDefault();
+                    $(this).select2('close'); 
+                    return false;
+                }
+            });
+
+            $(this).on('mousedown', function(e) {
+               e.preventDefault();
+               this.blur();
+               window.focus();
+            });
+
+            $(this).css("background-color","#eee !important");
+            $(this).css("color","#999");
+            $(this).css("cursor","not-allowed");
+
+
+        });
+
+    }
+
+
+
+    $('#Form-field-Accounting-exchange').on('paste input', function (e) {
+            
+        inputCourse(this, e);
+        
+    });
+
+    $('#Form-field-Accounting-exchange').on('focusout', function (e) {
+            
+        inputCourseOut(this, e);
+        
+    });
+
+
+    $('#Form-field-Accounting-exchange').on('focusin', function (e) {
+            
+        inputCourseIn(this, e);
+        
+    });
+
+
+</script>

@@ -1,0 +1,34 @@
+scopes:
+    user_id:
+        # Filter name
+        label: eprog.manager::lang.user
+        # Model Class name
+        modelClass: RainLab\User\Models\User
+        # Model attribute to display for the name
+        nameFrom: surname
+        # Filter scope
+        scope: filterByUser
+
+    send:
+        # Filter name
+        label: eprog.manager::lang.outbox
+        # Filter type
+        type: switch
+        # SQL conditions
+        conditions:
+            - send = '0'
+            - send = '1'
+
+    date:
+        label: eprog.manager::lang.date
+        type: daterange
+        conditions: date >= ':after' AND date <= ':before'
+        
+  
+
+
+
+
+
+
+

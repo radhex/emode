@@ -1,0 +1,4 @@
+name: 'eprog.manager::lang.inbox'
+form: $/eprog/manager/models/inbox/fields_create.yaml
+modelClass: Eprog\Manager\Models\Inboxcreate
+defaultRedirect: eprog/manager/inbox

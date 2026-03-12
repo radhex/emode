@@ -1,0 +1,10 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+    	<li><span  class="oc-icon-calculator"></span><?= e(trans('eprog.manager::lang.accounting')) ?></li>
+        <li><span  class="oc-icon-files-o"></span><a href="<?= Backend::url('eprog/manager/file') ?>"><?= e(trans('eprog.manager::lang.file')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+
+<?= $this->listRender() ?>

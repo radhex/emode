@@ -1,0 +1,37 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Jpk;
+use Eprog\Manager\Models\SettingConfig;
+
+$jpk  = Jpk::find(Input::segment(6));
+$firm = User::where("firm_nip",$jpk->nip)->first()->firm_name ?? '';
+if($jpk->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+?>
+
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+       <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+       <li><span  class="oc-icon-file-code-o"></span><a href="<?= Backend::url('eprog/manager/jpk') ?>">JPK</a></li> 
+       <li>ID: <?= Input::segment(6) ?></li>
+       <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <div class="form-preview">
+        <?= $this->formRenderPreview() ?>
+    </div>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e($this->fatalError) ?></p>
+<?php endif ?>
+
+<p>
+    <a href="<?= Backend::url('eprog/manager/jpk') ?>" class="btn btn-default oc-icon-chevron-left">
+        <?= e(trans('eprog.manager::lang.return')) ?>
+    </a>
+</p>

@@ -1,0 +1,53 @@
+title = "Client area"
+url = "/account/:code?"
+layout = "default"
+meta_title = "Apply for access to our client area"
+is_hidden = 0
+
+[account]
+paramCode = "code"
+forceSecure = 0
+==
+<?php
+use RainLab\Translate\Classes\Translator;
+
+
+
+function onStart()
+{
+
+    $translator = Translator::instance();
+    $this['lang'] = $translator->getLocale();
+    
+    $this['bannerImage'] = $this->themeUrl('assets/images/client-area-banner.jpg');
+    $this['la'] = Lang::get("eprog.manager::lang.name",[],$this['lang']);
+ 
+
+    
+}
+?>
+==
+<div class="account-area loginrespo">
+            <div class="row">
+                <div>
+                     <h3><i class="icon-lock"></i> {{ 'Logowanie'|_ }}</h3>
+                    <form
+                        data-request="onSignin">
+                        <div class="form-group">
+                            <label for="userSigninLogin">{{ loginAttributeLabel }}</label>
+                            <input name="login" type="text" class="form-control" id="userSigninLogin" placeholder="{{ 'Wprowadź'|_ }} {{ loginAttributeLabel|lower }}">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="userSigninPassword">{{ 'Hasło'|_ }}</label>
+                            <input name="password" type="password" class="form-control" id="userSigninPassword" placeholder="{{ 'Wprowadź hasło'|_ }}">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary">{{ 'Zaloguj się'|_ }}</button>
+ 
+                    </form>
+                    <br />
+                    <p><a href="{{ 'client/forgot-password'|page }}">{{ 'Zapomniałeś hasła'|_ }}?</a></p>
+                </div>
+            </div>
+</div>

@@ -1,0 +1,12 @@
+list: $/eprog/manager/models/file/columns.yaml
+modelClass: Eprog\Manager\Models\File
+title: 'eprog.manager::lang.file'
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/file/update/:id'
+filter: config_filter.yaml

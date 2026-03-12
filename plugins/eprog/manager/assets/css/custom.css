@@ -1,0 +1,15 @@
+	nav#layout-mainmenu ul.mainmenu-toolbar li.mainmenu-account.with-tooltip {
+	    display: none !important;
+	}
+
+    nav#layout-mainmenu .menu-toggle .menu-toggle-icon i{
+        display: none !important;
+    }
+
+    nav#layout-mainmenu .menu-toggle .menu-toggle-title{
+        display: none !important;
+    }
+
+    nav#layout-mainmenu.navbar .menu-toggle{
+        display: none !important;
+    }

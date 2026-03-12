@@ -1,0 +1,8 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-database"></span><a href="<?= Backend::url('eprog/manager/project') ?>"><?= e(trans('eprog.manager::lang.project')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?= $this->listRender() ?>

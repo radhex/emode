@@ -1,0 +1,12 @@
+<button type="button" id="useradd" value="dodaj" class="btn btn-primary btn-sm oc-icon-plus-circle" style="height:32px;margin-top:22px;margin-left:-3px;padding-top:4px;padding-right:14px"><?= e(trans('eprog.manager::lang.create')) ?></button>
+<script>
+$(function() {   
+
+		$("#useradd").click(function() {
+
+			modal_url('/<?= config('cms.backendUri') ?>/rainlab/user/users/create?type=addmodal','<?= e(trans('eprog.manager::lang.user')) ?>', 700, 600, 'Invoice-user_id');
+
+		});
+			 	  	 		 	
+});
+</script>

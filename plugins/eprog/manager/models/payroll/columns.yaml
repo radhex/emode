@@ -1,0 +1,23 @@
+columns:
+    nr:
+        label: 'eprog.manager::lang.nr'
+        span: left
+        type: text
+        searchable: true
+        width: 20%
+    period:
+        label: 'eprog.manager::lang.payroll_period'
+        span: left
+        type: text
+        searchable: true
+        width: 60%
+    pay_at:
+        label: 'eprog.manager::lang.payroll_pay_at'
+        type: partial
+        path: payat
+        searchable: true
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+

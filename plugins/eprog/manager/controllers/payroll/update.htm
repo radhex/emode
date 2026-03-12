@@ -1,0 +1,132 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Payroll as ModelPayroll;
+use Eprog\Manager\Models\SettingConfig;
+
+
+$payroll  = ModelPayroll::find(Input::segment(6));
+$firm = User::where("firm_nip",$payroll->nip)->first()->firm_name ?? '';
+if($payroll->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+
+?>
+<?php Block::put('breadcrumb') ?>
+    <ul>
+       <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+       <li><span  class="oc-icon-list-ol"></span><a href="<?= Backend::url('eprog/manager/payroll') ?>"><?= e(trans('eprog.manager::lang.payroll')) ?></a></li> 
+       <li>ID: <?= Input::segment(6) ?></li>
+       <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-request-update="'value' : '#value'"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/payroll') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a>
+
+                <button
+                    id="payrollPdf"
+                    type="submit"
+                    data-request="onPdf"
+                    class="btn btn-primary oc-icon-download btn-toolbar" style="margin-left:25px">
+                    <?= e(trans('eprog.manager::lang.download')) ?> PDF
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+                    onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savetaxfile/payroll/<?= Input::segment(6) ?>','<?= e(trans('eprog.manager::lang.taxfile_confirm')) ?>', 450, 300)"
+                    style="margin-left:-5px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;"
+                ></button>
+
+                
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.payroll_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/payroll') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+
+   
+}
+@media (min-width: 768px){
+
+    #Form-field-Payroll-nr-group {width: 12%}
+    #Form-field-Payroll-period-group {width: 16%}
+    #Form-field-Payroll-pay_at-group {width: 10%}
+    #Form-field-Payroll-ord-group {width: 7%}
+    #Form-field-Payroll-name-group {width: 26%}
+    #Form-field-Payroll-short-group {width: 25%}
+    #Form-field-Payroll-desc-group {width: 33.4%}
+    #Form-field-Payroll-year-group {width:6%}
+    #Form-field-Payroll-month-group {width:16%}
+    #Form-field-Payroll-p1-group {width: 16%}
+    #Form-field-Payroll-p2-group {width: 16%}
+    #Form-field-Payroll-p3-group {width: 16%}
+    #Form-field-Payroll-p4-group {width: 16%}
+    #Form-field-Payroll-p5-group {width: 16%}
+    #Form-field-Payroll-p6-group {width: 16%}
+    #Form-field-Payroll-p7-group {width: 16%}
+    #Form-field-Payroll-p8-group {width: 16%}
+    #Form-field-Payroll-p9-group {width: 16%}
+    #Form-field-Payroll-p10-group {width: 16%}
+    #Form-field-Payroll-p11-group {width: 16%}
+    #Form-field-Payroll-p12-group {width: 16%}
+    #Form-field-Payroll-p13-group {width: 16%}
+    #Form-field-Payroll-p14-group {width: 16%}
+    #Form-field-Payroll-p15-group {width: 16%}
+    #Form-field-Payroll-p16-group {width: 16%}
+    #Form-field-Payroll-p17-group {width: 16%}
+    #Form-field-Payroll-p18-group {width: 16%}
+    #Form-field-Payroll-p19-group {width: 16%}
+}
+
+</style>
+
+<script>
+
+
+
+
+    $(function() { 
+        
+
+
+    });
+
+
+
+</script>
+

@@ -1,0 +1,4 @@
+name: 'eprog.manager::lang.spam'
+form: $/eprog/manager/models/spam/fields.yaml
+modelClass: Eprog\Manager\Models\Spam
+defaultRedirect: eprog/manager/spam

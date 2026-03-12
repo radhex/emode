@@ -1,0 +1,38 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Taxfile;
+use Eprog\Manager\Models\SettingConfig;
+
+$taxfile = Taxfile::find(Input::segment(6));
+$firm = User::where("firm_nip",$taxfile->nip)->first()->firm_name ?? '';
+if($taxfile->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+?>
+
+
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+       <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+       <li><span  class="oc-icon-files-o"></span><a href="<?= Backend::url('eprog/manager/taxfile') ?>"><?= e(trans('eprog.manager::lang.taxfile')) ?></a></li> 
+       <li>ID: <?= Input::segment(6) ?></li>
+       <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <div class="form-preview">
+        <?= $this->formRenderPreview() ?>
+    </div>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e($this->fatalError) ?></p>
+<?php endif ?>
+
+<p>
+    <a href="<?= Backend::url('eprog/manager/taxfile') ?>" class="btn btn-default oc-icon-chevron-left">
+        <?= e(trans('eprog.manager::lang.return')) ?>
+    </a>
+</p>

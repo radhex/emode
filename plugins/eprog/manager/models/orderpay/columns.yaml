@@ -1,0 +1,44 @@
+columns:
+    nr:
+        label: 'eprog.manager::lang.nr'
+        type: text
+        searchable: true
+
+    netto:
+        label: 'eprog.manager::lang.net'
+        type: partial
+        path: netto
+        searchable: true
+        align: right
+    vat:
+        label: 'eprog.manager::lang.vat'
+        type: partial
+        path: vat
+        searchable: true
+        align: right
+    brutto:
+        label: 'eprog.manager::lang.gross'
+        type: partial
+        path: brutto
+        searchable: true
+        align: right
+    currency:
+        label: 'eprog.manager::lang.currency'
+        type: text
+        searchable: true
+        width: 45%
+    create_at:
+        label: 'eprog.manager::lang.create_at'
+        type: partial
+        path: createat
+        searchable: true
+    payment:
+        label: 'eprog.manager::lang.ksef.payment'
+        type: text
+        searchable: true
+    action:
+        label: 'eprog.manager::lang.action'
+        type: partial
+        sortable: false
+        path: action
+        cssClass: nowrap

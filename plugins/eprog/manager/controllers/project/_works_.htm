@@ -1,0 +1,51 @@
+<?php 
+use Eprog\Manager\Models\Work;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+	$works = Work::where("project_id","=",$id)->orderBy("id","desc")->paginate(12);
+	
+	    $lc = Lang::getLocale();
+		$lc = $lc."_".strtoUpper($lc);
+		setlocale(LC_ALL, $lc);
+
+
+?>
+
+<style>
+
+.works {display:table}
+.works > div {display:table-row; }
+.works > div > div {border-top:1px solid #eee; display:table-cell; vertical-align:top; font-size:12px; padding-left:8px; padding-right:8px; padding-top:4px;padding-bottom:4px;}
+.tasktable .date {color:green;width:150px}
+.tasktable .desc {width:400px;}
+.tasktable .head > div {font-size:14px;background:#fff}
+input {border:1px solid #cccccc}
+.pagination li {font-size:14px;padding:5px}
+
+</style>
+<div id="work">
+<div class="works">
+<?php foreach($works as $work) : ?>
+<div><div><a href="/<?= config('cms.backendUri') ?>/eprog/manager/work/update/<?=  $work->id;  ?>"><?php if(!$work->public) : ?><font color="#bb2424"><?php endif?><?=  $work->name;  ?></a><?php if(!$work->public) : ?></font><?php endif?> </div><div><?=  $work->status;  ?></div><div> <?=   Util::date($work->start);   ?></div></div>
+<?php endforeach; ?>
+</div>
+<div style="padding-top:7px">
+<?php if(Input::segment(5) != "preview") : ?> 
+<input type="text" size="30" maxlength="60" name="add_work" style="height:30px;"  >&nbsp;<button data-request="onSave" data-request-data="redirect:0,add_work_flag:1" data-request-update=" 'works_' : '#work'" data-request-confirm="<?= e(trans('eprog.manager::lang.add_work_confirm')) ?>" type="button" name="btn" value="dodaj" style="margin-top:-4px;margin-left:8px" class="btn btn-primary btn-sm oc-icon-plus-circle" ><?= e(trans('eprog.manager::lang.create')) ?></button>
+<?php endif; ?>
+</div>
+<div style="margin-left:-40px;padding-top:4px"><?= $works->render() ?></div>
+</div>
+
+
+
+
+ 
+
+
+        

@@ -1,0 +1,12 @@
+list: $/eprog/manager/models/advance/columns.yaml
+modelClass: Eprog\Manager\Models\Advance
+title: 'eprog.manager::lang.advance_title'
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/advance/update/:id'
+filter: config_filter.yaml

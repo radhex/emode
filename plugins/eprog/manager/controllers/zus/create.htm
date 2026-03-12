@@ -1,0 +1,147 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Jpk;
+use Eprog\Manager\Models\SettingConfig;
+
+$nip = Session::get("selected.nip") ?? '';
+$firm = User::where("firm_nip",$nip)->first()->firm_name ?? '';
+if($nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+$tax_form = User::where("firm_nip",$nip)->first()->tax_form ?? '';
+if($nip == SettingConfig::get("nip")) $firm = SettingConfig::get("tax_form");
+
+
+
+?>
+
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+        <li><span  class="oc-icon-pie-chart"></span><a href="<?= Backend::url('eprog/manager/zus') ?>"><?= e(trans('eprog.manager::lang.zus')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.create')) ?></li>
+        <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-plus-circle">
+                    <?= e(trans('backend::lang.form.create')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/zus') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a>
+            </div>
+        </div>
+
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/zus') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+
+<style>
+
+@media (max-width: 450px){
+
+#Form-field-Zus-value-group {margin-left:-25px}
+
+}
+
+@media (min-width: 768px){
+  
+    #Form-field-Zus-year-group {width:6%}
+    #Form-field-Zus-month-group {width:16%}
+    #Form-field-Zus-tax_form-group {width:13%}
+    #Form-field-Zus-social-group {width:14%}
+    #Form-field-Zus-health-group {width:14%}
+
+
+    .hide {
+      display: none !important;
+    }
+
+    .show {
+      font-size:15px !important;
+      display: inline-block !important;
+      float: none !important;
+      z-index: 8 !important;
+      vertical-align: bottom !important;
+      position:relative !important;
+      margin-right:-20px !important;
+    }
+
+    .required {baccounting:1px solid red !important}
+
+ 
+}
+
+</style>
+
+
+<script>
+
+
+
+
+    $(function() { 
+
+        $('#Form-field-Zus-health').on('paste input', function (e) {
+
+            inputCurrency(this, e);
+
+        });
+
+
+        $('#Form-field-Zus-health').on('focusout', function (e) {
+            
+            inputCurrencyOut(this, e);
+
+        });
+
+        $('#Form-field-Zus-health').on('focusin', function (e) {
+            
+            inputCurrencyIn(this, e);
+
+        });
+
+        $('#Form-field-Zus-social').on('paste input', function (e) {
+
+            inputCurrency(this, e);
+
+        });
+
+
+        $('#Form-field-Zus-social').on('focusout', function (e) {
+            
+            inputCurrencyOut(this, e);
+
+        });
+
+        $('#Form-field-Zus-social').on('focusin', function (e) {
+            
+            inputCurrencyIn(this, e);
+
+        });
+                
+
+    });
+
+
+
+</script>

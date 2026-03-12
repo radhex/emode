@@ -1,0 +1,54 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+       <li><span  class="oc-icon-shopping-basket"></span><a href="<?= Backend::url('eprog/manager/product') ?>"><?= e(trans('eprog.manager::lang.assortment')) ?></a></li> 
+       <li><span  class="oc-icon-sort-amount-asc"></span><a href="<?= Backend::url('eprog/manager/unit') ?>"><?= e(trans('eprog.manager::lang.units')) ?></a></li> 
+       <li>ID: <?= Input::segment(6) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/unit') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a>
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.unit_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/unit') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Unit-name-group {width: 25%}
+    #Form-field-Unit-short-group {width: 25%}
+    #Form-field-Unit-desc-group {width: 33.4%}
+
+}
+</style>

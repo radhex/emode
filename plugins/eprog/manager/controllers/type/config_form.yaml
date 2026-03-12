@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.category'
+form: $/eprog/manager/models/type/fields.yaml
+modelClass: Eprog\Manager\Models\Type
+defaultRedirect: eprog/manager/type
+create:
+    redirect: 'eprog/manager/type/update/:id'
+    redirectClose: eprog/manager/type
+update:
+    redirect: eprog/manager/type
+    redirectClose: eprog/manager/type

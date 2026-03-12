@@ -1,0 +1,36 @@
+[viewBag]
+==
+<?php
+function onStart() {
+
+$this['segm'] = Input::segment(1);
+
+
+}
+?>
+==
+<script src="{{ [
+    'assets/javascript/jquery.js',
+    'assets/vendor/nivo/jquery.nivo.slider.js',
+    'assets/javascript/app.js',
+    'assets/javascript/flash.js',
+]|theme }}"></script>
+
+
+<script src="/modules/system/assets/js/framework.js"></script>
+<script src="/modules/system/assets/js/framework.extras.js"></script>
+<link rel="stylesheet" property="stylesheet" href="/modules/system/assets/css/framework.extras.css">
+
+
+{% scripts %}
+
+<script>
+$(function() {   
+ 
+ 	 	window.alert = function(msg) {
+ 	 	        $.oc.flashMsg({text: msg, 'class': 'error', 'interval': 3})
+ 	 	};
+
+ 	 	  	 		 	
+});
+</script>

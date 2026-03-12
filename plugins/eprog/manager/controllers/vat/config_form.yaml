@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.vat_register'
+form: $/eprog/manager/models/vat/fields.yaml
+modelClass: Eprog\Manager\Models\Vat
+defaultRedirect: eprog/manager/vat
+create:
+    redirect: 'eprog/manager/vat/update/:id'
+    redirectClose: eprog/manager/vat
+update:
+    redirect: eprog/manager/vat
+    redirectClose: eprog/manager/vat

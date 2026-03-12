@@ -1,0 +1,30 @@
+<?php 
+use Eprog\Manager\Models\Work;
+use Eprog\Manager\Classes\Util;
+use Carbon\Carbon;
+use App;
+
+	if(isset($record->id)) $id = $record->id; else $id = 0;
+	$works = Work::where("project_id","=",$id)->orderBy("id")->limit(100)->get();
+	
+
+$l = 0;	
+?>
+
+<div id="work">
+
+<?php foreach($works as $work) : ?>
+
+	<?php  $l++; if($l ==  4): ?> <div id="cont<?=  $record->id;  ?>" style="display:none"><?php endif; ?>
+	<a href="/<?= config('cms.backendUri') ?>/eprog/manager/work/update/<?=  $work->id;  ?>" style="color:var(--mdcolor)"><?php if(!$work->public) : ?><font color="#bb2424"><?php endif?><?=  $work->name;  ?></a><?php if(!$work->public) : ?></font><?php endif?><br>
+<?php endforeach; ?>
+</div>
+<?php if($works->count() >= 4): ?><a id="show<?=  $record->id;  ?>" href="javascript:" onMouseOver="$('#cont<?=  $record->id;  ?>').show(); $(this).hide(); $('#hide<?=  $record->id;  ?>').slideDown();">▼</a><?php endif; ?>
+<a id="hide<?=  $record->id;  ?>" href="javascript:" onMouseOver="$('#cont<?=  $record->id;  ?>').hide(); $(this).hide(); $('#show<?=  $record->id;  ?>').slideDown();" style="display:none">▲</a>
+</div>
+
+
+ 
+
+
+        

@@ -1,0 +1,58 @@
+title = "Inbox"
+url = "/mail/inbox/:id?"
+layout = "client"
+is_hidden = 0
+
+[viewBag]
+
+[usermail]
+==
+<div class="tabs" style="margin-top:15px">
+                       <ul>
+
+                        <li class="active"><a href="/mail/inbox" class="oc-icon-inbox">{{ 'Odebrane'|_ }}</a></li>
+                        <li><a href="/mail/outbox" class="oc-icon-paper-plane">{{ 'Wysłane'|_ }}</a></li>
+                        <li><a href="/mail/create" class="oc-icon-plus-circle">{{ 'Utwórz nową'|_ }}</a></li>
+            
+    </ul> </div>
+
+<div class="row">
+        <div class="col-md-6" style="width:100%">
+            <h3> <i class="icon-comments"></i> <a href="/mail/inbox">{{ 'Wiadomości'|_ }} - {{ lcfirst('Odebrane'|_) }}</a> {% if mail.name %} » {{ mail.name}} ({{ mail.id}}) {% endif %}</h3>
+        </div>
+    </div>
+    <div><br></div>
+ 
+
+    
+   {% if not this.param.id %}
+        <div class="mtable mlist">
+        <div class="lhead">
+        <div  class="restitle">{{ 'Tytuł'|_ }}</div>
+        <div>{{ 'Załączniki'|_ }}</div>
+        <div>{{ 'Od'|_ }}</div>
+        <div class="resdate">{{ 'Data'|_ }}</div>
+        </div>
+        {% for mail in mails %}        
+        <div> 
+        <div {% if not mail.read %} class="noread" {% endif %}><a href="/mail/inbox/{{mail.id}}" >{{ mail.name}}</a></div>
+        <div>{% if mail.attachments %} <i class="icon-paperclip"></i> {% endif %}</div>
+        <div>{{ mail.admin.first_name}} {{ mail.admin.last_name}}</div>
+        <div  class="resdate">{% if(mail.date) %}{{ clientDate(mail.date) }} {% endif %}</div>
+        </div>
+        {% endfor  %}
+         </div>
+         {{ mails.render|raw }}
+         
+      {% elseif mail.name  %}
+      
+        <div class="mtable mfield" style="float:left;">     
+        <div><div class="fhead">{{ 'Data'|_ }}</div><div>{% if(mail.date) %}{{ clientDate(mail.date) }} {% endif %}</div></div>
+
+        <div><div class="fhead">{{ 'Od'|_ }}</div><div>{{ mail.admin.first_name}} {{ mail.admin.last_name}}</div></div>
+        <div><div class="fhead">{{ 'Załączniki'|_ }}</div><div>{{ mail.attachments|raw}}</div></div>
+
+        <div><div class="fhead noborder">{{ 'Treść'|_ }}</div><div>{{ mail.desc|nl2br }}</div></div>
+        </div>
+        <a href="/mail/create?reply={{mail.id}}" class="btn btn-primary oc-icon-reply" style="margin-top:30px">{{ "Odpowiedz"|_ }}</a>
+    {% endif %}

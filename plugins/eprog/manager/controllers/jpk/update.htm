@@ -1,0 +1,239 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Jpk;
+use Eprog\Manager\Models\SettingConfig;
+
+$jpk  = Jpk::find(Input::segment(6));
+$firm = User::where("firm_nip",$jpk->nip)->first()->firm_name ?? '';
+if($jpk->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+?>
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+        <li><span  class="oc-icon-file-code-o"></span><a href="<?= Backend::url('eprog/manager/jpk') ?>">JPK</a></li> 
+        <li>ID: <?= Input::segment(6) ?></li>
+        <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    id="save"
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a id="return" href="<?= Backend::url('eprog/manager/jpk') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a>
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.jpk_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+
+                <button
+                    id="jpkXML"
+                    type="submit"
+                    data-request="onJpkXml"
+                    class="btn btn-primary oc-icon-download btn-toolbar" style="margin-left:25px">
+                    <?= e(trans('eprog.manager::lang.download')) ?> XML
+                </button>
+
+
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+                    onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savetaxfile/jpk/<?= Input::segment(6) ?>/<?= str_replace("/","_",$jpk->period) ?>/onJpkFile','<?= e(trans('eprog.manager::lang.taxfile_confirm')) ?>', 450, 300)"
+                    style="margin-left:-5px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;"
+                ></button>
+
+                <button
+                    id="jpkUpo"
+                    type="submit"
+                    data-request="onJpkUpo"
+                    class="btn btn-primary oc-icon-download btn-toolbar" style="margin-left:0px; <?php if(!$jpk->referenceNumber) : ?>display:none"<?php endif ?>">
+                    <?= e(trans('eprog.manager::lang.download')) ?> UPO
+                </button>
+
+                <button
+                    id="jpkUpoFile"
+                    type="button"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+                    onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savetaxfile/jpk/<?= Input::segment(6) ?>/<?= str_replace("/","_",$jpk->period) ?>/onJpkFileUpo','<?= e(trans('eprog.manager::lang.taxfile_confirm')) ?>', 450, 300)"
+                    style="margin-left:-5px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;  <?php if(!$jpk->referenceNumber) : ?>display:none"<?php endif ?>"
+                ></button>
+
+                <button
+                    id="jpkSend"
+                    type="submit"
+                    data-request="onJpkSend"
+                    data-request-success="onJpkSend(data)"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.jpksend_confirm')) ?>"
+                    data-load-indicator="<?= e(trans('eprog.manager::lang.sending')) ?>"
+                    class="btn btn-primary oc-icon-cloud-upload btn-toolbar" style="margin-left:40px; <?php if($jpk->referenceNumber) : ?>display:none"<?php endif ?>">
+                    <?= e(trans('eprog.manager::lang.send')) ?>
+                </button>
+
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a id="return" href="<?= Backend::url('eprog/manager/jpk') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Jpk-name-group {width: 30%}
+    #Form-field-Jpk-version-group {width: 10%}
+    #Form-field-Jpk-period-group {width: 8%}
+    #Form-field-Jpk-short-group {width: 25%}
+    #Form-field-Jpk-xml-group {width: 60%}
+    #Form-field-Jpk-xml{height: 70vh !important}
+    #Form-field-Jpk-correct-group {margin-top:26px}
+    #Form-field-Jpk-jpk_at-group {width: 11%}
+    #Form-field-Jpk-created_at-group {width: 11%}
+
+}
+</style>
+
+<script>
+
+
+
+    $(function() { 
+
+        $('#save').click(function(e){
+            const checkboxes = $('#P_540, #P_55, #P_56, #P_560, #P_58');
+            const kwota = $('#P_54').val().trim();
+            const checkedCount = checkboxes.filter(':checked').length;
+
+            if (checkedCount > 1) {
+                $.oc.flashMsg({
+                    text: '<?= e(trans('eprog.manager::lang.other_msg2')) ?>',
+                    class: 'error',
+                    interval: 3
+                });
+                return false;
+            }
+
+            if (checkedCount === 1 && kwota === '') {
+                $.oc.flashMsg({
+                    text: '<?= e(trans('eprog.manager::lang.other_msg1')) ?>',
+                    class: 'error',
+                    interval: 3
+                });
+                return false;
+            }
+
+            if (kwota !== '' && checkedCount === 0) {
+                $.oc.flashMsg({
+                    text: '<?= e(trans('eprog.manager::lang.other_msg1')) ?>',
+                    class: 'error',
+                    interval: 3
+                });
+                return false;
+            }
+
+            const futureCheckbox = $('#P_59');
+            const futureAmount = $('#P_60').val().trim();
+            const futureType = $('#P_61').val().trim();
+
+            if (futureCheckbox.is(':checked') || futureAmount !== '' || futureType !== '') {
+                if (!futureCheckbox.is(':checked') || futureAmount === '' || futureType === '') {
+                    $.oc.flashMsg({
+                        text: '<?= e(trans('eprog.manager::lang.other_msg3')) ?>',
+                        class: 'error',
+                        interval: 3
+                    });
+                    return false;
+                }
+            }
+
+            if (futureCheckbox.is(':checked') && kwota == '') {
+                    $.oc.flashMsg({
+                        text: '<?= e(trans('eprog.manager::lang.other_msg4')) ?>',
+                        class: 'error',
+                        interval: 3
+                    });
+                    return false; 
+            }
+
+        });
+        
+        <?php if($jpk->jpk_at) : ?>
+        protectFromEdit();
+        $("#save").hide();
+        <?php endif ?>
+
+
+        $("#Form-field-Jpk-created_at").attr("readonly", true);
+
+        $("#Form-field-Jpk-created_at").css("background-color","#eee !important");
+        $("#Form-field-Jpk-created_at").css("color","#999");
+        $("#Form-field-Jpk-created_at").css("cursor","not-allowed");
+
+        $('#return').on('click', function(e) {
+            e.preventDefault();
+
+            var nip = '<?= $jpk->nip ?>';
+            var url = '<?= Backend::url('eprog/manager/jpk') ?>?&nip=' + nip;
+            window.location.href = url; 
+        });
+
+        $('#Form-field-Jpk-correct').on('change', function(e) {
+          
+                if($('#Form-field-Jpk-correct').is(':checked')){
+                    xml = $('#Form-field-Jpk-xml').val();
+                    xml = xml.replace(
+                        /(<CelZlozenia[^>]*>)[12](<\/CelZlozenia>)/,
+                        '$12$2'
+                    );
+                    $('#Form-field-Jpk-xml').val(xml);
+                }
+                else{
+                    xml = $('#Form-field-Jpk-xml').val();
+                    xml = xml.replace(
+                        /(<CelZlozenia[^>]*>)[12](<\/CelZlozenia>)/,
+                        '$11$2'
+                    );
+                    $('#Form-field-Jpk-xml').val(xml);
+                }
+        });
+
+   
+    });
+
+
+    function onJpkSend(data){
+
+        $('#jpkSend').hide();
+        $('#jpkUpo').show();
+        $('#jpkUpoFile').show();
+        $('#save').hide();
+        $.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.jpksend_scuccess')) ?>', 'class': 'success', 'interval': 4})
+        protectFromEdit();
+    
+    }
+
+</script>

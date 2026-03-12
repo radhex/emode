@@ -1,0 +1,12 @@
+<button
+    data-primary-button
+    type="button"
+    class="btn-sm btn-primary  oc-icon-download" 
+    style="color:#fff;padding-right:7px;"
+    title = "<?= e(trans('eprog.manager::lang.download')) ?> PDF"
+    data-request="onPdf"
+    data-request-data="nr:'<?= $record->nr ?>',ksefNumber:'<?= $record->ksefNumber ?>',xml:'<?= urlencode($record->xml) ?>',seller_name:'<?= $record->seller_name ?>'"
+    data-request-success="$(this).prop('disabled', true).next().prop('disabled', true);updateInbox();"
+    >
+   
+</button>

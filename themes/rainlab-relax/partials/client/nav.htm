@@ -1,0 +1,22 @@
+[viewBag]
+==
+<div class="module-sidemenu">
+    <ul>
+        <li class="head-link"><span>{{ 'Konto użytkownika'|_ }}</span></li>
+        <li><a href="{{ url("project") }}">{{ 'Project'|_ }}</a></li>
+        <li><a href="{{ 'mydata'|page }}">{{ 'Moje dane'|_ }}</a></li>
+        <li><a href="javascript:;" data-request="onLogout">{{ 'Wyloguj się'|_ }}</a></li>
+    </ul>
+</div>
+<div class="module-sidemenu">
+    <ul>
+        <li class="head-link">
+            <a href="{{ 'clients'|staticPage }}">{{ 'Strefa klienta'|_ }}</a>
+        </li>
+        {% for item in clientMenu.menuItems %}
+            <li class="{{ item.isActive ? 'active' : '' }}">
+                <a href="{{ item.url }}">{{ item.title }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</div>

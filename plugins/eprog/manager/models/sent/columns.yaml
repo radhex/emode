@@ -1,0 +1,22 @@
+columns:
+    id:
+        label: ID
+        type: number
+        width: 10px
+    attach:
+        label: 'eprog.manager::lang.attachments_short'
+        type: partial
+        path: attach
+        width: 10px
+    title:
+        label: 'eprog.manager::lang.title'
+        type: partial
+        path: title
+    to:
+        label: 'eprog.manager::lang.to'
+        type: partial
+        path: to
+    date:
+        label: 'eprog.manager::lang.date'
+        type: partial
+        path: date

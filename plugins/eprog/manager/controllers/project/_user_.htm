@@ -1,0 +1,12 @@
+<?php
+use Eprog\Manager\Models\Project;
+use Rainlab\User\Models\User;
+
+ 	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+	$project = Project::find($id);
+
+
+?>
+<?php if($project->user) : ?>
+<div style="padding-top:14px"><a href="/<?= config('cms.backendUri') ?>/rainlab/user/users/update/<?= $project->user_id ?>" style="color:var(--mdcolor)"><span  class="oc-icon-user"> <?= $project->user ? $project->user->name  : '' ?> <?= $project->user ? $project->user->surname : ''?></a></div>
+<?php endif; ?>

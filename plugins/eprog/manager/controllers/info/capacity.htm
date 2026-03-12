@@ -1,0 +1,29 @@
+<div class="layout">
+    <div class="layout-row">
+        <div class="container">
+            <div class="text-center" style="margin:50px auto; max-width:600px; padding:30px; border:1px solid #ddd; border-radius:8px; background:#fff; ">
+
+                <h1>
+                    <i class="icon-exclamation-triangle" 
+                       style="color:var(--mcolor); font-size:75px;" 
+                       ondblclick="$('#desc').show()">
+                    </i>
+                </h1>
+
+                <h4 style="margin-top:20px;">
+                    Przekroczona pojemność konta.
+                </h4>
+
+                <p id="desc">
+                    <?= e(trans('eprog.manager::lang.info_capacity1')) ?> <br><?= Session::get("capacity")?> MB > <?= Session::get("license.capacity")?> MB <br>
+                    <?= e(trans('eprog.manager::lang.info_capacity2')) ?>
+                </p>
+
+                <p style="margin-top:20px;">
+      
+                </p>
+
+            </div>
+        </div>
+    </div>
+</div>

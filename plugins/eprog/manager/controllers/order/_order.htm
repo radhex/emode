@@ -1,0 +1,9 @@
+<?php
+
+use Eprog\Manager\Models\Order;
+
+$order = Order::find($record->order);
+
+?>
+
+<?= isset($order->nr) ? $order->nr: ''  ?>

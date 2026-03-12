@@ -1,0 +1,9 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+    	<li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+        <li><span  class="oc-icon-car"></span><a href="<?= Backend::url('eprog/manager/fixed') ?>"><?= e(trans('eprog.manager::lang.fixed')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?= $this->listRender() ?>

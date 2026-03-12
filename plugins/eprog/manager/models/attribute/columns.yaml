@@ -1,0 +1,33 @@
+columns:
+    id:
+        label: 'ID'
+        type: text
+        width: 50px
+    name:
+        label: 'eprog.manager::lang.name'
+        span: left
+        type: text
+        searchable: true
+    value:
+        label: 'eprog.manager::lang.defaultvalue'
+        span: left
+        type: text
+        searchable: true
+    unit_id:
+        label: 'eprog.manager::lang.unit'
+        span: left
+        type: partial
+        path: unit
+    desc:
+        label: 'eprog.manager::lang.desc'
+        type: text
+        searchable: true
+    ord:
+        label: 'eprog.manager::lang.sort'
+        type: text
+        searchable: true
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+

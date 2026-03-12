@@ -1,0 +1,174 @@
+<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_invoice")) : ?>
+
+<div data-control="toolbar">
+
+        <a href="<?= Backend::url('eprog/manager/invoice/create') ?>" class="btn btn-primary oc-icon-plus-circle btn-toolbar multisend"><?= trans("eprog.manager::lang.create") ?></a>
+
+
+        <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions" style="margin-bottom:5px">
+            <button
+                data-primary-button
+                type="button"
+                class="btn btn-default"
+                data-request="onBulkAction"
+                data-trigger-action="enable"
+                data-trigger=".control-list input[type=checkbox]"
+                data-trigger-condition="checked"
+                data-request-success="$(this).prop('disabled', true).next().prop('disabled', true);updateInbox();"
+                >
+                <?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>
+            </button>
+            <button
+                type="button"
+               
+                class="btn btn-default dropdown-toggle"
+                data-trigger-action="enable"
+                data-trigger=".control-list input[type=checkbox]"
+                data-trigger-condition="checked"
+                data-toggle="dropdown">
+                <span class="caret"></span>
+            </button>
+
+            <ul class="dropdown-menu" data-dropdown-title="<?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>">
+                <li>
+                    <a href="javascript:;"  class="oc-icon-cloud-upload" data-action="sendmultiple" onclick="" data-confirm="<?= e(trans('eprog.manager::lang.ksef.sendmultiple_confirm')) ?>?">
+                       <?= e(trans('eprog.manager::lang.ksef.sendmultiple')) ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="oc-icon-dollar" data-action="paid" data-confirm="<?= e(trans('eprog.manager::lang.mark_aspaid_confirm')) ?>">
+                        <?= e(trans('eprog.manager::lang.mark_aspaid')) ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="oc-icon-times" data-action="unpaid" data-confirm="<?= e(trans('eprog.manager::lang.mark_asunpaid_confirm')) ?>">
+                        <?= e(trans('eprog.manager::lang.mark_asunpaid')) ?>
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:;" class="oc-icon-trash-o" data-action="delete" data-confirm="<?= e(trans('eprog.manager::lang.inbox_delete_confirm')) ?>">
+                        <?= e(trans('eprog.manager::lang.inbox_delete')) ?>
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+        <div id="spinner-toolbar" class="spinner-toolbar" ></div>
+
+        <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_xml")) :?>
+
+        <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_importxml")) :?>
+        <button
+        class="btn btn-primary oc-icon-file-code-o btn-toolbar multisend"
+        onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/import/invoice','<?= e(trans('eprog.manager::lang.import_xml')) ?>', 600, 420)"
+        style="float:right"
+        >
+        <?= e(trans('eprog.manager::lang.import_xml')) ?>
+        </button>
+        <?php endif ?>
+
+
+        <button
+        id="export"
+        class="btn btn-primary oc-icon-file-code-o btn-toolbar"
+        data-request="onExport"
+        data-request-confirm="<?= e(trans('eprog.manager::lang.export_xml_all_confirm')) ?>"
+        data-trigger-action="enable"
+        style="float:right;margin-right:10px"
+        >
+        <?= e(trans('eprog.manager::lang.export_xml')) ?>
+        </button>
+
+    <?php endif ?>
+
+
+</div>
+
+<?php endif ?>
+
+<style>
+
+
+    .spinner-toolbar {
+
+        display:inline-block;
+        margin-top:1px;
+        margin-right:10px;
+        width: 24px;
+        height: 24px;
+        border: 3px solid #ccc;
+        border-top-color: #3498db;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+
+        /* Ustawienia dla toolbar */
+        margin-left: 10px; /* oddziel od przycisków */
+        vertical-align: middle;
+        display:none;
+      
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+
+</style>
+
+<script>
+
+
+
+    $(document).on('ajaxPromise', '[data-request]', function(e, context) {
+
+        if(context.options.data.action == "sendmultiple"){ 
+            $("body").css('pointer-events', "none");
+            $("#spinner-toolbar").css("display","inline-block"); 
+
+        }
+  
+    });
+
+    $(document).on('ajaxDone ajaxFail', '[data-request]', function(e, context) {
+
+         if(context.options.data.action == "sendmultiple"){
+             $("body").css('pointer-events', "auto");
+             $("#spinner-toolbar").hide();     
+         }
+
+
+
+    });
+
+    $(document).on('ajaxSetup', function(event, context) {
+
+        if (context.handler === 'onExport' && context.options.confirm) {
+
+            let selectedIds = [];
+            $('.control-list tbody input[type="checkbox"]:checked').each(function () {
+                selectedIds.push($(this).val());
+            });
+            if(selectedIds.length > 0){
+                console.log(selectedIds);
+                context.options.confirm = '<?= e(trans('eprog.manager::lang.export_xml_checked_confirm')) ?>';
+                context.options.data.checked = selectedIds;               
+            }
+        }
+
+    });
+
+
+    $(function() { 
+
+
+
+
+    });
+
+
+
+
+</script>
+

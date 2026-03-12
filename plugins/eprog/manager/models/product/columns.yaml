@@ -1,0 +1,59 @@
+columns:
+    id:
+        label: id
+        type: number
+        width: 50px
+    category:
+        label: 'eprog.manager::lang.category'
+        type: partial
+        path: category
+    name:
+        label: 'eprog.manager::lang.name'
+        type: text
+        searchable: true
+    brutto:
+        label: 'eprog.manager::lang.gross'
+        type: partial
+        path: brutto
+        searchable: true
+    netto:
+        label: 'eprog.manager::lang.net'
+        type: partial
+        path: netto
+        searchable: true
+    vat:
+        label: 'eprog.manager::lang.vat'
+        type: partial
+        path: vat
+        searchable: true
+    currency:
+        label: 'eprog.manager::lang.currency'
+        type: text
+        searchable: true
+    quantity:
+        label: 'eprog.manager::lang.quantity'
+        type: text
+        searchable: true
+    model:
+        label: 'eprog.manager::lang.model'
+        type: text
+        searchable: true
+    producent_id:
+        label: 'eprog.manager::lang.producent'
+        relation: producent
+        select: name
+    image:
+        label: 'eprog.manager::lang.image_one'
+        type: partial
+        sortable: false
+    ord:
+        label: 'eprog.manager::lang.sort'
+        type: text
+        searchable: false
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+
+
+

@@ -1,0 +1,11 @@
+name: 'eprog.manager::lang.mail'
+form: $/eprog/manager/models/mail/fields.yaml
+title: 'eprog.manager::lang.mail'
+modelClass: Eprog\Manager\Models\Mail
+defaultRedirect: eprog/manager/mail/inbox
+create:
+    redirect: 'eprog/manager/mail/sent'
+    redirectClose: eprog/manager/mail/sent
+update:
+    redirect: eprog/manager/mail/inbox
+    redirectClose: eprog/manager/mail/inbox

@@ -1,0 +1,114 @@
+title = "Service"
+url = "/project/:project?/:work?"
+layout = "client"
+is_hidden = 0
+
+[project]
+==
+{% if user %}
+   {% if not this.param.work %}
+    <div class="row">
+        <div class="col-md-6" style="width:100%">
+            <h3> <i class="icon-database"></i>&nbsp;&nbsp;<a href="{{url("project")}}">{{ 'Projekty'|_ }}</a> {% if modelproject.name %} » {{ modelproject.name}} ({{ modelproject.id}}) {% endif %}</h3>
+        </div>
+    </div>
+    <div><br></div>
+    {% if not this.param.project %}
+    
+    
+    
+        <div class="mtable mlist">
+        <div class="lhead">
+        <div>{{ 'Id'|_ }}</div>
+        <div>{{ 'Nazwa'|_ }}</div>
+        <div>{{ 'Status'|_ }}</div>
+        <div class="resdate">{{ 'Data'|_ }}</div>
+    
+        </div>
+        {% for project in modelproject %}        
+        <div> 
+        <div>{{ project.id}}</div>
+        <div><a href="{{ url("project")}}/{{project.id}}" >{{ project.name}} </a></div>
+        <div>{{ project.status}}</div>
+        <div  class="resdate">{% if project.start %}{{ 'Od'|_ }}: {{ clientDate(project.start) }}{% endif %}{% if project.stop %}<br>{{ 'Do'|_ }}: {{ clientDate(project.stop) }}{% endif %}</div>
+        </div>
+        {% endfor  %}
+         </div>
+         {{ modelproject.render|raw }}
+
+    {% elseif modelproject.id > 0 %}
+        <div class="tabs">
+                               <ul>
+                                <li><a href="#tabs-1" class=" oc-icon-file-text-o">{{ 'Opis'|_ }}</a></li>
+                                <li><a href="#tabs-2" class=" oc-icon-files-o">{{ 'Pliki'|_ }}</a></li>
+                                </ul>
+         
+        <div id="tabs-1"> 
+                <div class="mtable mfield" style="float:left;">     
+                <div><div class="fhead">{{ 'Status'|_ }}</div><div>{{ modelproject.status}}</div></div>
+                <div><div class="fhead">{{ 'Data'|_ }}</div><div>{% if modelproject.start %}{{ 'Od'|_ }}: {{ clientDate(modelproject.start) }}{% endif %}{% if modelproject.stop %}<br>{{ 'Do'|_ }}: {{ clientDate(modelproject.stop) }}{% endif %}</div></div>
+
+                <div><div class="fhead noborder">{{ 'Opis'|_ }}</div><div>{{ modelproject.desc|raw }}</div></div>
+                </div>
+        </div>  
+
+                
+        <div id="tabs-2">  
+                <div class="mtable mfield" style="float:left;">
+                <div><div class=" fhead  noborder">{{ 'Pliki'|_ }}</div><div>{{ modelproject.file|raw }}</div></div>
+                </div>        
+        </div>
+                    
+        </div>
+  
+        {% if work.count > 0 and  modelproject.public_work  %}
+
+      
+        <div class="mtable mlist" style="padding-top:20px">
+        <div ><h4 class="oc-icon-wrench">{{ 'Prace'|_ }}</h4></div>
+        {% for work in work %}
+        <div> 
+        <div class=""><a href="{{ url("project")}}/{{modelproject.id}}/{{work.id}}" >{{ work.name}} </a></div>
+        <div class="">{{work.status}}</div>
+        <div class="resdate">{% if work.start %}{{ 'Od'|_ }}: {{ clientDate(work.start) }}{% endif %}{% if work.stop %}<br>{{ 'Do'|_ }}: {{ clientDate(work.stop) }}{% endif %}</div>
+        </div>  
+        {% endfor  %}
+        </div>
+        {{ work.render|raw }}
+       
+        {% endif %}
+    {% endif %}
+
+    {% elseif work.id > 0 and modelproject.public_work %}
+        <div class="row">
+        <div class="col-md-6" style="width:100%">
+            <h3> <i class="icon-gear"></i> <a href="{{ url("project")}}/{{modelproject.id}}">{{ 'Projekty'|_ }}</a>  » {{modelproject.name}}  {% if work.name %} » {{ work.name}} ({{ work.id}}) {% endif %}</h3>
+        </div>
+        </div>
+       <div><br></div>
+       <div class="mtable mfield" style="float:left;">
+
+        <div><div class=" fhead">{{ 'Data'|_ }}</div><div  class="">{% if work.start %}{{ 'Od'|_ }}: {{ clientDate(work.start) }}{% endif %}{% if work.stop %}<br>{{ 'Do'|_ }}: {{ clientDate(work.stop) }}{% endif %}</div></div>
+        <div><div class=" fhead">{{ 'Status'|_ }}</div><div>{{ work.status}}</div></div>
+        <div><div class=" fhead">{{ 'Opis'|_ }}</div><div>{{ work.desc|raw }}</div></div>
+        <div><div class=" fhead noborder">{{ 'Pliki'|_ }}</div><div>{{ work.file|raw }}</div></div>
+        </div>
+        <div class="mtable"><br><br></div> 
+        <div class="mtable"></div> 
+        <div class="mtable">
+           <a href="{{ url("project")}}/{{modelproject.id}}" class="btn btn-default oc-icon-arrow-left">{{ 'Powrót'|_ }} </a>
+        </div>
+    {% endif %}
+    
+{% endif %}
+
+
+{% put scripts %}
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script>
+$(function() {   
+    $( ".tabs" ).tabs(); 
+    $( ".tabs" ).removeClass('ui-widget');
+});
+</script>
+{% endput %}

@@ -1,0 +1,37 @@
+columns:
+    lp:
+        label: LP
+        type: text
+        searchable: true
+        sortable: true
+    name:
+        label: 'eprog.manager::lang.fixed_name_short'
+        span: left
+        type: text
+        searchable: true
+    fixed:
+        label: 'eprog.manager::lang.fixed_fixed_short'
+        type: text
+        searchable: true
+    initial:
+        label: 'eprog.manager::lang.fixed_initial'
+        type: partial
+        searchable: true
+    create_at:
+        label: 'eprog.manager::lang.fixed_create_at'
+        type: partial
+        path: createat
+        searchable: tru
+    make_at:
+        label: 'eprog.manager::lang.fixed_make_at'
+        type: partial
+        path: makeat
+        searchable: tru
+    ord:
+        label: 'eprog.manager::lang.sort'
+        type: text
+        searchable: true
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false

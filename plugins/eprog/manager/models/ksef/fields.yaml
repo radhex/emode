@@ -1,0 +1,9 @@
+fields:
+    body:
+        label: ''
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        path: body    
+        cssClass: col-sm-12

@@ -1,0 +1,17 @@
+columns:
+    surname:
+        label: 'eprog.manager::lang.nr'
+        span: left
+        type: text
+        searchable: true
+    name:
+        label: 'eprog.manager::lang.nr'
+        span: left
+        type: text
+        searchable: true
+        width: 70%
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+

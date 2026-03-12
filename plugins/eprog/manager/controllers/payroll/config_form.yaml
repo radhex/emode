@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.payroll'
+form: $/eprog/manager/models/payroll/fields.yaml
+modelClass: Eprog\Manager\Models\Payroll
+defaultRedirect: eprog/manager/payroll
+create:
+    redirect: 'eprog/manager/payroll/update/:id'
+    redirectClose: eprog/manager/payroll
+update:
+    redirect: eprog/manager/payroll
+    redirectClose: eprog/manager/payroll

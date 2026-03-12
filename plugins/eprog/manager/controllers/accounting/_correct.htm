@@ -1,0 +1,9 @@
+<?php
+
+use Eprog\Manager\Models\Invoice;
+
+$correct= Invoice::find($record->correct);
+
+?>
+
+<?= isset($correct->nr) ? $correct->nr: ''  ?>

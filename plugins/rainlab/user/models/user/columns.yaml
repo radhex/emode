@@ -1,0 +1,92 @@
+columns:
+    id:
+        label: ID
+        type: number
+    username:
+        label: 'rainlab.user::lang.user.username'
+        type: text
+        searchable: true
+    name:
+        label: 'rainlab.user::lang.user.name'
+        type: text
+        searchable: true
+        invisible: true
+    surname:
+        label: 'rainlab.user::lang.user.surname'
+        type: text
+        searchable: true
+        invisible: true
+    email:
+        label: 'rainlab.user::lang.user.email'
+        type: partial
+        path: email
+        searchable: true
+    phone:
+        label: 'rainlab.user::lang.add.phone'
+        type: text
+        searchable: true
+    city:
+        label: 'rainlab.user::lang.add.city'
+        type: text
+        searchable: true
+    code:
+        label: 'rainlab.user::lang.add.code'
+        type: text
+        searchable: true
+        invisible: true
+    street:
+        label: 'rainlab.user::lang.add.street'
+        type: text
+        searchable: true
+        invisible: true
+    number:
+        label: 'rainlab.user::lang.add.number'
+        type: text
+        searchable: true
+        invisible: true
+    address:
+        label: 'rainlab.user::lang.add.address'
+        type: partial
+        searchable: false
+        sortable: false
+        path: address
+        invisible: true
+    firm_name:
+        label: 'rainlab.user::lang.add.firm'
+        type: text
+        searchable: true
+    firm_nip:
+        label: 'rainlab.user::lang.add.nip'
+        type: text
+        searchable: true
+        invisible: true
+    firm_city:
+        label: 'rainlab.user::lang.add.city'
+        type: text
+        searchable: true
+        invisible: true
+    firm_code:
+        label: 'rainlab.user::lang.add.code'
+        type: text
+        searchable: true
+        invisible: true
+    firm_street:
+        label: 'rainlab.user::lang.add.street'
+        type: text
+        searchable: true
+        invisible: true
+    firm_number:
+        label: 'rainlab.user::lang.add.number'
+        type: text
+        searchable: true
+        invisible: true
+    is_banned:
+        label: 'rainlab.user::lang.user.ban'
+        type: partial
+        path: ban
+    action:
+        label: 'eprog.manager::lang.action'
+        type: partial
+        sortable: false
+        path: action
+        cssClass: nowrap

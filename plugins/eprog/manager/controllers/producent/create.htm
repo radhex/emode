@@ -1,0 +1,45 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-shopping-basket"></span><a href="<?= Backend::url('eprog/manager/product') ?>"><?= e(trans('eprog.manager::lang.assortment')) ?></a></li> 
+        <li><span  class="oc-icon-tag"></span><a href="<?= Backend::url('eprog/manager/producent') ?>"><?= e(trans('eprog.manager::lang.producents')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.create')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-plus-circle">
+                    <?= e(trans('backend::lang.form.create')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/producent') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a>
+            </div>
+        </div>
+
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/producent') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Producent-name-group {width: 25%}
+    #Form-field-Producent-desc-group {width: 33.4%}
+
+}
+</style>

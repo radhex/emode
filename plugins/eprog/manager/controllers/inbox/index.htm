@@ -1,0 +1,18 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-envelope"></span><a href="<?= Backend::url('eprog/manager/inbox') ?>"><?= e(trans('eprog.manager::lang.post')) ?></a></li> 
+        <li><span  class="oc-icon-inbox"></span><a href="<?= Backend::url('eprog/manager/inbox') ?>"><?= e(trans('eprog.manager::lang.inbox')) ?></a></li> 
+        <li> 
+        	<span id="search-text" style="color:#2a3e51;" label="<?= e(trans('eprog.manager::lang.search_result')) ?>" >
+        		<?php if (Input::has("term")): ?>
+        			<?= e(trans('eprog.manager::lang.search_result')) ?> '<?= Input::get("term")?>'
+        		<?php else: ?>
+        		    <?= e(trans('eprog.manager::lang.list')) ?>
+        		<?php endif ?>
+        	</span>
+        </li>
+    </ul>
+<?php Block::endPut() ?>
+<?= $this->listRender() ?>
+
+

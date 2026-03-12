@@ -1,0 +1,25 @@
+tabs:
+    fields:
+        status_notify:
+            tab: 'eprog.manager::lang.setting_notify'
+            label: 'eprog.manager::lang.status_notify'
+            span: storm
+            type: switch
+        mail_notify:
+            tab: 'eprog.manager::lang.setting_notify'
+            label: 'eprog.manager::lang.mail_notify'
+            span: storm
+            type: switch
+        event_notify:
+            tab: 'eprog.manager::lang.setting_notify'
+            label: 'eprog.manager::lang.event_notify'
+            span: storm
+            type: switch
+        invoice_notify:
+            tab: 'eprog.manager::lang.setting_notify'
+            label: 'eprog.manager::lang.invoice_notify'
+            span: storm
+            type: switch
+
+
+

@@ -1,0 +1,91 @@
+columns:
+    lp:
+        label: LP
+        type: text
+        searchable: true
+        sortable: true
+    mode:
+        label: 'eprog.manager::lang.mode'
+        type: partial
+        path: mode
+        searchable: true
+    vat_register:
+        label: 'eprog.manager::lang.vat_register'
+        type: partial
+        path: register
+        searchable: true
+    prefix:
+        label: 'eprog.manager::lang.prefix'
+        type: text
+        searchable: true
+        invisible: true
+    nr:
+        label: 'eprog.manager::lang.nr_doc'
+        type: text
+        searchable: true
+    nr_ksef:
+        label: 'eprog.manager::lang.ksef.nr'
+        type: text
+        searchable: true
+    client_name:
+        label: 'rainlab.user::lang.add.firm'
+        type: text
+        searchable: true
+    netto:
+        label: 'eprog.manager::lang.net'
+        type: partial
+        path: netto
+        searchable: true
+        align: right
+    vat:
+        label: 'eprog.manager::lang.vat'
+        type: partial
+        path: vat
+        searchable: true
+        align: right
+    brutto:
+        label: 'eprog.manager::lang.gross'
+        type: partial
+        path: brutto
+        searchable: true
+        align: right
+    currency:
+        label: 'eprog.manager::lang.currency'
+        type: text
+        searchable: true
+    create_at:
+        label: 'eprog.manager::lang.date'
+        type: partial
+        path: createat
+        searchable: true
+        cssClass: w100
+    user_id:
+        label: 'eprog.manager::lang.user'
+        type: partial
+        path: user
+    client_nip:
+        label: 'rainlab.user::lang.add.nip'
+        type: text
+        searchable: true
+    client_adres1:
+        label: 'eprog.manager::lang.ksef.adres1'
+        type: text
+        searchable: true
+        invisible: true
+    client_adres2:
+        label: 'eprog.manager::lang.ksef.adres2'
+        type: text
+        invisible: true
+        searchable: true
+    admin_id:
+        label: 'eprog.manager::lang.admin'
+        relation: admin
+        invisible: true
+        select: login
+    approve:
+        label: 'eprog.manager::lang.approve'
+        type: partial
+        searchable: false
+
+
+

@@ -1,0 +1,37 @@
+columns:
+    year:
+        label: 'eprog.manager::lang.year'
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: "col-sm-1 w10"
+    month:
+        label: 'eprog.manager::lang.month'
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        cssClass: "col-sm-1 w10"
+    tax_form:
+        label: 'eprog.manager::lang.tax_form'
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        cssClass: col-sm-1
+    sum:
+        label: 'eprog.manager::lang.total_advance_payments_year_to_date'
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        cssClass: col-sm-1
+    amount:
+        label: 'eprog.manager::lang.due_advance_payment_for_month'
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        cssClass: col-sm-1
+   
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+

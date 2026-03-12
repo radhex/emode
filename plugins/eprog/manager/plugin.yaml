@@ -1,0 +1,314 @@
+plugin:
+    name: 'eprog.manager::lang.plugin.name'
+    description: 'eprog.manager::lang.plugin.description'
+    author: eprog
+    icon: oc-icon-eye
+    homepage: ''
+navigation:
+    admin:
+        label: 'eprog.manager::lang.manage'
+        url: eprog/manager/admin
+        icon: icon-cogs
+        permissions:
+            - eprog.manager.access_admin
+        order: '515'
+    invoicepay:
+        label: 'eprog.manager::lang.ksef.payments'
+        url: eprog/manager/invoicepay
+        icon: icon-money
+        permissions:
+            - eprog.manager.access_payment
+        order: '514'
+        sideMenu:
+            invoicepay:
+                label: 'eprog.manager::lang.invoice'
+                url: eprog/manager/invoicepay
+                icon: icon-file-text-o
+                permissions:
+                    - eprog.manager.access_payment
+            orderpay:
+                label: 'eprog.manager::lang.order'
+                url: eprog/manager/orderpay
+                icon: icon-plus-circle
+                permissions:
+                    - eprog.manager.access_payment
+    work:
+        label: 'eprog.manager::lang.work'
+        url: eprog/manager/work
+        icon: icon-wrench
+        permissions:
+            - eprog.manager.access_work
+        order: '513'
+    project:
+        label: 'eprog.manager::lang.project'
+        url: eprog/manager/project
+        icon: icon-database
+        permissions:
+            - eprog.manager.access_project
+        order: '512'
+    file:
+        label: 'eprog.manager::lang.files'
+        url: eprog/manager/file
+        icon: icon-files-o
+        permissions:
+            - eprog.manager.access_file
+        order: '511'
+    calendar:
+        label: 'eprog.manager::lang.calendar'
+        url: eprog/manager/calendar
+        icon: icon-calendar
+        permissions:
+            - eprog.manager.access_scheduler
+        order: '510'
+    scheduler:
+        label: 'eprog.manager::lang.scheduler'
+        url: eprog/manager/scheduler
+        icon: icon-calendar-plus-o
+        permissions:
+            - eprog.manager.access_scheduler
+        order: '509'
+        sideMenu:
+            events:
+                label: 'eprog.manager::lang.events'
+                url: eprog/manager/scheduler
+                icon: icon-calendar-check-o
+                permissions:
+                    - eprog.manager.access_scheduler
+            type:
+                label: 'eprog.manager::lang.categories'
+                url: eprog/manager/type
+                icon: icon-list-ul
+                permissions:
+                    - eprog.manager.manage_scheduler
+    accounting:
+        label: 'eprog.manager::lang.accounting'
+        url: eprog/manager/accounting
+        icon: icon-calculator
+        permissions:
+            - eprog.manager.access_accounting
+        order: '508'
+        sideMenu:
+            accounting:
+                label: 'eprog.manager::lang.record'
+                url: eprog/manager/accounting
+                icon: icon-file-text-o
+                permissions:
+                    - eprog.manager.access_accounting
+            jpk:
+                label: 'JPK'
+                url: eprog/manager/jpk
+                icon: icon-file-code-o
+                permissions:
+                    - eprog.manager.access_accounting
+            internal:
+                label: 'eprog.manager::lang.internal'
+                url: eprog/manager/internal
+                icon: icon-file-o
+                permissions:
+                    - eprog.manager.access_accounting
+            fixed:
+                label: 'eprog.manager::lang.fixed'
+                url: eprog/manager/fixed
+                icon: icon-car
+                permissions:
+                    - eprog.manager.access_accounting
+            worker:
+                label: 'eprog.manager::lang.workers'
+                url: eprog/manager/worker
+                icon: icon-users
+                permissions:
+                    - eprog.manager.access_accounting
+            payroll:
+                label: 'eprog.manager::lang.payroll'
+                url: eprog/manager/payroll
+                icon: icon-list-ol
+                permissions:
+                    - eprog.manager.access_accounting
+            zus:
+                label: 'eprog.manager::lang.zus'
+                url: eprog/manager/zus
+                icon: icon-pie-chart
+                permissions:
+                    - eprog.manager.access_accounting
+            advance:
+                label: 'eprog.manager::lang.advance_title'
+                url: eprog/manager/advance
+                icon: icon-money
+                permissions:
+                    - eprog.manager.access_accounting
+            taxfile:
+                label: 'eprog.manager::lang.taxfile'
+                url: eprog/manager/taxfile
+                icon: icon-files-o
+                permissions:
+                    - eprog.manager.access_accounting
+
+
+    ksef:
+        label: 'eprog.manager::lang.ksef.title'
+        url: eprog/manager/ksef
+        icon: icon-cloud-download
+        permissions:
+            - eprog.manager.access_ksef
+        order: '507'
+    invoice:
+        label: 'eprog.manager::lang.invoice'
+        url: eprog/manager/invoice
+        icon: icon-file-text
+        permissions:
+            - eprog.manager.access_invoice
+        order: '506'
+    order:
+        label: 'eprog.manager::lang.order'
+        url: eprog/manager/order
+        icon: icon-plus-circle
+        permissions:
+            - eprog.manager.access_order
+        order: '505'
+    product:
+        label: 'eprog.manager::lang.assortment'
+        url: eprog/manager/product
+        icon: icon-shopping-basket
+        permissions:
+            - eprog.manager.access_product
+        order: '504'
+        sideMenu:
+            product:
+                label: 'eprog.manager::lang.products'
+                url: eprog/manager/product
+                icon: icon-cube
+                permissions:
+                    - eprog.manager.access_product
+            category:
+                label: 'eprog.manager::lang.categories'
+                url: eprog/manager/category
+                icon: icon-sitemap
+                permissions:
+                    - eprog.manager.access_product
+            attribute:
+                label: 'eprog.manager::lang.attributes'
+                url: eprog/manager/attribute
+                icon: icon-list-alt
+                permissions:
+                    - eprog.manager.access_product
+            unit:
+                label: 'eprog.manager::lang.units'
+                url: eprog/manager/unit
+                icon: icon-sort-amount-asc
+                permissions:
+                    - eprog.manager.access_product
+            producent:
+                label: 'eprog.manager::lang.producents'
+                url: eprog/manager/producent
+                icon: icon-tag
+                permissions:
+                    - eprog.manager.access_product
+    mail:
+        label: 'eprog.manager::lang.mail'
+        url: eprog/manager/mail/inbox
+        icon: icon-comments
+        permissions:
+            - eprog.manager.access_mail
+        order: '502'
+        sideMenu:
+            user_inbox:
+                label: 'eprog.manager::lang.user_inbox'
+                url: eprog/manager/mail/inbox
+                icon: icon-comment-o
+                permissions:
+                    - eprog.manager.access_mail
+            user_sent:
+                label: 'eprog.manager::lang.user_sent'
+                url: eprog/manager/mail/sent
+                icon: icon-arrow-circle-o-right
+                permissions:
+                    - eprog.manager.access_mail
+            admin_inbox:
+                label: 'eprog.manager::lang.admin_inbox'
+                url: eprog/manager/inmail/inbox
+                icon: icon-comment
+                permissions:
+                    - eprog.manager.access_mail
+            admin_sent:
+                label: 'eprog.manager::lang.admin_sent'
+                url: eprog/manager/inmail/sent
+                icon: icon-arrow-circle-right
+                permissions:
+                    - eprog.manager.access_mail
+    mailing:
+        label: 'eprog.manager::lang.mailing'
+        url: eprog/manager/mailing
+        icon: icon-external-link
+        permissions:
+            - eprog.manager.access_mailing
+        order: '501'
+    drive:
+        label: 'eprog.manager::lang.drive'
+        url: eprog/manager/drive
+        icon: icon-google
+        permissions:
+            - eprog.manager.access_drive
+        order: '500'
+        sideMenu:
+            drive:
+                label: 'eprog.manager::lang.my_files'
+                url: eprog/manager/drive
+                icon: icon-files-o
+                permissions:
+                    - eprog.manager.access_drive
+            driveshared:
+                label: 'eprog.manager::lang.shared'
+                url: eprog/manager/driveshared
+                icon: icon-share
+                permissions:
+                    - eprog.manager.access_order
+            drivetrash:
+                label: 'eprog.manager::lang.trash'
+                url: eprog/manager/drivetrash
+                icon: icon-trash
+                permissions:
+                    - eprog.manager.access_drive
+    inbox:
+        label: 'eprog.manager::lang.post'
+        url: eprog/manager/inbox
+        icon: icon-envelope
+        permissions:
+            - eprog.manager.access_inbox
+        order: '500'
+        sideMenu:
+            inbox:
+                label: 'eprog.manager::lang.inbox'
+                url: eprog/manager/inbox
+                icon: icon-inbox
+                permissions:
+                    - eprog.manager.access_inbox
+            sent:
+                label: 'eprog.manager::lang.sent'
+                url: eprog/manager/sent
+                icon: icon-paper-plane
+                permissions:
+                    - eprog.manager.access_inbox
+            draft:
+                label: 'eprog.manager::lang.draft'
+                url: eprog/manager/draft
+                icon: icon-pencil
+                permissions:
+                    - eprog.manager.access_inbox
+            archive:
+                label: 'eprog.manager::lang.archive'
+                url: eprog/manager/archive
+                icon: icon-archive
+                permissions:
+                    - eprog.manager.access_inbox
+            spam:
+                label: 'eprog.manager::lang.spam'
+                url: eprog/manager/spam
+                icon: icon-fire
+                permissions:
+                    - eprog.manager.access_inbox
+            trash:
+                label: 'eprog.manager::lang.trash'
+                url: eprog/manager/trash
+                icon: icon-trash
+                permissions:
+                    - eprog.manager.access_inbox

@@ -1,0 +1,12 @@
+<button type="button" id="typeadd" value="dodaj" class="btn btn-primary btn-sm oc-icon-plus-circle" style="height:32px;margin-top:22px;margin-left:-3px;padding-top:5px;padding-right:14px"><?= e(trans('eprog.manager::lang.create')) ?></button>
+<script>
+$(function() {   
+
+		$("#typeadd").click(function() {
+
+			modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/type/create?type=addmodal','<?= e(trans('eprog.manager::lang.category')) ?>', 700, 620, 'Scheduler-type_id');
+
+		});
+			 	  	 		 	
+});
+</script>

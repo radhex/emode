@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.jpk'
+form: $/eprog/manager/models/jpk/fields.yaml
+modelClass: Eprog\Manager\Models\Jpk
+defaultRedirect: eprog/manager/jpk
+create:
+    redirect: 'eprog/manager/jpk/update/:id'
+    redirectClose: eprog/manager/jpk
+update:
+    redirect: eprog/manager/jpk
+    redirectClose: eprog/manager/jpk

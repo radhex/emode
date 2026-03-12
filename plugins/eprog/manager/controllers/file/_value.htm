@@ -1,0 +1,126 @@
+<?php 
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\Accountingvalue;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Eprog\Manager\Models\Zus;
+use Carbon\Carbon;
+use Backend\Config;
+
+$data = [];
+$zus = Zus::find($this->params[0] ?? 0);
+
+if($zus)
+$data = json_decode($zus->data, true);
+
+
+
+?>
+<style>
+
+.valuetable {display:table; ;}
+.valuetable > div {display:table-row;background:#fff;  }
+.valuetable > div > div {white-space: nowrap;border-top:1px solid #eee;display:table-cell; height:34px;vertical-align:middle; font-size:13px; padding-left:5px;text-align:right; padding-right:5px; padding-top:4px;padding-bottom:4px;}
+.valuetable .date {color:green;width:150px}
+.valuetable .desc {width:300px;}
+.valuetable > div.head {background:var(--ml2color);}
+.valuetable > div.head div{font-size:12px}
+.valuetable input {text-align:right; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+.valuetable select {text-align:left; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+//.sum_netto,.sum_vat,.sum_brutto {font-weight:bold}
+
+.kpir > div > div {border-top:0px  !important; text-align:right  !important}
+.kpir > div > div input{text-align:right  !important}
+
+
+.head_pkwiu {display:none !important}
+.show_pkwiu {display:none !important}
+.head_cn {display:none !important}
+.show_cn {display:none !important}
+.head_gtu {display:none !important}
+.show_gtu {display:none !important}
+.value_netto,.value_vat,.value_brutto {margin-left:5px;}
+.required, .gtu_error, .qty_error, .qty_error_max, .curr_error {border:1px solid red !important}
+.desk {display:none; background:var(--ml2color);padding:5px;padding-left:6px;padding-right:6px;font-size:12px;text-align:right}
+
+.describe  > div > div {;border-top:0px} 
+.margin > div > div {;border-top:0px} 
+.readonly {background:#fafafa}
+
+@media (max-width: 1200px){
+	
+
+}
+
+</style>
+
+
+
+<div class="valuetable" style="margin-top:10px;">
+	<div class="mob head"><div style="width:288px;text-align:left"></div><div style="width:150px;text-align:right"><?= e(trans("eprog.manager::lang.amount"))?> PLN</div></div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.social_insurance"))?></div>
+	<div><input type="text" size="15" name="zus[social]" value="<?= number_format((float)($zus->social ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="kwota" style="text-align:right"/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.health_insurance"))?></div>
+	<div><input type="text" size="15" name="zus[health]" value="<?= number_format((float)($zus->health ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="kwota" style="text-align:right"/></div>
+	</div>
+	
+</div>
+
+
+
+
+<script>
+
+
+
+	$(function() {  
+
+
+ 	 	  	 $('.kwota').on('paste input', function (e) {
+
+ 	 	  	 	inputCurrency(this, e);
+
+ 	 	  	 });
+
+
+ 	 	  	 $('.kwota').on('focusout', function (e) {
+ 	 	  	     
+ 	 	  	 	inputCurrencyOut(this, e);
+
+ 	 	  	 });
+
+ 	 	  	 $('.kwota').on('focusin', function (e) {
+ 	 	  	     
+ 	 	  	 	inputCurrencyIn(this, e);
+
+		 	 });
+
+
+
+
+	});
+
+
+
+
+
+
+
+</script>
+
+
+
+
+
+
+
+ 
+
+
+        

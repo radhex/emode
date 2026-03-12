@@ -1,0 +1,27 @@
+title = "Nie odnaleziono strony (404)"
+url = "/404"
+layout = "error"
+description = "Displayed when a page cannot be found"
+meta_title = "You might want to sit down for this"
+is_hidden = 0
+
+[viewBag]
+==
+<?php
+function onInit()
+{ 
+
+    $this['notfound'] = trans('eprog.manager::lang.notfound');
+    $this['page_notfound'] = trans('eprog.manager::lang.page_notfound');
+    $this['return'] = trans('eprog.manager::lang.return');
+    if(isset($_SERVER['HTTP_REFERER'])) $return = $_SERVER['HTTP_REFERER']; else $return = "javascript:history.go(-1)";
+    $this['return'] = "<a href=\"".$return."\"  class=\"btn btn-primary oc-icon-arrow-left\" style=\"margin-top:20px\">". trans('eprog.manager::lang.return')."</a>"; 
+}
+?>
+==
+<div class="text-center" style="margin-top:16px;height:400px;padding-top:80px">
+     <h1> <i class="icon-exclamation-triangle" style="color:var(--mcolor);font-size:55px"></i></h1><br>
+    <h4>{{notfound}}</h4>
+    <p>{{page_cantdisplay}}</p>
+    <p>{{return | raw}}</p>   
+</div>

@@ -1,0 +1,29 @@
+title = "Informacje"
+url = "/info"
+layout = "client"
+is_hidden = 0
+==
+<?php
+use Rainlab\User\Models\User;
+use RainLab\User\Facades\Auth;
+use Backend\Models\Preference;
+use Illuminate\Support\Facades\Config;
+
+function onInit()
+{ 
+
+    $this['info'] = "";
+    if(Auth::getUser() != null){
+
+        $this['info'] = "";//Auth::getUser()->info;
+
+    }
+
+}
+?>
+==
+<div class="row"><center>
+        <div class="col-md-6" style="width:100%;"><br>
+            {{info|raw}}
+        </div>
+</div>

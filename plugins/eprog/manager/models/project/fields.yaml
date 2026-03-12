@@ -1,0 +1,118 @@
+fields:
+    status_id:
+        label: 'eprog.manager::lang.status'
+        span: left
+        oc.commentPosition: ''
+        type: dropdown
+        cssClass: col-sm-2
+    start:
+        label: 'eprog.manager::lang.start'
+        oc.commentPosition: ''
+        mode: datetime
+        span: storm
+        type: datepicker
+        default: now
+        cssClass: col-sm-2
+    stop:
+        label: 'eprog.manager::lang.stop'
+        oc.commentPosition: ''
+        mode: datetime
+        span: storm
+        default: ''
+        cssClass: col-sm-2
+        type: datepicker
+    public:
+        label: 'eprog.manager::lang.public'
+        oc.commentPosition: ''
+        span: storm
+        cssClass: col-sm-2
+        default: true
+        type: switch
+    name:
+        label: 'eprog.manager::lang.name'
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-6
+    user_id:
+        label: 'eprog.manager::lang.user'
+        span: left
+        oc.commentPosition: ''
+        type: dropdown
+        cssClass: col-sm-6
+    adduser:
+        label: ''
+        tab: 'eprog.manager::lang.buyer'
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        cssClass: col-sm-1
+
+
+tabs:
+    fields:
+        desc:
+            label: ''
+            tab: 'eprog.manager::lang.desc'
+            oc.commentPosition: ''
+            span: left
+            type: richeditor
+            cssClass: col-sm-6
+        partial2:
+            span: storm
+            cssClass: col-sm-2
+            path: work_
+            context:
+                - update
+                - preview
+            type: partial
+            tab: 'eprog.manager::lang.desc'
+        public_work:
+            span: storm
+            cssClass: col-sm-3
+            type: switch
+            default: true
+            label: 'eprog.manager::lang.public_work'
+            tab: 'eprog.manager::lang.desc'
+        partial3:
+            span: storm
+            cssClass: col-sm-6
+            path: works_
+            context:
+                - update
+                - preview
+            type: partial
+            tab: 'eprog.manager::lang.desc'
+        info:
+            label: ''
+            tab: 'eprog.manager::lang.info'
+            oc.commentPosition: ''
+            span: left
+            type: richeditor
+            cssClass: col-sm-6
+        staff:
+            label: ''
+            tab: 'eprog.manager::lang.staff'
+            oc.commentPosition: ''
+            span: left
+            type: checkboxlist
+            cssClass: col-sm-2
+        public_files:
+            label: 'eprog.manager::lang.public_files'
+            tab: 'eprog.manager::lang.files'
+            span: storm
+            oc.commentPosition: ''
+            mode: file
+            useCaption: true
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-3
+        private_files:
+            label: 'eprog.manager::lang.private_files'
+            tab: 'eprog.manager::lang.files'
+            span: storm
+            oc.commentPosition: ''
+            mode: file
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-3
+
+

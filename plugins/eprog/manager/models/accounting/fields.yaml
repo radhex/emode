@@ -1,0 +1,223 @@
+fields:
+    year:
+        label: 'eprog.manager::lang.year'
+        oc.commentPosition: ''
+        span: left
+        type: dropdown
+        cssClass: col-sm-1
+    month:
+        label: 'eprog.manager::lang.month'
+        oc.commentPosition: ''
+        span: storm
+        type: dropdown
+        cssClass: col-sm-1
+    mode:
+        label: 'eprog.manager::lang.mode_doc'
+        oc.commentPosition: ''
+        span: storm
+        type: dropdown
+        cssClass: col-sm-2
+        exchange:
+    create_at:
+        label: 'eprog.manager::lang.date'
+        oc.commentPosition: ''
+        span: storm
+        type: datepicker
+        mode: date
+        format: Y-m-d
+        default: now
+        cssClass: col-sm-2
+    vat_at:
+        label: 'eprog.manager::lang.make_at'
+        oc.commentPosition: ''
+        span: storm
+        type: datepicker
+        mode: date
+        format: Y-m-d
+        default: now
+        cssClass: col-sm-2
+    off:
+        label: 'OFF'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true
+        cssClass: col-sm-1
+    lp:
+        label: LP
+        oc.commentPosition: ''
+        span: left
+        type: text
+        attributes: tabindex:1
+        cssClass: col-sm-1
+    prefix:
+        label: 'eprog.manager::lang.prefix'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        attributes: tabindex:1
+        cssClass: col-sm-1
+    nr:
+        label: 'eprog.manager::lang.nr_doc'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        attributes: tabindex:1
+        cssClass: col-sm-1
+    selltype:
+        label: 'eprog.manager::lang.type_doc'
+        oc.commentPosition: ''
+        span: storm
+        type: dropdown
+        attributes: tabindex:1
+        cssClass: col-sm-1
+    currency:
+        label: 'eprog.manager::lang.currency'
+        oc.commentPosition: ''
+        span: storm
+        type: dropdown
+        emptyOption: 'eprog.manager::lang.select_dropdown'
+        cssClass: col-sm-2
+    exchange:
+        label: 'eprog.manager::lang.exchange'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-2
+        dependsOn: currency
+        trigger:
+            action: hide
+            field: currency
+            condition: value[PLN]
+    tax_form:
+        label: 'eprog.manager::lang.tax_form'
+        oc.commentPosition: ''
+        span: storm
+        type: dropdown
+        emptyOption: 'eprog.manager::lang.select_dropdown'
+        cssClass: col-sm-2
+    nr_ksef:
+        label: 'eprog.manager::lang.ksef.nr'
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        path: ksef
+        cssClass: col-sm-3
+
+tabs:
+    fields:
+        value:
+            label: ' '
+            tab: 'eprog.manager::lang.basic_data'
+            oc.commentPosition: ''
+            span: full
+            type: partial
+            path: value
+            cssClass: col-sm-3
+        user_id:
+            label: 'eprog.manager::lang.user'
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            cssClass: col-sm-4
+        adduser:
+            label: ' '
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            cssClass: col-sm-2
+        client_name:
+            label: 'eprog.manager::lang.name'
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        client_nip:
+            label: 'rainlab.user::lang.add.nip'
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        ccedig:
+            label: ''
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: ccedig
+            cssClass: col-sm-3
+        client_adres1:
+            label: 'eprog.manager::lang.ksef.adres1'
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        client_country:
+            label: 'rainlab.user::lang.add.country'
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            default: PL
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        client_adres2:
+            label: 'eprog.manager::lang.ksef.adres2'
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        client_phone:
+            label: 'rainlab.user::lang.add.phone'
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            attributes:
+                maxlength: '16'
+            cssClass: col-sm-3
+        client_email:
+            label: 'rainlab.user::lang.user.email'
+            tab: 'eprog.manager::lang.client'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3      
+        proc:
+            label: ' '
+            tab: 'eprog.manager::lang.labels'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: proc
+            cssClass: col-sm-6
+        margin:
+            label: ' '
+            tab: 'eprog.manager::lang.margin'
+            oc.commentPosition: ''
+            type: partial
+            path: margin
+            cssClass: col-sm-3
+        invoice:
+            label: ' '
+            tab: 'eprog.manager::lang.invoice_one'
+            oc.commentPosition: ''
+            span: full
+            type: partial
+            path: invoice
+            cssClass: col-sm-3

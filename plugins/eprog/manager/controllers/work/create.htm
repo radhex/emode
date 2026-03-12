@@ -1,0 +1,44 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-wrench"></span><a href="<?= Backend::url('eprog/manager/work') ?>"><?= e(trans('eprog.manager::lang.work')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.create')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary">
+                    <?= e(trans('backend::lang.form.create')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/work') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a>
+            </div>
+        </div>
+
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/work') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Work-project_id-group {width: 31.7%}
+    #Form-field-Work-status_id-group {width: 15%}
+
+}
+</style>

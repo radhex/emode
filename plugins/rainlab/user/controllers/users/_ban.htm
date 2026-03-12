@@ -1,0 +1,11 @@
+<?php 
+use Rainlab\User\Models\Throttle;
+
+	$ban = 0;
+	$throttle = Throttle::where("user_id","=",$record->id)->get();
+	foreach($throttle as $throttle){
+		if($throttle->is_banned) $ban = 1;
+	}
+
+?>
+<div id="attach"><?php if($ban) : ?><i class="svg-replace icon-ban"><?php endif;?></i></div>

@@ -1,0 +1,18 @@
+<?php 
+
+$l = 0;	
+
+?>
+<div id="attach">
+<?php foreach ($record->public_files as $file) : ?>
+<?php  $l++; if($l ==  4): ?> <div id="att<?=  $record->id;  ?>" style="display:none"><?php endif; ?>
+<?php if(preg_match("/image/i", $file->content_type)) : ?>
+<a href="#" onmousedown="modal_img(this,'<?= $file->file_name ?>')" file="<?= $this->getDownloadUrl($file); ?>" style="color:var(--mdcolor)"><?= $file->file_name ?></a><br>
+<?php else : ?>
+<a href="<?= $this->getDownloadUrl($file); ?>" style="color:var(--mdcolor)"><?= $file->file_name ?></a><br>
+<?php endif; ?>
+<?php endforeach; ?>
+</div>
+<?php if($record->public_files->count() >= 4): ?><a id="atshow<?=  $record->id;  ?>" href="javascript:" onMouseOver="$('#att<?=  $record->id;  ?>').show(); $(this).hide(); $('#athide<?=  $record->id;  ?>').slideDown();">▼</a><?php endif; ?>
+<a id="athide<?=  $record->id;  ?>" href="javascript:" onMouseOver="$('#att<?=  $record->id;  ?>').hide(); $(this).hide(); $('#atshow<?=  $record->id;  ?>').slideDown();" style="display:none">▲</a>
+</div>

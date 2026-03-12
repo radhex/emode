@@ -1,0 +1,38 @@
+<button type="button" id="cedig" value="dodaj" class="btn btn-primary btn-sm oc-icon-users"  style="height:32px;margin-top:21px;margin-left:-3px;padding-top:4px;padding-right:12px"><?= e(trans('eprog.manager::lang.ksef.cedig')) ?></button>
+
+<script>
+$(function() {   
+
+		$("#cedig").click(function() {
+			
+
+			$.ajax({
+			        type: "POST",
+			        data:"_token=<?= csrf_token() ?>",
+			        url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/cediguser/' + $('#Form-field-User-firm_nip').val(),
+
+			        success: function(res) {
+			        	
+			        	data = JSON.parse(res);		
+			        	if(data.name) $('#Form-field-User-username').val(data.name);
+			        	if(data.name) $('#Form-field-User-firm_name').val(data.name);
+			        	if(data.miasto) $('#Form-field-User-firm_city').val(data.miasto);
+			        	if(data.ulica) $('#Form-field-User-firm_street').val(data.ulica);
+			        	if(data.kod) $('#Form-field-User-firm_code').val(data.kod);
+			        	if(data.budynek) $('#Form-field-User-firm_number').val(data.budynek);
+			        	if(data.country) $('#Form-field-User-firm_country').val(data.country).trigger('change');
+			        	if(data.region) $('#Form-field-User-firm_region').val(data.region).trigger('change');
+
+			                   
+			        },
+			        error: function(xhr,status,error) {
+			             console.log(error);
+			        }
+
+			});
+			
+
+		});
+			 	  	 		 	
+});
+</script>

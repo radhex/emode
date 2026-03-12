@@ -1,0 +1,1 @@
+<a href="/<?= config('cms.backendUri') ?>/eprog/manager/inmail/create?sender_id=<?= $record->sender_id ?>" style="color:var(--mdcolor)"><?= $record->receiver ? $record->receiver->first_name." ".$record->receiver->last_name : ''  ?></a> 

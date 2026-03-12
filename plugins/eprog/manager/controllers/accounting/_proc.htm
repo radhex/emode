@@ -1,0 +1,70 @@
+<?php 
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\Accountingvalue;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+
+	$accounting = Accounting::find($id);
+	if($accounting){
+		 $currency = $accounting->currency ?? $currency;
+		 $data_document = json_decode($accounting->data_document, true);
+		 $approve_document = $accounting->approved ? 1 : 0;
+		 $this->xml = $accounting->xml;
+		 if(in_array($accounting->type,[1,5,6]))
+		 $this->kor = 1;
+	}
+
+
+
+
+?>
+
+
+
+<div>
+<span class="sell">
+<div style="float:left;margin-right:40px">
+<input id="WSTO_EE" type="checkbox" name="proc[WSTO_EE]" value="1" <?php if($data_document["proc"]["WSTO_EE"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="WSTO_EE">WSTO_EE</label><br>
+<input id="IED" type="checkbox" name="proc[IED]" value="1" <?php if($data_document["proc"]["IED"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="IED">IED</label><br>
+<input id="TP" type="checkbox" name="proc[TP]" value="1" <?php if($data_document["proc"]["TP"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="TP">TP</label><br>
+<input id="TT_WNT" type="checkbox" name="proc[TT_WNT]" value="1" <?php if($data_document["proc"]["TT_WNT"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="TT_WNT">TT_WNT</label><br>
+<input id="TT_D" type="checkbox" name="proc[TT_D]" value="1" <?php if($data_document["proc"]["TT_D"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="TT_D">TT_D</label><br>
+<input id="MR_T" type="checkbox" name="proc[MR_T]" value="1" <?php if($data_document["proc"]["MR_T"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="MR_T">MR_T</label><br>
+<input id="MR_UZ" type="checkbox" name="proc[MR_UZ]" value="1" <?php if($data_document["proc"]["MR_UZ"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="MR_UZ">MR_UZ</label><br>
+<input id="I_42" type="checkbox" name="proc[I_42]" value="1" <?php if($data_document["proc"]["I_42"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="I_42">I_42</label><br>
+<input id="I_63" type="checkbox" name="proc[I_63]" value="1" <?php if($data_document["proc"]["I_63"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="I_63">I_63</label><br>
+<input id="B_SPV" type="checkbox" name="proc[B_SPV]" value="1" <?php if($data_document["proc"]["B_SPV"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="B_SPV">B_SPV</label><br>
+<input id="B_SPV_DOSTAWA" type="checkbox" name="proc[B_SPV_DOSTAWA]" value="1" <?php if($data_document["proc"]["B_SPV_DOSTAWA"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="B_SPV_DOSTAWA">B_SPV_DOSTAWA</label><br>
+<input id="B_MPV_PROWIZJA" type="checkbox" name="proc[B_MPV_PROWIZJA]" value="1" <?php if($data_document["proc"]["B_MPV_PROWIZJA"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="B_MPV_PROWIZJA">B_MPV_PROWIZJA</label><br>
+</div>
+<div style="float:left;margin-right:40px">
+<input id="gtu1" type="checkbox" name="gtu[GTU_01]" value="1" <?php if($data_document["gtu"]["GTU_01"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu1">GTU_01</label><br>
+<input id="gtu2" type="checkbox" name="gtu[GTU_02]" value="1"<?php if($data_document["gtu"]["GTU_02"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu2">GTU_02</label><br>
+<input id="gtu3" type="checkbox" name="gtu[GTU_03]" value="1"<?php if($data_document["gtu"]["GTU_03"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu3">GTU_03</label><br>
+<input id="gtu4" type="checkbox" name="gtu[GTU_04]" value="1"<?php if($data_document["gtu"]["GTU_04"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu4">GTU_04</label><br>
+<input id="gtu5" type="checkbox" name="gtu[GTU_05]" value="1"<?php if($data_document["gtu"]["GTU_05"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu5">GTU_05</label><br>
+<input id="gtu6" type="checkbox" name="gtu[GTU_06]" value="1"<?php if($data_document["gtu"]["GTU_06"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu6">GTU_06</label><br>
+<input id="gtu7" type="checkbox" name="gtu[GTU_07]" value="1"<?php if($data_document["gtu"]["GTU_07"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu7">GTU_07</label><br>
+<input id="gtu8" type="checkbox" name="gtu[GTU_08]" value="1"<?php if($data_document["gtu"]["GTU_08"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu8">GTU_08</label><br>
+<input id="gtu9" type="checkbox" name="gtu[GTU_09]" value="1"<?php if($data_document["gtu"]["GTU_09"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu9">GTU_09</label><br>
+<input id="gtu10" type="checkbox" name="gtu[GTU_10]" value="1"<?php if($data_document["gtu"]["GTU_10"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu10">GTU_10</label><br>
+<input id="gtu11" type="checkbox" name="gtu[GTU_11]" value="1"<?php if($data_document["gtu"]["GTU_11"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu11">GTU_11</label><br>
+<input id="gtu12" type="checkbox" name="gtu[GTU_12]" value="1"<?php if($data_document["gtu"]["GTU_12"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu12">GTU_12</label><br>
+<input id="gtu13" type="checkbox" name="gtu[GTU_13]" value="1"<?php if($data_document["gtu"]["GTU_13"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu13">GTU_13</label>
+</div>
+<div style="display:block">
+<input type="checkbox" value="1" id="correct" name="correct" <?= ($data_document["correct"] ?? 0) ? "checked" : "" ?>/> <?= trans("eprog.manager::lang.tax_correct")?>
+</div>
+</span>
+<span class="buy">
+<input id="IMP" type="checkbox" name="proc[IMP]" value="1" <?php if($data_document["proc"]["IMP"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="B_MPV_PROWIZJA">IMP</label><br>
+
+</span>
+
+</div>

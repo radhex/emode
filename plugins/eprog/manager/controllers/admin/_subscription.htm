@@ -1,0 +1,10 @@
+<?php
+
+
+use Eprog\Manager\Classes\Util;
+
+$subscription = ["1" => "license", "2" => "month", "3" => "year"];
+?>
+
+
+<?= $subscription[$record->subscription] ?? "" ?>

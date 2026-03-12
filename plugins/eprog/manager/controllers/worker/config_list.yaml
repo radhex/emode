@@ -1,0 +1,11 @@
+list: $/eprog/manager/models/worker/columns.yaml
+modelClass: Eprog\Manager\Models\Worker
+title: 'eprog.manager::lang.workers'
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/worker/update/:id'

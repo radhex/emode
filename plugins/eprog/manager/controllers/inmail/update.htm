@@ -1,0 +1,50 @@
+<?php
+
+die();
+
+?>
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-comments"></span><a href="<?= Backend::url('eprog/manager/inmail/inbox') ?>" ><?= e(trans('eprog.manager::lang.inmail')) ?> - <?= e(trans('eprog.manager::lang.mail')) ?></a> </li>
+        <li>ID: <?= Input::segment(6) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_mail')) : ?>
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0,from_admin:1"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/inmail') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a>
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('backend::lang.form.confirm_delete')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/inmail') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+<?php endif ?>

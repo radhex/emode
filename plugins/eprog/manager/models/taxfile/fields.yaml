@@ -1,0 +1,72 @@
+fields:
+    year:
+        label: 'eprog.manager::lang.year'
+        oc.commentPosition: ''
+        span: left
+        type: dropdown
+        cssClass: col-sm-1
+    month:
+        label: 'eprog.manager::lang.month'
+        oc.commentPosition: ''
+        span: storm
+        type: dropdown
+        cssClass: col-sm-1
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true   
+        cssClass: col-sm-1
+
+tabs:
+    fields:
+        record:
+            label: ''
+            tab: 'eprog.manager::lang.record'
+            span: storm
+            icon: icon-file-text-o
+            mode: file
+            useCaption: true
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-4
+        desc_record:
+            label: 'eprog.manager::lang.desc'
+            tab: 'eprog.manager::lang.record'
+            oc.commentPosition: ''
+            span: storm
+            type: richeditor
+            cssClass: col-sm-6
+        document:
+            label: ''
+            tab: 'eprog.manager::lang.document'
+            span: storm
+            icon: icon-file-text-o
+            mode: file
+            useCaption: true
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-4
+        desc_document:
+            label: 'eprog.manager::lang.desc'
+            tab: 'eprog.manager::lang.document'
+            oc.commentPosition: ''
+            span: storm
+            type: richeditor
+            cssClass: col-sm-6
+        other:
+            label: ''
+            tab: 'eprog.manager::lang.other'
+            span: storm
+            icon: icon-file-text-o
+            mode: file
+            useCaption: true
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-4
+        desc_other:
+            label: 'eprog.manager::lang.desc'
+            tab: 'eprog.manager::lang.other'
+            oc.commentPosition: ''
+            span: storm
+            type: richeditor
+            cssClass: col-sm-6

@@ -1,0 +1,53 @@
+fields:
+    date:
+        label: ''
+        span: storm
+        oc.commentPosition: ''
+        type: partial
+        path: date_preview  
+        cssClass: col-sm-12
+    from:
+        label: ''
+        span: storm
+        oc.commentPosition: ''
+        type: partial
+        path: from_preview  
+        cssClass: col-sm-12
+    to:
+        label: ''
+        span: storm
+        oc.commentPosition: ''
+        type: partial
+        path: to_preview  
+        cssClass: col-sm-12
+    cc:
+        label: ''
+        span: storm
+        oc.commentPosition: ''
+        type: partial
+        path: cc_preview  
+        cssClass: col-sm-12
+    attach:
+        label: ''
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        path: attach_preview     
+        cssClass: col-sm-12
+    title:
+        label: ''
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        path: title_preview     
+        cssClass: col-sm-12
+    body:
+        label: ''
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        path: body    
+        cssClass: col-sm-12

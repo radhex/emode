@@ -1,0 +1,55 @@
+<?php 
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\Accountingvalue;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+
+	$accounting = Accounting::find($id);
+	if($accounting){
+		 $currency = $accounting->currency ?? $currency;
+		 $data_document = json_decode($accounting->data_document, true);
+		 $approve_document = $accounting->approved ? 1 : 0;
+		 $this->xml = $accounting->xml;
+		 if(in_array($accounting->type,[1,5,6]))
+		 $this->kor = 1;
+	}
+
+
+
+?>
+
+
+
+
+<div class="valuetable describe">
+	<div><div><?= e(trans("eprog.manager::lang.value")) ?> PLN</div><div><input  size="20" type="text" value="<?= isset($data_document["margin"]) && $data_document["margin"] != "" ? number_format(floatval($data_document["margin"]) ?? 0,2,',',' ') : '' ?>" name="margin" class="kwota" style="text-align:right"></div></div>
+</div>
+
+<script>
+
+$('.kwota').on('paste input', function (e) {
+
+	inputCurrency(this, e);
+
+});
+
+
+$('.kwota').on('focusout', function (e) {
+    
+	inputCurrencyOut(this, e);
+
+});
+
+$('.kwota').on('focusin', function (e) {
+    
+	inputCurrencyIn(this, e);
+
+});
+
+</script>

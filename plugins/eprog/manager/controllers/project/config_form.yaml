@@ -1,0 +1,11 @@
+name: 'eprog.manager::lang.project_one'
+modelClass: Eprog\Manager\Models\Project
+form: $/eprog/manager/models/project/fields.yaml
+defaultRedirect: eprog/manager/project
+create:
+    redirect: 'eprog/manager/project/update/:id'
+    redirectClose: eprog/manager/project
+update:
+    redirect: eprog/manager/project
+    redirectClose: eprog/manager/project
+preview: {  }

@@ -1,0 +1,85 @@
+<?php 
+use Eprog\Manager\Models\Task;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+	$tasks = Task::where("work_id","=",$id)->orderBy("id")->paginate(50);
+	
+	    $lc = Lang::getLocale();
+		$lc = $lc."_".strtoUpper($lc);
+		setlocale(LC_ALL, $lc);
+
+
+?>
+<style>
+
+.tasktable {display:table}
+.tasktable > div {display:table-row; }
+.tasktable > div > div {border-top:1px solid #eee; display:table-cell; vertical-align:top; font-size:12px; padding-left:5px; padding-right:5px; padding-top:5px;padding-bottom:5px;}
+.tasktable .date {color:green;width:150px}
+.tasktable .desc {width:300px;}
+textarea {border:1px solid #ccc;margin-bottom:7px;padding:4px;font-size:12px}
+
+</style>
+
+
+<div id="task">
+<div class="tasktable">
+<?php foreach($tasks as $task) : ?>
+<div id="tsk<?= $task->id ?>">
+<div class="desc"><?=  nl2br($task->desc);  ?></div><div class="date"><?=   Util::date($task->start);   ?></div><div class="user"><?= $task->user->login ?></div>
+
+<?php  if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_work') || BackendAuth::getUser()->id == $task->user_id) : ?> 
+<div class="but">
+
+<button  type="button" name="btnd" value="" class="btn btn-primary btn-xs oc-icon-pencil" style="padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px" onclick="edit('<?= $task->id ?>')"><?= e(trans('eprog.manager::lang.edit')) ?></button>
+</div>
+<?php endif; ?>
+</div>
+<?php endforeach; ?>
+</div>
+
+
+
+
+<div style="padding-top:7px">
+<?php if(Input::segment(5) != "preview") : ?> 
+<br><textarea type="text"  cols="50" rows="3" maxlength="500" name="add_task" ></textarea><br><button data-request="onSave" data-request-data="redirect:0,add_task_flag:1" data-request-update=" 'tasks_' : '#task'" data-request-confirm="<?= e(trans('eprog.manager::lang.add_task_confirm')) ?>" type="button" name="btn" value="dodaj" class="btn btn-primary btn-sm oc-icon-plus-circle" style="height:32px;margin-top:7px;margin-left:-3px;padding-top:5px;padding-right:14px" ><?= e(trans('eprog.manager::lang.add')) ?></button>
+<?php endif; ?>
+
+</div>
+<br>
+<div style="margin-left:-40px;padding-top:4px"><?= $tasks->render() ?></div>
+</div>
+
+<script>
+$(function() {   
+ 		
+ 	 	edit = function(id) {
+		      
+			desc = '<textarea type="text"  cols="50" rows="2" maxlength="500" class="etask" name="edit_task' + id + '">' + $("#tsk" + id + " .desc").text()  + '</textarea>';
+			
+			but = '<button data-request="onSave" data-request-data="redirect:0,edit_task_flag:1,edit_task_id:' + id + '" data-request-update=" \'tasks_\': \'#task\'" type="button" name="btn" value="" class="btn btn-primary btn-xs oc-icon-floppy-o" style="padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px"><?= e(trans('eprog.manager::lang.save')) ?></button>';
+			but += ' <button data-request="onSave" data-request-data="redirect:0,del_task_flag:1,del_task_id:' + id + '" data-request-confirm="<?= e(trans('eprog.manager::lang.task_confirm')) ?>" data-request-update=" \'tasks_\' : \'#task\'" type="button" name="btnd" value="" class="btn btn-primary btn-xs oc-icon-trash" style="padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px"><?= e(trans('eprog.manager::lang.del')) ?></button>';
+			$("#tsk" + id + " .desc").html(desc);
+			$("#tsk" + id + " .but").html(but);
+
+ 	 	
+
+ 	 	};
+
+ 	 	  	 		 	
+});
+</script>
+
+
+
+
+ 
+
+
+        

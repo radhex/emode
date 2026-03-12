@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.fixed'
+form: $/eprog/manager/models/fixed/fields.yaml
+modelClass: Eprog\Manager\Models\Fixed
+defaultRedirect: eprog/manager/fixed
+create:
+    redirect: 'eprog/manager/fixed/update/:id'
+    redirectClose: eprog/manager/fixed
+update:
+    redirect: eprog/manager/fixed
+    redirectClose: eprog/manager/fixed

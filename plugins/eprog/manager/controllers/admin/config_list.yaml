@@ -1,0 +1,12 @@
+list: $/eprog/manager/models/admin/columns.yaml
+modelClass: Eprog\Manager\Models\Admin
+title: 'eprog.manager::lang.manage'
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/admin/update/:id'
+filter: config_filter.yaml

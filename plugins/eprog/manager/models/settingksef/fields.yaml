@@ -1,0 +1,133 @@
+tabs:
+    fields:
+
+        nip:
+            tab: 'eprog.manager::lang.setting_ksef'
+            label: 'eprog.manager::lang.ksef.nip'
+            span: left
+            type: text
+            cssClass: col-sm-2
+            containerAttributes:
+                style: "width:210px;margin-bottom:10px"
+        type:
+            tab: 'eprog.manager::lang.setting_ksef'
+            label: 'eprog.manager::lang.ksef.auth_type'
+            span: left
+            type: radio
+            options:
+                cert: 'eprog.manager::lang.ksef.cert'
+                token: 'eprog.manager::lang.ksef.token'
+            cssClass: col-sm-1
+            containerAttributes:
+                style: "width:180px;"
+        token:
+            tab: 'eprog.manager::lang.setting_ksef'
+            label: 'eprog.manager::lang.ksef.token'
+            span: storm
+            type: text
+            trigger:
+                action: show
+                field: type
+                condition: value[token]
+            cssClass: col-sm-5
+            containerAttributes:
+        cert_auth_p12:
+            tab: 'eprog.manager::lang.setting_ksef'
+            label: 'eprog.manager::lang.ksef.cert_auth_p12'
+            span: storm
+            mode: file
+            type: Patroklo\FormWidgets\FileUpload
+            trigger:
+                action: show
+                field: type
+                condition: value[cert]
+            fileTypes: p12
+            cssClass: col-sm-3
+            containerAttributes:
+        pass_auth:
+            tab: 'eprog.manager::lang.setting_ksef'
+            label: 'eprog.manager::lang.ksef.pass'
+            span: storm
+            type: text
+            trigger:
+                action: show
+                field: type
+                condition: value[cert]
+            cssClass: col-sm-2
+            containerAttributes:
+        cert_link_p12:
+            tab: 'eprog.manager::lang.setting_ksef'
+            label: 'eprog.manager::lang.ksef.cert_link_p12'
+            span: left
+            mode: file
+            type: Patroklo\FormWidgets\FileUpload
+            fileTypes: p12
+            cssClass: col-sm-2
+            containerAttributes:
+                style: "width:395px;margin-left:179px"
+        pass_link:
+            tab: 'eprog.manager::lang.setting_ksef'
+            label: 'eprog.manager::lang.ksef.pass'
+            span: storm
+            type: text
+            cssClass: col-sm-2
+            containerAttributes:
+        nr_link:
+            tab: 'eprog.manager::lang.setting_ksef'
+            label: 'eprog.manager::lang.nr'
+            span: storm
+            type: text
+            cssClass: col-sm-2
+            containerAttributes:
+        mode:
+            tab: 'eprog.manager::lang.setting_ksef'
+            label: 'eprog.manager::lang.ksef.mode_ksef'
+            span: left
+            type: radio
+            options:
+                production: 'eprog.manager::lang.ksef.mode_production'
+                demo: 'eprog.manager::lang.ksef.mode_demo'
+                test: 'eprog.manager::lang.ksef.mode_test'
+            cssClass: col-sm-1
+            containerAttributes:
+                style: "width:180px;"
+        test:
+            tab: 'eprog.manager::lang.setting_ksef'
+            span: left
+            type: partial
+            path: '$/eprog/manager/models/settingksef/_test.htm'
+        cert_crt:
+            tab: 'eprog.manager::lang.setting_generate'
+            label: 'eprog.manager::lang.ksef.cert_crt'
+            span: left
+            mode: file
+            type: Patroklo\FormWidgets\FileUpload
+            fileTypes: crt
+            cssClass: col-sm-2
+            containerAttributes:
+                style: "width:395px"
+        cert_prv:
+            tab: 'eprog.manager::lang.setting_generate'
+            label: 'eprog.manager::lang.ksef.cert_prv'
+            span: left
+            mode: file
+            type: Patroklo\FormWidgets\FileUpload
+            fileTypes: key
+            cssClass: col-sm-3
+            containerAttributes:
+                style: "width:395px"
+        pass_cert:
+            tab: 'eprog.manager::lang.setting_generate'
+            label: 'eprog.manager::lang.ksef.pass'
+            span: left
+            type: text
+            cssClass: col-sm-2
+            containerAttributes:
+                style: "width:395px;"
+        generate:
+             tab: 'eprog.manager::lang.setting_generate'
+             span: left
+             type: partial
+             path: '$/eprog/manager/models/settingksef/_generate.htm'
+             containerAttributes:
+                 style: "margin-left:5px"

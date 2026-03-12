@@ -1,0 +1,40 @@
+fields:
+    nr:
+        label: 'eprog.manager::lang.nr'
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-1
+    period:
+        label: 'eprog.manager::lang.payroll_period'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-1
+    pay_at:
+        label: 'eprog.manager::lang.payroll_pay_at'
+        oc.commentPosition: ''
+        span: storm
+        type: datepicker
+        mode: date
+        format: Y-m-d
+        default: now
+        cssClass: col-sm-2
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true	
+        cssClass: col-sm-1
+tabs:
+    fields:
+        data:
+            label: ''
+            tab: 'eprog.manager::lang.payroll'
+            span: left
+            type: partial
+            path: value
+            searchable: true
+            cssClass: col-sm-1

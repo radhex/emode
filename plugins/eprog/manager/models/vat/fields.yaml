@@ -1,0 +1,32 @@
+fields:
+    name:
+        label: 'eprog.manager::lang.name'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-5
+    type:
+        label: 'eprog.manager::lang.type'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: dropdown
+        emptyOption: 'eprog.manager::lang.select_dropdown'
+        cssClass: col-sm-5
+    mode:
+        label: 'eprog.manager::lang.mode'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: dropdown
+        cssClass: col-sm-5
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: switch
+        default: true   
+        cssClass: col-sm-1
+

@@ -1,0 +1,69 @@
+title = "OutboxPreview"
+url = "/mail/outbox/:id?"
+layout = "client"
+is_hidden = 0
+
+[viewBag]
+
+[usermail]
+
+[fileUploader]
+placeholderText = "responsiv.uploader::lang.upload"
+maxSize = 5
+fileTypes = "*"
+==
+<?php
+use Rainlab\User\Models\User;
+use RainLab\User\Facades\Auth;
+use Eprog\Manager\Models\Mail as ModelMail;
+
+function onInit()
+{ 
+
+
+    $ismail = ModelMail::find(Input::segment(3));
+    if(Input::segment(3) && $ismail)
+    $this->fileUploader->bindModel('files', $ismail);
+    $this['send'] = Input::get("send");;
+  
+      
+}
+?>
+==
+<div class="tabs" style="margin-top:15px">
+                       <ul>
+  
+                        <li><a href="/mail/inbox" class="oc-icon-inbox">{{ 'Odebrane'|_ }}</a></li>
+                        <li class="active"><a  href="/mail/outbox" class="oc-icon-paper-plane">{{ 'Wysłane'|_ }}</a></li>
+                        <li><a href="/mail/create" class="oc-icon-plus-circle">{{ 'Utwórz nową'|_ }}</a></li>
+            
+    </ul> </div>
+    
+
+<div class="row">
+        <div class="col-md-6" style="width:100%">
+            <h3> <i class="icon-comments"></i> <a href="/mail/outbox">{{ 'Wiadomości'|_ }} - {{ 'Wysłane'|_ }}</a> {% if mail.name %} » {{ mail.name}} ({{ mail.id}}) {% endif %}</h3>
+        </div>
+    </div>
+    <div><br></div>
+
+     {% if mail.name %}
+
+        <div class="mtable mfield">     
+        <div><div class="fhead">{{ 'Data'|_ }}</div><div>{% if(mail.date) %}{{ clientDate(mail.date) }} {% endif %}</div></div>
+        <div><div class="fhead">{{ 'Do'|_ }}</div><div>{{ mail.admin.first_name}} {{ mail.admin.last_name}}</div></div>
+        <div><div class="fhead">{{ 'Załączniki'|_ }}</div><div>
+        {% if not mail.read %}
+        {% component 'fileUploader' %}
+        {% else %}
+        {{ mail.attachments|raw }}
+        {% endif %}
+        
+        </div></div>
+        <div><div class="fhead noborder">{{ 'Treść'|_ }}</div><div>{{ mail.desc|nl2br }}</div></div>
+        </div>
+
+      {% endif %}
+      {% if send %}
+      <div style="margin-top:20px;"><span class="info">{{ 'Utworzono wiadomość, możesz teraz załączyć do niej pliki'|_ }}</span></div>
+      {% endif %}

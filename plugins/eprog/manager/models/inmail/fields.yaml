@@ -1,0 +1,75 @@
+fields:
+    partial0:
+        span: full
+        path: id
+        type: partial
+        cssClass: col-sm-8
+        tab: ' '
+    partial1:
+        span: storm
+        cssClass: col-sm-5
+        path: menu
+        context:
+        type: partial
+    sender_id:
+        label: 'eprog.manager::lang.from'
+        span: storm
+        oc.commentPosition: ''
+        type: dropdown
+        cssClass: col-sm-2
+    receiver_id:
+        label: 'eprog.manager::lang.to'
+        span: storm
+        oc.commentPosition: ''
+        type: dropdown
+        cssClass: col-sm-2
+    date:
+        label: 'eprog.manager::lang.date'
+        span: storm
+        oc.commentPosition: ''
+        type: datepicker
+        cssClass: col-sm-3
+    files:
+        label: 'eprog.manager::lang.attachments'
+        span: left
+        oc.commentPosition: ''
+        mode: file
+        type: Patroklo\FormWidgets\FileUpload
+        cssClass: col-sm-4
+    name:
+        label: 'eprog.manager::lang.title'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-5
+    desc:
+        label: 'eprog.manager::lang.body'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: textarea
+        cssClass: col-sm-4
+    partial2:
+        span: full
+        cssClass: col-sm-5
+        path: inbox
+        context:
+        type: partial
+    partial3:
+        span: full
+        cssClass: col-sm-5
+        path: outbox
+        context:
+        type: partial
+    partial4:
+        span: left
+        cssClass: col-sm-5
+        path: preview
+        context:
+        type: partial
+
+
+
+
+ 

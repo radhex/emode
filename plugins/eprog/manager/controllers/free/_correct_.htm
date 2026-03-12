@@ -1,0 +1,19 @@
+<?php
+use Eprog\Manager\Models\Invoice;
+
+$correct_id = null;
+if(Input::has("correct")) $correct_id  = Input::get("correct");
+
+if(Input::segment(5) == "update"){
+	$invoice = Invoice::find($this->params[0]);
+	if($invoice->correct) $correct_id = $invoice->correct;
+}
+
+$correct = Invoice::find($correct_id);
+
+?>
+
+<?php if(isset($correct) && $correct->id) : ?> 
+<br>
+<?= e(trans('eprog.manager::lang.correct_to'))  ?> <a href="/<?= config('cms.backendUri') ?>/eprog/manager/invoice/update/<?= $correct->id ?>" target="_blank"><?= $correct->nr ?? '' ?></a>
+<?php endif; ?>

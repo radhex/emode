@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.internal_one'
+form: $/eprog/manager/models/internal/fields.yaml
+modelClass: Eprog\Manager\Models\Internal
+defaultRedirect: eprog/manager/internal
+create:
+    redirect: 'eprog/manager/internal/update/:id'
+    redirectClose: eprog/manager/internal
+update:
+    redirect: eprog/manager/internal
+    redirectClose: eprog/manager/internal

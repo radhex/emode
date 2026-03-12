@@ -1,0 +1,63 @@
+import { createHeader, createSection, formatText, getValue, hasValue, makeBreakable, } from '../../../shared/PDF-functions.js';
+import { DEFAULT_TABLE_LAYOUT } from '../../../shared/consts/const.js';
+import FormatTyp from '../../../shared/enums/common.enum.js';
+import { getTypRachunkowWlasnych } from '../../../shared/generators/common/functions.js';
+export const generujRachunekBankowy = (accounts, title) => {
+    const result = [];
+    if (!accounts?.length) {
+        return [];
+    }
+    accounts.forEach((account, index) => {
+        const table = [];
+        const base = createHeader(title ? `${title} ${accounts?.length > 1 ? ++index : ''}` : '', [0, 12, 0, 8]);
+        if (hasValue(account.NrRBZagr)) {
+            table.push([
+                formatText('Format rachunku', FormatTyp.GrayBoldTitle),
+                formatText('Zagraniczny', FormatTyp.Default),
+            ]);
+        }
+        else if (hasValue(account.NrRBPL)) {
+            table.push([
+                formatText('Format rachunku', FormatTyp.GrayBoldTitle),
+                formatText('Polski', FormatTyp.Default),
+            ]);
+        }
+        if (hasValue(account.NrRBPL)) {
+            table.push([
+                formatText('Pełny numer rachunku w standardzie NRB', FormatTyp.GrayBoldTitle),
+                formatText(getValue(account.NrRBPL), FormatTyp.Default),
+            ]);
+        }
+        if (hasValue(account.NrRBZagr)) {
+            table.push([
+                formatText('Pełny numer rachunku zagranicznego', FormatTyp.GrayBoldTitle),
+                formatText(getValue(account.NrRBZagr), FormatTyp.Default),
+            ]);
+        }
+        table.push([
+            formatText('Kod SWIFT', FormatTyp.GrayBoldTitle),
+            formatText(getValue(account.SWIFT), FormatTyp.Default),
+        ]);
+        table.push([
+            formatText('Rachunek własny banku', FormatTyp.GrayBoldTitle),
+            formatText(makeBreakable(getTypRachunkowWlasnych(account.RachunekWlasnyBanku), 20), FormatTyp.Default),
+        ]);
+        table.push([
+            formatText('Nazwa banku', FormatTyp.GrayBoldTitle),
+            formatText(makeBreakable(getValue(account.NazwaBanku), 20), FormatTyp.Default),
+        ]);
+        result.push([
+            ...base,
+            {
+                unbreakable: true,
+                table: {
+                    body: table,
+                    widths: ['*', 'auto'],
+                },
+                layout: DEFAULT_TABLE_LAYOUT,
+            },
+        ]);
+    });
+    return createSection(result, false);
+};
+//# sourceMappingURL=RachunekBankowy.js.map

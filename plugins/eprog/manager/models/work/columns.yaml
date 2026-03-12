@@ -1,0 +1,41 @@
+columns:
+    id:
+        label: id
+        type: number
+        width: 50px
+    name:
+        label: 'eprog.manager::lang.name'
+        type: partial
+        searchable: true
+        path: name
+    project_id:
+        label: 'eprog.manager::lang.project_one'
+        type: partial
+        path: project
+    desc:
+        label: 'eprog.manager::lang.desc'
+        type: partial
+        searchable: true
+        invisible: true
+        path: desc
+    info:
+        label: 'eprog.manager::lang.info'
+        type: partial
+        searchable: true
+        invisible: true
+        path: info
+    start:
+        label: 'eprog.manager::lang.start'
+        type: partial
+        path: start
+    stop:
+        label: 'eprog.manager::lang.stop'
+        type: partial
+        path: stop
+    status_id:
+        label: 'eprog.manager::lang.status'
+        type: partial
+        path: status
+    public:
+        label: 'eprog.manager::lang.public'
+        type: switch

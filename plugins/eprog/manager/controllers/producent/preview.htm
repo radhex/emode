@@ -1,0 +1,23 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+       <li><span  class="oc-icon-shopping-basket"></span><a href="<?= Backend::url('eprog/manager/product') ?>"><?= e(trans('eprog.manager::lang.assortment')) ?></a></li> 
+       <li><span  class="oc-icon-tag"></span><a href="<?= Backend::url('eprog/manager/producent') ?>"><?= e(trans('eprog.manager::lang.producents')) ?></a></li> 
+       <li>ID: <?= Input::segment(6) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <div class="form-preview">
+        <?= $this->formRenderPreview() ?>
+    </div>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e($this->fatalError) ?></p>
+<?php endif ?>
+
+<p>
+    <a href="<?= Backend::url('eprog/manager/producent') ?>" class="btn btn-default oc-icon-chevron-left">
+        <?= e(trans('eprog.manager::lang.return')) ?>
+    </a>
+</p>

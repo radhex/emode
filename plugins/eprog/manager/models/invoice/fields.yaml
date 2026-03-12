@@ -1,0 +1,734 @@
+fields:
+    connect:
+        label: ''
+        oc.commentPosition: ''
+        span: left
+        type: partial
+        path: connect
+        cssClass: col-sm-2   
+    nr:
+        label: 'eprog.manager::lang.nr_invoice'
+        oc.commentPosition: ''
+        span: left
+        type: text
+        attributes: tabindex:1
+        cssClass: col-sm-1
+    place:
+        label: 'eprog.manager::lang.place'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        attributes:
+            maxlength: '255'
+        cssClass: col-sm-3
+    create_at:
+        label: 'eprog.manager::lang.create_at'
+        oc.commentPosition: ''
+        span: storm
+        type: datepicker
+        mode: date
+        format: Y-m-d
+        default: now
+        cssClass: col-sm-2
+    make_at:
+        label: 'eprog.manager::lang.make_at'
+        oc.commentPosition: ''
+        span: storm
+        mode: date
+        format: Y-m-d
+        default: now
+        type: datepicker
+        cssClass: col-sm-2
+    status_id:
+        label: 'eprog.manager::lang.status'
+        span: storm
+        oc.commentPosition: ''
+        type: dropdown
+        cssClass: col-sm-2
+    type:
+        label: 'eprog.manager::lang.type'
+        oc.commentPosition: ''
+        span: left
+        type: dropdown
+        cssClass: col-sm-2
+        changeHandler: onChangeType
+    _kor_reason:
+        label: 'eprog.manager::lang.ksef.kor_reason'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-3
+    _kor_type:
+        label: 'eprog.manager::lang.ksef.kor_type'
+        oc.commentPosition: ''
+        span: storm
+        type: dropdown
+        cssClass: col-sm-3
+    kor:
+        label: ''
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        cssClass: col-sm-1
+    _advance_nr:
+        label: 'eprog.manager::lang.ksef.advance_nr'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-2
+    _ksef_number:
+        label: 'eprog.manager::lang.ksef.nr'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        attributes: tabindex:1
+        cssClass: col-sm-1
+tabs:
+    fields:
+        value:
+            label: ' '
+            tab: 'eprog.manager::lang.value'
+            oc.commentPosition: ''
+            span: full
+            type: partial
+            path: value
+            cssClass: col-sm-3
+        seller_name:
+            label: 'eprog.manager::lang.name'
+            tab: 'eprog.manager::lang.seller'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        seller_nip:
+            label: 'rainlab.user::lang.add.nip'
+            tab: 'eprog.manager::lang.seller'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        scedig:
+            label: ''
+            tab: 'eprog.manager::lang.seller'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: scedig
+            cssClass: col-sm-3
+        seller_adres1:
+            label: 'eprog.manager::lang.ksef.adres1'
+            tab: 'eprog.manager::lang.seller'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        seller_country:
+            label: 'rainlab.user::lang.add.country'
+            tab: 'eprog.manager::lang.seller'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            default: PL
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        seller_adres2:
+            label: 'eprog.manager::lang.ksef.adres2'
+            tab: 'eprog.manager::lang.seller'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        seller_phone:
+            label: 'rainlab.user::lang.add.phone'
+            tab: 'eprog.manager::lang.seller'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            attributes:
+                maxlength: '16'
+            cssClass: col-sm-3
+        seller_email:
+            label: 'rainlab.user::lang.user.email'
+            tab: 'eprog.manager::lang.seller'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        user_id:
+            label: 'eprog.manager::lang.user'
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            cssClass: col-sm-4
+        adduser:
+            label: ' '
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            cssClass: col-sm-2
+        buyer_name:
+            label: 'eprog.manager::lang.name'
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        buyer_type:
+            label: 'eprog.manager::lang.ksef.type'
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            cssClass: col-sm-2
+        buyer_nip:
+            label: 'rainlab.user::lang.add.number'
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        bcedig:
+            label: ''
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: bcedig
+            cssClass: col-sm-3
+        buyer_adres1:
+            label: 'eprog.manager::lang.ksef.adres1'
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        buyer_country:
+            label: 'rainlab.user::lang.add.country'
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            default: PL
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        buyer_adres2:
+            label: 'eprog.manager::lang.ksef.adres2'
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        buyer_phone:
+            label: 'rainlab.user::lang.add.phone'
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            attributes:
+                maxlength: '16'
+            cssClass: col-sm-3
+        buyer_email:
+            label: 'rainlab.user::lang.user.email'
+            tab: 'eprog.manager::lang.buyer'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        _addbuyer:
+            label: 'eprog.manager::lang.active'
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+            cssClass: col-sm-1
+        _addbuyer_role:
+            label: 'eprog.manager::lang.ksef.role'
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            cssClass: col-sm-2
+        _addbuyer_role_desc:
+            label: 'eprog.manager::lang.ksef.role_desc'
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-5
+        _addbuyer_name:
+            label: 'eprog.manager::lang.name'
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        _addbuyer_type:
+            label: 'eprog.manager::lang.ksef.type'
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            cssClass: col-sm-2
+        _addbuyer_nip:
+            label: 'rainlab.user::lang.add.number'
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        acedig:
+            label: ''
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: acedig
+            cssClass: col-sm-3
+        _addbuyer_adres1:
+            label: 'eprog.manager::lang.ksef.adres1'
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        _addbuyer_country:
+            label: 'rainlab.user::lang.add.country'
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            default: PL
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        _addbuyer_adres2:
+            label: 'eprog.manager::lang.ksef.adres2'
+            tab: 'eprog.manager::lang.ksef.addbuyer'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        _addbuyer_phone:
+             label: 'rainlab.user::lang.add.phone'
+             tab: 'eprog.manager::lang.ksef.addbuyer'
+             oc.commentPosition: ''
+             span: dtorm
+             type: text
+             attributes:
+                 maxlength: '16'
+             cssClass: col-sm-3
+        _addbuyer_email:
+             label: 'rainlab.user::lang.user.email'
+             tab: 'eprog.manager::lang.ksef.addbuyer'
+             oc.commentPosition: ''
+             span: left
+             type: text
+             attributes:
+                 maxlength: '255'
+             cssClass: col-sm-3
+        _pay_info:
+            label: 'eprog.manager::lang.ksef.pay_info'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: left
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-2
+        _pay_part:
+            label: 'eprog.manager::lang.ksef.pay_part'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-2
+        _pay_date:
+            label: 'eprog.manager::lang.ksef.pay_date'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: datepicker
+            mode: date
+            format: Y-m-d
+            cssClass: col-sm-3
+            align: right
+        _pay_type:
+            label: 'eprog.manager::lang.ksef.pay_type'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: left
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        _pay_termin:
+            label: 'eprog.manager::lang.ksef.pay_termin'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: datepicker
+            mode: date
+            format: Y-m-d
+            cssClass: col-sm-3
+        _pay_other_desc:
+            label: 'eprog.manager::lang.ksef.pay_other_desc'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        _pay_termin_ilosc:
+            label: 'eprog.manager::lang.ksef.pay_desc'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-1
+        _pay_termin_jednostka:
+            label: 'eprog.manager::lang.ksef.unit'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            default: 'dni'
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-1
+        _pay_termin_zdarzeniepoczatkowe:
+            label: 'eprog.manager::lang.occurrence'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            default: 'od daty wystawienia'
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-1
+        _bank_nr:
+            label: 'eprog.manager::lang.ksef.bank_nr'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-3
+        _swift:
+            label: 'eprog.manager::lang.ksef.swift'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        _bank:
+            label: 'eprog.manager::lang.ksef.bank'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-2
+        _pay_link:
+            label: 'eprog.manager::lang.ksef.pay_link'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-3
+        _pay_id:
+            label: 'eprog.manager::lang.ksef.pay_id'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        _skonto_cond:
+            label: 'eprog.manager::lang.ksef.skonto_cond'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: left
+            type: textarea
+            size: small
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        _skonto:
+            label: 'eprog.manager::lang.ksef.skonto'
+            tab: 'eprog.manager::lang.ksef.payment'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        _charge_amount:
+            label: 'eprog.manager::lang.ksef.charge_amount'
+            tab: 'eprog.manager::lang.ksef.reccon'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-3
+        _charge_reason:
+            label: 'eprog.manager::lang.ksef.charge_reason'
+            tab: 'eprog.manager::lang.ksef.reccon'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-5
+        _deduct_amount:
+            label: 'eprog.manager::lang.ksef.deduct_amount'
+            tab: 'eprog.manager::lang.ksef.reccon'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-3
+        _deduct_reason:
+            label: 'eprog.manager::lang.ksef.deduct_reason'
+            tab: 'eprog.manager::lang.ksef.reccon'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-5
+        _umo_nr:
+            label: 'eprog.manager::lang.ksef.umo_nr'
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-2
+        _umo_date:
+            label: 'eprog.manager::lang.ksef.umo_date'
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: storm
+            type: datepicker
+            mode: date
+            format: Y-m-d
+            cssClass: col-sm-3
+        _zam_nr:
+            label: 'eprog.manager::lang.ksef.zam_nr'
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-2
+        _zam_date:
+            label: 'eprog.manager::lang.ksef.zam_date'
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: storm
+            type: datepicker
+            mode: date
+            format: Y-m-d
+            cssClass: col-sm-3
+        _wu:
+            label: 'eprog.manager::lang.ksef.wu'
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: left
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-2
+        _ku:
+            label: 'eprog.manager::lang.ksef.ku'
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-2
+        nbpu:
+            label: ''
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: nbpu
+            cssClass: col-sm-3
+        _wdt:
+            label: 'eprog.manager::lang.ksef.wdt'
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: left
+            type: textarea
+            size: small
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-2
+        _wz:
+            label: 'eprog.manager::lang.ksef.wz_numbers'
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: storm
+            type: textarea
+            size: small
+            cssClass: col-sm-3
+        _pp:
+            label: 'eprog.manager::lang.ksef.pp'
+            tab: 'eprog.manager::lang.ksef.wt'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+            cssClass: col-sm-2
+        _zw:
+            label: 'eprog.manager::lang.ksef.zw'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        _zw_desc:
+            label: 'eprog.manager::lang.ksef.zw_desc'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        _marza:
+            label: 'eprog.manager::lang.ksef.marza'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-2
+        _mk:
+            label: 'eprog.manager::lang.ksef.mk'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+
+            cssClass: col-sm-2
+        _sf:
+            label: 'eprog.manager::lang.ksef.sf'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+            cssClass: col-sm-2            
+        _oo:
+            label: 'eprog.manager::lang.ksef.oo'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+            cssClass: col-sm-2
+        _mpp:
+            label: 'eprog.manager::lang.ksef.mpp'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+            cssClass: col-sm-2
+        _ptu:
+            label: 'eprog.manager::lang.ksef.ptu'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+            mode: date
+            cssClass: col-sm-2
+        _tp:
+            label: 'eprog.manager::lang.ksef.tp'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+            cssClass: col-sm-2
+        _fp:
+            label: 'eprog.manager::lang.ksef.fp'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+            cssClass: col-sm-2
+        _za:
+            label: 'eprog.manager::lang.ksef.za'
+            tab: 'eprog.manager::lang.ksef.annotations'
+            oc.commentPosition: ''
+            span: left
+            type: checkbox
+            cssClass: col-sm-2
+        _full_name:
+            label: 'eprog.manager::lang.ksef.full_name'
+            tab: 'eprog.manager::lang.ksef.rest'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes:
+                maxlength: '255'
+            cssClass: col-sm-3
+        _krs:
+            label: 'eprog.manager::lang.ksef.krs'
+            tab: 'eprog.manager::lang.ksef.rest'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        _regon:
+            label: 'eprog.manager::lang.ksef.regon'
+            tab: 'eprog.manager::lang.ksef.rest'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-3
+        _bdo:
+            label: 'eprog.manager::lang.ksef.bdo'
+            tab: 'eprog.manager::lang.ksef.rest'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        _stopka:
+            label: 'eprog.manager::lang.ksef.stopka'
+            tab: 'eprog.manager::lang.ksef.rest'
+            oc.commentPosition: ''
+            span: left
+            type: textarea
+            size: small
+            attributes:
+                maxlength: '3500'
+            cssClass: col-sm-2
+        _uwagi:
+            label: 'eprog.manager::lang.ksef.comments'
+            tab: 'eprog.manager::lang.ksef.rest'
+            oc.commentPosition: ''
+            span: left
+            type: textarea
+            size: small
+            attributes:
+                maxlength: '3500'
+            cssClass: col-sm-2

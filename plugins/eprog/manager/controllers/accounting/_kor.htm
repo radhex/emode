@@ -1,0 +1,43 @@
+<?php
+use Eprog\Manager\Models\Invoice;
+
+if(Input::has("correct")){
+
+	$invoice = Invoice::find(Input::get("correct"));
+	$kor_data = $invoice->created_at ?? "";
+	$kor_nr = $invoice->nr ?? "";
+	$kor_nrksef = $invoice->ksefNumber ?? "";
+	$kor_amount = "";
+
+	if($invoice->xml){
+		$xml = simplexml_load_string($this->xml, "SimpleXMLElement", LIBXML_NOCDATA);
+		$json = json_encode($xml);
+		$data = json_decode($json, true);
+		$kor_amount = $data['Fa']['P_15'] ?? "";
+	}
+
+
+}
+
+if(Input::segment(5) == "update" && Input::segment(6) > 0){
+
+	$invoice = Invoice::find(Input::segment(6));
+
+	$xml = simplexml_load_string($invoice->xml, "SimpleXMLElement", LIBXML_NOCDATA);
+	$json = json_encode($xml);
+	$data = json_decode($json, true);
+
+	$kor_data = $data["Fa"]["DaneFaKorygowanej"]["DataWystFaKorygowanej"] ?? "";
+	$kor_nr = $data["Fa"]["DaneFaKorygowanej"]["NrFaKorygowanej"] ?? "";
+	$kor_nrksef = $data["Fa"]["DaneFaKorygowanej"]["NrKSeFFaKorygowanej"] ?? "";
+	$kor_amount = $data['Fa']['P_15ZK'] ?? "";
+
+}
+
+
+?>
+
+<input type="hidden" name="Invoice[kor_data]" value="<?= $kor_data ?>">
+<input type="hidden" name="Invoice[kor_nr]" value="<?= $kor_nr  ?>">
+<input type="hidden" name="Invoice[kor_nrksef]" value="<?= $kor_nrksef ?>">
+<input type="hidden" name="Invoice[kor_amount]" value="<?= $kor_amount  ?>">

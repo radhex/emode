@@ -1,0 +1,95 @@
+<?php
+
+use RainLab\User\Models\User;
+use Eprog\Manager\Models\SettingKsef;
+use Eprog\Manager\Models\SettingConfig;
+
+$users =  User::where("tax",1)->orderBy("firm_name")->get();
+$year = date("Y", time());
+
+
+?>
+
+
+<div data-control="toolbar">
+
+
+        <a href="<?= Backend::url('eprog/manager/file/create') ?>" class="btn btn-primary oc-icon-plus-circle btn-toolbar"><?= e(trans('backend::lang.form.create')) ?></a>
+        <button
+        class="btn btn-default oc-icon-trash-o btn-toolbar"
+        disabled="disabled"
+        onclick="$(this).data('request-data', {
+            checked: $('.control-list').listWidget('getChecked')
+        })"
+        data-request="onDelete"
+        data-request-confirm="<?= e(trans('backend::lang.list.delete_selected_confirm')) ?>"
+        data-trigger-action="enable"
+        data-trigger=".control-list input[type=checkbox]"
+        data-trigger-condition="checked"
+        data-request-success="$(this).prop('disabled', true)"
+        data-stripe-load-indicator>
+        <?= e(trans('eprog.manager::lang.del')) ?>
+    </button>
+
+
+    
+</div>
+
+
+<style>
+
+@media (max-width: 450px){
+
+.loading-indicator-container.size-input-text {margin-top: 0px !important;}
+
+}
+
+</style>
+
+
+<script>
+
+    var change = false;
+
+    $(document).on('ajaxSetup', function(event, context) {
+
+        if (context.handler === 'onExport' && context.options.confirm) {
+
+            let selectedIds = [];
+            $('.control-list tbody input[type="checkbox"]:checked').each(function () {
+                selectedIds.push($(this).val());
+            });
+            if(selectedIds.length > 0){
+                console.log(selectedIds);
+                context.options.confirm = '<?= e(trans('eprog.manager::lang.export_xml_checked_confirm')) ?>';
+                context.options.data.checked = selectedIds;               
+            }
+            context.options.data.nip = $('#nip').val();
+        }
+
+    });
+
+    $(function() { 
+
+
+        $('#nip').on('select2:select', function(e) {
+            $.ajax({
+                    type: "POST",
+                    data:"_token=<?= csrf_token() ?>",
+                    url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/selected/nip/' + $(this).val(),
+
+                    success: function(res) {   
+                    window.location.href = window.location.href;                              
+                    },
+                    error: function(xhr,status,error) {
+                         console.log(error);
+                    }
+            });            
+        });
+
+
+
+    });
+
+
+</script>

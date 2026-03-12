@@ -1,0 +1,6 @@
+<?php if(!in_array($record->type,[1,5,6])) : ?>
+<a href="/<?= config('cms.backendUri') ?>/eprog/manager/invoice/create?invoice_id=<?= $record->id ?>" class="btn-sm btn-primary  oc-icon-file-text-o multisend" style="color:#fff;padding-right:7px" title="<?= e(trans('eprog.manager::lang.ksef.create_similar')) ?>"></a> 
+<?php endif ?>
+<?php if($record->ksefNumber) : ?>
+<a href="/<?= config('cms.backendUri') ?>/eprog/manager/feed/downloadInvoicePdf/<?= $record->id ?>" class="btn-sm btn-primary  oc-icon-download multisend" style="color:#fff;padding-right:7px;<?php if(in_array($record->type,[1,5,6])) : ?>margin-left:42.5px<?php endif ?>" title="<?= e(trans('eprog.manager::lang.download')) ?> PDF"></a> 
+<?php endif ?>

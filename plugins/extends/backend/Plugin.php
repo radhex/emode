@@ -1,0 +1,23 @@
+<?php namespace Extends\Backend;
+
+/**
+ * The plugin.php file (called the plugin initialization script) defines the plugin information class.
+ */
+
+use System\Classes\PluginBase;
+
+class Plugin extends PluginBase
+{
+
+    public function pluginDetails()
+    {
+        return [
+            'name'        => 'Extends Backend',
+            'description' => 'Extends Backend',
+            'author'      => 'Radosław Paczesny',
+            'icon'        => 'icon-user'
+        ];
+    }
+
+
+}

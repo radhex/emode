@@ -1,0 +1,495 @@
+<?php
+
+use Eprog\Manager\Models\Scheduler;
+use Eprog\Manager\Models\Type;
+use Eprog\Manager\Models\Project;
+use Eprog\Manager\Models\Work;
+use Eprog\Manager\Classes\Util;
+use Rainlab\User\Models\User;
+
+
+
+	$owner = BackendAuth::getUser()->id;
+	if(Input::get("show") == "my") $all = false; else $all = true;
+
+	if(!Input::has("menu")) $menu = "all"; else $menu = Input::get("menu");
+	if(!Input::has("user")) $user = 0; else $user = Input::get("user");
+	if(!Input::has("admin")) $admin = 0; else $admin = Input::get("admin");
+	if(!Input::has("category")) $category = 0; else $category = Input::get("category");
+
+
+	$users = User::all();
+	$categories = Type::where("disp","=", 1)->get();
+	$admins  =  \Backend\Models\User::where("is_superuser","=","0")->get();
+
+?>
+
+<div class="tabs" style="display:block;margin-top:-10px">
+             <ul>
+  
+			<input type="hidden" id="menu" name="menu" value="all">
+
+                        <li class="active-all" id="all"><a href="#"  class="oc-icon-gear"><?= trans("eprog.manager::lang.all" )?></a></li>
+
+			<?php if(Util::mode("4") && BackendAuth::getUser()->hasAccess("eprog.manager.access_order")) :?>
+                        <li class="order" id="order"><a href="#"  class="btn-primary oc-icon-plus-circle" ><?= trans("eprog.manager::lang.order" )?></a></li>
+			<?php endif ?>
+
+			<?php if(Util::mode("2") && BackendAuth::getUser()->hasAccess("eprog.manager.access_invoice")) :?>
+                        <li class="invoice" id="invoice"><a href="#"  class="btn-primary oc-icon-file-text" ><?= trans("eprog.manager::lang.invoice" )?></a></li>
+			<?php endif ?>
+
+			<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_scheduler")) :?>
+                        <li class="scheduler" id="scheduler"><a href="#"  class="btn-primary oc-icon-calendar" ><?= trans("eprog.manager::lang.events" )?></a></li>
+			<?php endif ?>
+			<?php if(Util::mode("5") && BackendAuth::getUser()->hasAccess("eprog.manager.access_project")) :?>
+                        <li class="project" id="project"><a href="#"  class="btn-primary oc-icon-gear" ><?= trans("eprog.manager::lang.project" )?></a></li>
+			<?php endif ?>
+			<?php if(Util::mode("5") && BackendAuth::getUser()->hasAccess("eprog.manager.access_work")) :?>
+                        <li class="work" id="work" style="margin-right: 50px;"><a href="#"  class="btn-primary oc-icon-gears"><?= trans("eprog.manager::lang.work" )?></a></li>
+			<?php endif ?>
+
+        	   
+			<li style="background:none;margin-top:-4px;margin-left: -2px;">
+			<select id="category" style="border:1px solid #eee;padding: 7px;color:#777">
+			<option value="0">-- <?= lcfirst(e(trans("eprog.manager::lang.category"))) ?>--</option>
+			<?php foreach($categories  as $categories ) :?>
+			<option value="<?= $categories ->id ?>" <?= Input::get("category") == $categories ->id ? "selected" : "" ?> ><?= $categories ->name?></option>
+			<?php endforeach; ?>
+			</select>
+			</li>
+
+			<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_scheduler")) : ?>
+			<li style="background:none; margin-top:-4px;margin-left: -2px;">
+			<select id="admin" style="border:1px solid #eee;padding: 7px;color:#777">
+			<option value="0">-- <?= lcfirst(e(trans("eprog.manager::lang.staff"))) ?>--</option>
+			<?php foreach($admins as $admins) :?>
+			<option value="<?= $admins->id ?>"  <?= Input::get("admin") == $admins->id ? "selected" : "" ?>><?= $admins->login?></option>
+			<?php endforeach; ?>
+			</select>
+			</li>
+			<?php endif ?>	
+
+			<li style="background:none; margin-top:-4px;margin-left: -2px;">
+			<select id="user" style="border:1px solid #eee;padding: 7px;color:#777">
+			<option value="0">-- <?= lcfirst(e(trans("eprog.manager::lang.user"))) ?>--</option>
+			<?php foreach($users as $users) :?>
+			<option value="<?= $users->id ?>"  <?= Input::get("user") == $users->id ? "selected" : "" ?>><?= $users->firm_name?></option>
+			<?php endforeach; ?>
+			</select>
+			</li>			
+
+		</ul>
+
+</div>
+
+
+
+
+<?php
+	
+	if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_scheduler")){
+		 if($all) $scheduler = Scheduler::all(); else $scheduler = Scheduler::where("user_id","=",$owner)->get();
+	}
+	else
+  	$scheduler = Scheduler::where("user_id","=",$owner)->get();
+
+	if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_project")){
+		
+	 	 if($all) $project = Project::all(); else $project = Project::where('staff','like','%"'.$owner.'"%')->get();
+	}
+	else
+	$project = Project::where('staff','like','%"'.$owner.'"%')->get();
+
+	if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_work")){
+
+		 if($all) $work = Work::all(); else $work = Work::where('staff','like','%"'.$owner.'"%')->get();
+	}
+	else
+	$work = Work::where('staff','like','%"'.$owner.'"%')->get();
+
+?>
+
+
+    
+
+<style>
+
+
+	#container {
+
+		
+		max-width:1000px;
+		margin:0 auto;
+		margin-top:-20px;
+		background:#fff;
+		border:1px solid #eee;
+		border-radius:10px;
+		padding:10px;
+	
+
+	}
+	#calendar {
+	
+		max-width: 900px;
+		margin: 0 auto;
+		background:#fff;
+		margin-top:30px;
+		margin-bottom:20px;
+	}
+
+	#script-warning {
+		display: none;
+		background: #eee;
+		border-bottom: 1px solid #ddd;
+		padding: 0 10px;
+		line-height: 40px;
+		text-align: center;
+		font-weight: bold;
+		font-size: 12px;
+		color: red;
+	}
+
+	#loading {
+		
+		width:100%;	
+		text-align:center;
+	
+		height:30px;
+	}
+	.prompt {
+
+		background: red;
+		border:1px solid #aaa;
+		padding: 5px;
+
+	}
+	.qtip-my {
+    		background-color:#fcf8e3;
+			border-color: #aaa;
+	}
+
+	 select {-webkit-appearance: none;-moz-appearance: none;-o-appearance: none;appearance: none;}
+
+	 #calendar .fc-button {margin-top:3px;margin-bottom:3px}
+	 #calendar .fc-state-disabled, #calendar .fc-state-disabled:hover {opacity:1;background:var(--mcolor);color:#fff;cursor:default;box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15), 0 1px 2px rgba(0, 0, 0, 0.05);}
+
+
+	 .tabs  ul  li.all a  {background: #eee!important; color:#444}
+	 .tabs  ul  li.project a  {background: #eee!important; color:#b7843a}
+	 .tabs  ul  li.work a {background: #eee!important; color:#8a62c4}
+	 .tabs  ul  li.scheduler a {background: #eee!important; color:#68a42e}
+	 .tabs  ul  li.invoice a{background: #eee!important; color:#d15959}
+	 .tabs  ul  li.order a{background: #eee!important; color:#596dd1}
+
+	 .tabs  ul  li.all  {background: #eee!important; color:#fff}
+	 .tabs  ul  li.project   {background: #eee!important; color:#fff}
+	 .tabs  ul  li.work  {background: #eee!important; color:#fff}
+	 .tabs  ul  li.scheduler {background: #eee!important; color:#fff}
+	 .tabs  ul  li.invoice {background: #eee!important; color:#fff}
+	 .tabs  ul  li.order {background: #eee!important; color:#fff}
+
+	 .tabs  ul  li.active-all   {background: #777!important; color:#fff}
+	 .tabs  ul  li.active-project  {background: #b7843a!important}
+	 .tabs  ul  li.active-work {background: #8a62c4!important}
+	 .tabs  ul  li.active-scheduler {background: #68a42e!important}
+	 .tabs  ul  li.active-invoice {background: #d15959!important}
+	 .tabs  ul  li.active-order {background: #596dd1!important}
+
+	 .tabs  ul  li.active-all  a{background: #777!important; color:#fff}
+	 .tabs  ul  li.active-project a  {background: #b7843a!important; color:#fff}
+	 .tabs  ul  li.active-work a {background: #8a62c4!important; color:#fff}
+	 .tabs  ul  li.active-scheduler a {background: #68a42e!important; color:#fff}
+	 .tabs  ul  li.active-invoice a {background: #d15959!important; color:#fff}
+	 .tabs  ul  li.active-order a {background: #596dd1!important; color:#fff}
+
+	
+
+</style>
+
+
+
+<!--<script src='<?= url("/"); ?>/plugins/eprog/manager/assets/js/calendar/lib/jquery.min.js'></script>-->
+<script src='<?= url("/"); ?>/plugins/eprog/manager/assets/js/calendar/dist/index.global.min.js'></script>
+<script src='<?= url("/"); ?>/plugins/eprog/manager/assets/js/calendar/packages/core/locales-all.global.min.js'></script>
+<script src='<?= url("/"); ?>/plugins/eprog/manager/assets/js/calendar/packages/moment/index.global.min.js'></script>
+
+<script src='<?= url("/"); ?>/plugins/eprog/manager/assets/js/date.format.js'></script>
+<script src='<?= url("/"); ?>/plugins/eprog/manager/assets/js/jquery.qtip.min.js'></script>
+<link href='<?= url("/"); ?>/plugins/eprog/manager/assets/css/jquery.qtip.min.css' rel='stylesheet' />
+
+
+
+<script>
+
+	$(document).ready(function() {
+		var initialLocaleCode = '<?php echo Session::get("locale") ?>';
+
+
+		calendar();
+
+		$( "#all" ).click(function() {
+			menuReset();
+			$(this).addClass("active-all");
+			$("#menu").val("all");
+			calendar.refetchEvents();
+			
+		});
+
+		$( "#invoice" ).click(function() {
+			menuReset();
+			$(this).addClass("active-invoice");
+			$("#menu").val("invoice");
+			calendar.refetchEvents();
+			
+		});
+
+		$( "#order" ).click(function() {
+			menuReset();
+			$(this).addClass("active-order");
+			$("#menu").val("order");
+			calendar.refetchEvents();
+			
+		});
+
+
+
+		$( "#scheduler" ).click(function() {
+			menuReset();
+			$(this).addClass("active-scheduler");
+			$("#menu").val("scheduler");
+			calendar.refetchEvents();
+			
+		});
+
+
+		$( "#project" ).click(function() {
+			menuReset();
+			$(this).addClass("active-project");
+			$("#menu").val("project");
+			calendar.refetchEvents();
+			
+		});
+
+
+		$( "#work" ).click(function() {
+			menuReset();
+			$(this).addClass("active-work");
+			$("#menu").val("work");
+			calendar.refetchEvents();
+			
+		});
+
+
+
+		$( "#user" ).change(function() {
+			calendar.refetchEvents();
+		});
+
+		$( "#admin" ).change(function() {
+			calendar.refetchEvents();
+		});
+
+		$( "#category" ).change(function() {
+			calendar.refetchEvents();
+		});
+
+
+		function menuReset(){
+
+			$("#all").removeClass("active-all");
+			$("#all").addClass("all");
+
+			$("#invoice").removeClass("active-invoice");
+			$("#invoice").addClass("invoice");
+
+			$("#order").removeClass("active-order");
+			$("#order").addClass("order");
+
+			$("#scheduler").removeClass("active-scheduler");
+			$("#scheduler").addClass("scheduler");
+
+			$("#project").removeClass("active-project");
+			$("#project").addClass("project");
+
+			$("#work").removeClass("active-work");
+			$("#work").addClass("work");
+
+		}
+
+		function twoDigits(n){
+		    return n > 9 ? "" + n: "0" + n;
+		}
+
+		function calendar(){
+
+
+			var calendarEl = document.getElementById('calendar');
+
+			calendar = new FullCalendar.Calendar(calendarEl, {
+
+			headerToolbar: {
+				left: 'prev,next today',
+				center: 'title',
+				right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+			},
+			initialView: 'dayGridMonth',
+			initialDate: '<?= date("Y-m-d", time())?>',
+			locale: initialLocaleCode,
+			navLinks: true, // can click day/week names to navigate views
+			editable: false,
+			dayMaxEvents: true, // allow "more" link when too many events
+			eventColor: '#68a42e',
+			selectable: true,
+
+			<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.edit_scheduler")) : ?>
+			select: function(date) { 
+
+				 var start = date.start.getFullYear() + '-' + twoDigits(date.start.getMonth()+1) + '-' + twoDigits(date.start.getDate()) + ' ' + twoDigits(date.start.getHours())  + ':' + twoDigits(date.start.getMinutes()) ; 
+				 var stop = date.end.getFullYear() + '-' + twoDigits(date.end.getMonth()+1) + '-' + twoDigits(date.end.getDate()) + ' ' + twoDigits(date.end.getHours())  + ':' + twoDigits(date.end.getMinutes()) ; 
+				 modal_url("/<?= config('cms.backendUri') ?>/eprog/manager/feed/prompt?target=scheduler&start=" + start + '&stop=' + stop,"<?= trans("eprog.manager::lang.add_stage" )?>",400,200);
+				 window.cdate = date;
+				 /*
+				var title = null;//prompt('<?= trans("eprog.manager::lang.name" )?>:');	
+				var eventData;
+				var eventSource;
+				var start = date.start.getFullYear() + '-' + twoDigits(date.start.getMonth()+1) + '-' + twoDigits(date.start.getDate()) + '00:00:00'; 
+				var end = date.end.getFullYear() + '-' + twoDigits(date.end.getMonth()+1) + '-' + twoDigits(date.end.getDate()) + '00:00:00'; 
+
+				if (title) {
+					eventSource = {
+						id: 'newEvent',
+						url:  '/<?= config('cms.backendUri') ?>/eprog/manager/feed/save?title='+ title + '&start_=' + start + '&end_=' + end + '&user='  + $('#user').val() + '&admin='  + $('#admin').val()  + '&category='  + $('#category').val()
+					};
+					
+					calendar.addEventSource(eventSource);					
+					var eventSources = calendar.getEventSources(); 
+					eventSources[eventSources.length-1].remove(); 
+					calendar.refetchEvents();
+						
+				}
+				window.calendar.unselect();
+				*/
+				
+			},
+   			eventResize: function(info) {
+
+					eventSource = {
+						id: 'resizeEvent',
+						url:  '/<?= config('cms.backendUri') ?>/eprog/manager/feed/resize?id=' + info.event.id + '&delta=' + info.endDelta.milliseconds + '&type=' + info.event.extendedProps.type
+					};
+					calendar.addEventSource(eventSource);
+
+					$('.qtip').each(function(){
+  						$(this).data('qtip').destroy();
+					})
+
+
+    			},
+			eventDrop: function(info) {
+
+				delta = info.delta.milliseconds;
+				if(info.delta.days != 0)
+				delta = info.delta.days*86400000;
+					eventSource = {
+						id: 'dropEvent',
+						url:  '/<?= config('cms.backendUri') ?>/eprog/manager/feed/update?id=' + info.event.id + '&delta=' + delta + '&type=' + info.event.extendedProps.type
+					};
+
+					calendar.addEventSource(eventSource);
+
+					$('.qtip').each(function(){
+  						$(this).data('qtip').destroy();
+					})
+
+
+			},
+			<?php endif ?>
+
+			events: {
+		
+				url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/feed',
+
+				extraParams: function(){
+				  return {
+	    				menu: $("#menu").val(),
+	    				user: $("#user").val(),
+						admin: $("#admin").val(),
+	    				category: $("#category").val(),
+				  }
+				},			
+				failure: function(err) {
+					$('#script-warning').show();
+				}
+			},
+			loading: function(bool) {
+				off = $('#calendar').offset(); 
+				$('#loading').toggle(bool);
+			},
+			eventDidMount: function(info) {
+				let timeEl = info.el.querySelector('.fc-event-time');
+				if (timeEl) timeEl.style.display = 'none';
+
+				start = new Date(info.event.start);
+				end = new Date(info.event.end); 
+				desc = '<br><br>' + info.event.extendedProps.desc;
+				if(info.event.extendedProps.desc == null)  desc = '';
+				if(info.event.extendedProps.desc == '')  desc = '';
+				stop = '<br> <b><?= strtolower(trans("eprog.manager::lang.to" ))?></b> ' + end.format("yyyy-mm-dd HH:MM");
+				if(info.event.end == null) stop = "";
+
+				cont = '<div style="font-size:12px;line-height:16px"><b>' + info.event.title + '</b><span style="font-size:12px;line-height:8px">' +  desc + '</span></div><div style="font-size:11px;line-height:16px"><br><b><?= strtolower(trans("eprog.manager::lang.from"))?></b> ' + start.format("yyyy-mm-dd HH:MM") + stop + '</div>';
+
+				if(info.event.extendedProps.type == "invoice")
+				cont = '<div style="font-size:12px;line-height:16px"><b>' + info.event.title + '</b><span style="font-size:12px;line-height:8px">' +  desc + '</span></div><div style="font-size:11px;line-height:16px"><br><b><?= strtolower(trans("eprog.manager::lang.create_at"))?></b> ' + start.format("yyyy-mm-dd") + '</div>';
+					
+
+				if(info.view.type == "dayGridMonth")
+	    		$(info.el).qtip({content: cont,style: 'qtip-my'});
+
+			},
+			eventDataTransform: function(eventData) {
+				eventData.display = 'block';
+			 	return eventData;
+			}
+		});
+			calendar.render();
+
+			
+			$(window).resize(function(){
+
+			  calendar.render();
+			
+			});
+
+		}
+
+		
+
+    });
+
+</script>
+
+<style>
+
+	.qtip-my {
+			background-color:#fcf8e3;
+			border-color: #aaa;
+	}
+
+</style>
+
+
+
+	<div style="float:left;width:100%">
+	<div id="container">
+		<div style="height:1px"><div id='loading'>
+			<div class="loading-indicator-container"><div class="loading-indicator  size-small indicator-center" style="background-color: transparent;"><span  style="margin-top:-16px;"></span></div></div>
+		</div></div>
+		<div id='calendar'></div>
+
+	</div>
+	</div>
+	
+
+

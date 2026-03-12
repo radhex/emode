@@ -1,0 +1,45 @@
+<?php
+
+if(!isset($_SERVER['HTTP_REFERER'])) die();
+
+?>
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-comments"></span><a href="<?= Backend::url('eprog/manager/inmail/inbox') ?>"><?= e(trans('eprog.manager::lang.inmail')) ?> - <?= e(trans('eprog.manager::lang.mail')) ?></a> </li>
+          <li>
+ 		<?php if(preg_match("/inbox/i", $_SERVER['HTTP_REFERER'])) : ?><?= e(trans('eprog.manager::lang.inbox')) ?><?php endif ?>
+ 		<?php if(preg_match("/outbox/i", $_SERVER['HTTP_REFERER'])) : ?><?= e(trans('eprog.manager::lang.outbox')) ?><?php endif ?>
+	 </li>
+    </ul>
+<?php Block::endPut() ?>
+
+  <?php use Eprog\Manager\Models\Inmail; $inmail = Inmail::find(Input::segment(6));?>
+  <?php if($inmail && (BackendAuth::getUser()->id == $inmail->receiver_id || BackendAuth::getUser()->id == $inmail->sender_id) || BackendAuth::getUser()->is_superuser) : ?>
+
+
+<?php if (!$this->fatalError): ?>
+
+    <?php if($inmail && BackendAuth::getUser()->id == $inmail->receiver_id) : ?>
+    <a href="<?= Backend::url('eprog/manager/inmail/create?reply=') ?><?= Input::segment(6) ?>" class="btn btn-primary oc-icon-reply btn-toolbar" style="margin-right:7px;margin-left:1px;margin-left:1px;margin-bottom:3px">
+        <?= e(trans('eprog.manager::lang.reply')) ?>
+    </a>
+    <?php endif ?>
+
+
+    <span>
+    <a href="<?= $_SERVER['HTTP_REFERER'] ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar" style="margin-left:1px;margin-bottom:3px"><?= e(trans('eprog.manager::lang.return')) ?></a>
+    </span>
+
+    <div class="form-preview" style="margin-top:15px">
+        <?= $this->formRenderPreview() ?>
+    </div>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e($this->fatalError) ?></p>
+<?php endif ?>
+
+  
+<?php endif ?>
+
+

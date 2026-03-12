@@ -1,0 +1,4 @@
+name: 'eprog.manager::lang.archive'
+form: $/eprog/manager/models/archive/fields.yaml
+modelClass: Eprog\Manager\Models\Archive
+defaultRedirect: eprog/manager/archive

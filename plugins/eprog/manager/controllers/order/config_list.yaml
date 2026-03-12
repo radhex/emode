@@ -1,0 +1,13 @@
+list: $/eprog/manager/models/order/columns.yaml
+modelClass: Eprog\Manager\Models\Order
+title: 'eprog.manager::lang.order'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '20'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/order/update/:id'
+filter: config_filter.yaml

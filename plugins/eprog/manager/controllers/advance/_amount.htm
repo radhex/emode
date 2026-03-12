@@ -1,0 +1,10 @@
+<?php
+
+
+$data = json_decode($record->data, true) ?? [];
+
+
+?>
+
+
+<?= number_format($data["advance"][$record->tax_form]["amount"] ?? 0,2,","," "); ?>

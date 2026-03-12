@@ -1,0 +1,12 @@
+list: $/eprog/manager/models/spam/columns.yaml
+modelClass: Eprog\Manager\Models\Spam
+title: 'eprog.manager::lang.spam'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '25'
+showSetup: false
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:         
+      prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/spam/preview/:id/:currentPage'

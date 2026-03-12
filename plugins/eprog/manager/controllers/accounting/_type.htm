@@ -1,0 +1,10 @@
+<?php
+
+use Eprog\Manager\Models\Accounting;
+
+$accounting = new Accounting();
+$type = $accounting->getTypeOptions();
+
+?>
+
+<?= $type[$record->type]; ?>

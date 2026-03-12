@@ -1,0 +1,10 @@
+<?php
+
+use Eprog\Manager\Models\Invoice;
+
+$invoice = new Invoice();
+$type = $invoice->getTypeOption();
+
+?>
+
+<?= $type[$record->type]; ?>

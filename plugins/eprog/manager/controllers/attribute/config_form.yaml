@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.attribute'
+form: $/eprog/manager/models/attribute/fields.yaml
+modelClass: Eprog\Manager\Models\Attribute
+defaultRedirect: eprog/manager/attribute
+create:
+    redirect: 'eprog/manager/attribute/update/:id'
+    redirectClose: eprog/manager/attribute
+update:
+    redirect: eprog/manager/attribute
+    redirectClose: eprog/manager/attribute

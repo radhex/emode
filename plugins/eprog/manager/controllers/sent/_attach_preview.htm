@@ -1,0 +1,6 @@
+<span style="color:#999;"><?= e(trans('eprog.manager::lang.attachments'))?>:</span>
+<?php if (is_array(json_decode($value, true))): ?>
+<?php foreach(json_decode($value, true) as $attach): ?>
+<span style="padding:3px"><a href="/<?= config('cms.backendUri') ?>/eprog/manager/feed/getattach/<?= Input::segment(6) ?>/<?= $attach["id"] ?>/<?= config("imap.folders.sent.folder") ?>"><i class="icon-paperclip"></i> <?= $attach["name"] ?></a/</span>
+<?php endforeach ?>
+<?php endif ?>

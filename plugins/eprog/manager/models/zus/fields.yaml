@@ -1,0 +1,39 @@
+fields:
+    year:
+        label: 'eprog.manager::lang.year'
+        oc.commentPosition: ''
+        span: left
+        type: dropdown
+        cssClass: col-sm-1
+    month:
+        label: 'eprog.manager::lang.month'
+        oc.commentPosition: ''
+        span: storm
+        type: dropdown
+        cssClass: col-sm-1
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true   
+        cssClass: col-sm-1
+
+tabs:
+    fields:
+        social:
+            tab: 'eprog.manager::lang.zus'
+            label: 'eprog.manager::lang.social_insurance'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: "col-sm-1 kwota"
+        health:
+            tab: 'eprog.manager::lang.zus'
+            label: 'eprog.manager::lang.health_insurance'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: "col-sm-1 kwota"
+

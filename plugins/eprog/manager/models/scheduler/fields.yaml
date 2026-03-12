@@ -1,0 +1,90 @@
+fields:
+    start:
+        label: 'eprog.manager::lang.start'
+        span: storm
+        oc.commentPosition: ''
+        type: datepicker
+        default: now
+        cssClass: col-sm-3
+    stop:
+        label: 'eprog.manager::lang.stop'
+        span: storm
+        oc.commentPosition: ''
+        type: datepicker
+        cssClass: col-sm-3
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true
+        cssClass: col-sm-1
+    name:
+        label: 'eprog.manager::lang.name'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-6
+    admin_id:
+        label: 'eprog.manager::lang.admin'
+        span: left
+        oc.commentPosition: ''
+        type: dropdown
+        cssClass: col-sm-3
+    user_id:
+        label: 'eprog.manager::lang.user'
+        span: storm
+        oc.commentPosition: ''
+        type: dropdown
+        cssClass: col-sm-3
+    type_id:
+        label: 'eprog.manager::lang.category'
+        span: left
+        oc.commentPosition: ''
+        type: dropdown
+        cssClass: col-sm-3
+    addtype:
+        label: ' '
+        span: storm
+        oc.commentPosition: ''
+        type: partial
+        cssClass: col-sm-1
+
+tabs:
+    fields:
+        desc:
+            label: 'eprog.manager::lang.desc'
+            tab: 'eprog.manager::lang.desc'
+            oc.commentPosition: ''
+            span: storm
+            type: richeditor
+            cssClass: col-sm-6
+        info:
+            label: 'eprog.manager::lang.info'
+            tab: 'eprog.manager::lang.info'
+            oc.commentPosition: ''
+            span:  storm
+            type: richeditor
+            cssClass: col-sm-6
+        public_files:
+            label: 'eprog.manager::lang.public_files'
+            tab: 'eprog.manager::lang.files'
+            span: storm
+            oc.commentPosition: ''
+            mode: file
+            useCaption: true
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-3
+        private_files:
+            label: 'eprog.manager::lang.private_files'
+            tab: 'eprog.manager::lang.files'
+            span: storm
+            oc.commentPosition: ''
+            mode: file
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-3
+
+
+     

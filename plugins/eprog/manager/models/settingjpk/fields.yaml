@@ -1,0 +1,16 @@
+tabs:
+    fields:
+
+
+        mode:
+            tab: 'eprog.manager::lang.setting_jpk'
+            label: 'eprog.manager::lang.ksef.mode_jpk'
+            span: left
+            type: radio
+            options:
+                production: 'eprog.manager::lang.ksef.mode_production'
+                test: 'eprog.manager::lang.ksef.mode_test'
+            cssClass: col-sm-1
+            containerAttributes:
+                style: "width:180px;"
+          

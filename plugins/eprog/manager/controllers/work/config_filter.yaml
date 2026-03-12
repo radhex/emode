@@ -1,0 +1,25 @@
+scopes:
+    project_id:
+        # Filter name
+        label: eprog.manager::lang.project
+        # Model Class name
+        modelClass: Eprog\Manager\Models\Project
+        # Model attribute to display for the name
+        nameFrom: name
+        # Filter scope
+        scope: filterByProject
+
+    status:
+        label: Status
+        type: group
+        conditions: status_id in (:filtered)
+
+    start:
+        label: eprog.manager::lang.start
+        type: daterange
+        conditions: start >= ':after' AND start <= ':before'
+        
+    stop:
+        label: eprog.manager::lang.stop
+        type: daterange
+        conditions: start >= ':after' AND start <= ':before'

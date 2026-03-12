@@ -1,0 +1,687 @@
+<?php 
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\Accountingvalue;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Eprog\Manager\Models\Advance;
+use Carbon\Carbon;
+use Backend\Config;
+
+$data = [];
+$advance = Advance::find($this->params[0] ?? 0);
+
+if($advance)
+$data = json_decode($advance->data, true);
+
+$lumps = "";
+foreach(Util::getTaxLump() as $k => $v)
+$lumps .= "<option value=\"".$k."\" ".(isset($data["advance"]["lump"]["rate"]) && $data["advance"]["lump"]["rate"] == $k ? "selected" : "").">".$v."</option>";
+
+
+?>
+<style>
+
+.valuetable {display:table; ;}
+.valuetable > div {display:table-row;background:#fff;  }
+.valuetable > div > div {white-space: nowrap;border-top:1px solid #eee;display:table-cell; height:34px;vertical-align:middle; font-size:13px; padding-left:5px;text-align:right; padding-right:5px; padding-top:4px;padding-bottom:4px;}
+.valuetable .date {color:green;width:150px}
+.valuetable .desc {width:300px;}
+.valuetable > div.head {background:var(--ml2color);}
+.valuetable > div.head div{font-size:12px}
+.valuetable input {text-align:right; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+.valuetable select {text-align:left; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+//.sum_netto,.sum_vat,.sum_brutto {font-weight:bold}
+
+.kpir > div > div {border-top:0px  !important; text-align:right  !important}
+.kpir > div > div input{text-align:right  !important}
+
+
+.head_pkwiu {display:none !important}
+.show_pkwiu {display:none !important}
+.head_cn {display:none !important}
+.show_cn {display:none !important}
+.head_gtu {display:none !important}
+.show_gtu {display:none !important}
+.value_netto,.value_vat,.value_brutto {margin-left:5px;}
+.required, .gtu_error, .qty_error, .qty_error_max, .curr_error {border:1px solid red !important}
+.desk {display:none; background:var(--ml2color);padding:5px;padding-left:6px;padding-right:6px;font-size:12px;text-align:right}
+
+.describe  > div > div {;border-top:0px} 
+.margin > div > div {;border-top:0px} 
+.readonly {background:#fafafa}
+
+@media (max-width: 1200px){
+	
+	.rwdesc1 {width:350px !important}
+	.rwdesc2 {width:250px !important}
+	.kpir {float:left !important}
+	.valuetable > div {display:block;}
+	.valuetable > div > div {display:block;text-align:left;height:38px !important;border-top:0px  !important}
+	.valuetable input {text-align:left !important}
+	.valuetable input.product {}
+	.valuetable select {margin-left:-4px !important}
+	.mob {display:none !important}
+	.desk {display:inline-block;width:130px}
+	.order {font-size:16px !important;}]	
+
+}
+
+</style>
+
+<div id="tax_line" style="display:none">
+<div class="valuetable" style="margin-top:10px;">
+<div>
+<div style="border:0"><?= e(trans("eprog.manager::lang.revenue"))?> <input type="text" size="15" name="advance[line][income]" value="<?= number_format((float)($data["advance"]["line"]["income"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right" /></div>
+<div style="border:0;padding-left:20px"><?= e(trans("eprog.manager::lang.costs"))?> <input type="text" size="15" name="advance[line][costs]" value="<?= number_format((float)($data["advance"]["line"]["costs"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right" /></div>
+<div style="border:0;padding-left:20px"><?= e(trans("eprog.manager::lang.income"))?> <input type="text" size="15" name="advance[line][profit]" value="<?= number_format((float)($data["advance"]["line"]["profit"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance readonly" style="text-align:right" readonly/></div>
+</div>
+</div>
+
+
+<div class="valuetable" style="margin-top:10px;">
+	<div class="mob head"><div style="width:288px;text-align:left"></div><div style="width:150px;text-align:right"><?= e(trans("eprog.manager::lang.cumulatively"))?> PLN</div><div style="width:150px;text-align:right"><?= e(trans("eprog.manager::lang.deducted"))?> PLN</div></div>
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.past_years_losses"))?></div>
+	<div><input type="text" size="15" name="advance[line][p1a]" value="<?= number_format((float)($data["advance"]["line"]["p1a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[line][p1b]" value="<?= number_format((float)($data["advance"]["line"]["p1b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+	
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.social_security_contributions"))?></div>
+	<div><input type="text" size="15" name="advance[line][p2a]" value="<?= number_format((float)($data["advance"]["line"]["p2a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[line][p2b]" value="<?= number_format((float)($data["advance"]["line"]["p2b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.health_insurance_contributions"))?></div>
+	<div><input type="text" size="15" name="advance[line][p3a]" value="<?= number_format((float)($data["advance"]["line"]["p3a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[line][p3b]" value="<?= number_format((float)($data["advance"]["line"]["p3b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.other_deductions"))?></div>
+	<div><input type="text" size="15" name="advance[line][p4a]" value="<?= number_format((float)($data["advance"]["line"]["p4a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[line][p4b]" value="<?= number_format((float)($data["advance"]["line"]["p4b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_exempt_income"))?></div>
+	<div><input type="text" size="15" name="advance[line][p5a]" value="<?= number_format((float)($data["advance"]["line"]["p5a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[line][p5b]" value="<?= number_format((float)($data["advance"]["line"]["p5b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.amount_increasing_tax_base"))?></div>
+	<div><input type="text" size="15" name="advance[line][p6]" value="<?= number_format((float)($data["advance"]["line"]["p6"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.total_deductions_from_income"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[line][p7]" value="<?= number_format((float)($data["advance"]["line"]["p7"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance readonly" style="text-align:right"/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_base"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[line][p8]" value="<?= number_format((float)($data["advance"]["line"]["p8"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance readonly" style="text-align:right"/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_on_tax_base"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[line][p9]" value="<?= number_format((float)($data["advance"]["line"]["p9"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance readonly" style="text-align:right"/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_deductions"))?></div>
+	<div><input type="text" size="15" name="advance[line][p10a]" value="<?= number_format((float)($data["advance"]["line"]["p10a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[line][p10b]" value="<?= number_format((float)($data["advance"]["line"]["p10b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_after_deductions"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[line][p11]" value="<?= number_format((float)($data["advance"]["line"]["p11"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.due_advance_payment_for_previous_months"))?></div>
+	<div><input type="text" size="15" name="advance[line][p12a]" value="<?= number_format((float)($data["advance"]["line"]["p12a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[line][p12b]" value="<?= number_format((float)($data["advance"]["line"]["p12b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><b><?= e(trans("eprog.manager::lang.total_advance_payments_year_to_date"))?></b></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[line][sum]" value="<?= number_format((float)($data["advance"]["line"]["sum"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><b><?= e(trans("eprog.manager::lang.due_advance_payment_for_month"))?></b></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[line][amount]" value="<?= number_format((float)($data["advance"]["line"]["amount"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+
+</div>
+</div>
+
+<div id="tax_scale" style="display:none">
+<div class="valuetable" style="margin-top:10px;">
+<div>
+<div style="border:0"><?= e(trans("eprog.manager::lang.revenue"))?> <input type="text" size="15" name="advance[scale][income]" value="<?= number_format((float)($data["advance"]["scale"]["income"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right" /></div>
+<div style="border:0;padding-left:20px"><?= e(trans("eprog.manager::lang.costs"))?> <input type="text" size="15" name="advance[scale][costs]" value="<?= number_format((float)($data["advance"]["scale"]["costs"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right" /></div>
+<div style="border:0;padding-left:20px"><?= e(trans("eprog.manager::lang.income"))?> <input type="text" size="15" name="advance[scale][profit]" value="<?= number_format((float)($data["advance"]["scale"]["profit"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance readonly" style="text-align:right" readonly/></div>
+</div>
+</div>
+
+
+<div class="valuetable" style="margin-top:10px;">
+	<div class="mob head"><div style="width:288px;text-align:left"></div><div style="width:150px;text-align:right"><?= e(trans("eprog.manager::lang.cumulatively"))?> PLN</div><div style="width:150px;text-align:right"><?= e(trans("eprog.manager::lang.deducted"))?> PLN</div></div>
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.past_years_losses"))?></div>
+	<div><input type="text" size="15" name="advance[scale][p1a]" value="<?= number_format((float)($data["advance"]["scale"]["p1a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[scale][p1b]" value="<?= number_format((float)($data["advance"]["scale"]["p1b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+
+	</div>
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.social_security_contributions"))?></div>
+	<div><input type="text" size="15" name="advance[scale][p2a]" value="<?= number_format((float)($data["advance"]["scale"]["p2a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[scale][p2b]" value="<?= number_format((float)($data["advance"]["scale"]["p2b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.other_deductions"))?></div>
+	<div><input type="text" size="15" name="advance[scale][p3a]" value="<?= number_format((float)($data["advance"]["scale"]["p3a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[scale][p3b]" value="<?= number_format((float)($data["advance"]["scale"]["p3b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_exempt_income"))?></div>
+	<div><input type="text" size="15" name="advance[scale][p4a]" value="<?= number_format((float)($data["advance"]["scale"]["p4a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[scale][p4b]" value="<?= number_format((float)($data["advance"]["scale"]["p4b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.amount_increasing_tax_base"))?></div>
+	<div><input type="text" size="15" name="advance[scale][p5]" value="<?= number_format((float)($data["advance"]["scale"]["p5"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.total_deductions_from_income"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[scale][p6]" value="<?= number_format((float)($data["advance"]["scale"]["p6"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance readonly" style="text-align:right"/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_base"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[scale][p7]" value="<?= number_format((float)($data["advance"]["scale"]["p7"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance readonly" style="text-align:right"/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_on_tax_base"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[scale][p8]" value="<?= number_format((float)($data["advance"]["scale"]["p8"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance readonly" style="text-align:right"/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_deductions"))?></div>
+	<div><input type="text" size="15" name="advance[scale][p9a]" value="<?= number_format((float)($data["advance"]["scale"]["p9a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[scale][p9b]" value="<?= number_format((float)($data["advance"]["scale"]["p9b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_after_deductions"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[scale][p10]" value="<?= number_format((float)($data["advance"]["scale"]["p10"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.due_advance_payment_for_previous_months"))?></div>
+	<div><input type="text" size="15" name="advance[scale][p11a]" value="<?= number_format((float)($data["advance"]["scale"]["p11a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[scale][p11b]" value="<?= number_format((float)($data["advance"]["scale"]["p11b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+
+	<div>
+	<div style="text-align:left"><b><?= e(trans("eprog.manager::lang.total_advance_payments_year_to_date"))?></b></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[scale][sum]" value="<?= number_format((float)($data["advance"]["scale"]["sum"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><b><?= e(trans("eprog.manager::lang.due_advance_payment_for_month"))?></b></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[scale][amount]" value="<?= number_format((float)($data["advance"]["scale"]["amount"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+
+
+</div>
+</div>
+
+<div id="tax_lump" style="display:none">
+<div class="valuetable" style="margin-top:10px;">
+<div>
+<div style="border:0"><?= e(trans("eprog.manager::lang.revenue"))?> <input type="text" size="15" name="advance[lump][income]" value="<?= number_format((float)($data["advance"]["lump"]["income"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right" /></div>
+<div style="border:0"><?= e(trans("eprog.manager::lang.lump"))?> % <select  name="advance[lump][rate]"><?=$lumps?></select></div>
+</div>
+</div>
+
+<div class="valuetable" style="margin-top:10px;">
+
+	<div class="mob head"><div style="width:288px;text-align:left"></div><div style="width:150px;text-align:right"><?= e(trans("eprog.manager::lang.monthly"))?> PLN</div><div style="width:150px;text-align:right"><?= e(trans("eprog.manager::lang.deducted"))?> PLN</div></div>
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.social_security_contributions"))?></div>
+	<div><input type="text" size="15" name="advance[lump][p1a]" value="<?= number_format((float)($data["advance"]["lump"]["p1a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[lump][p1b]" value="<?= number_format((float)($data["advance"]["lump"]["p1b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.health_insurance_contributions"))?></div>
+	<div><input type="text" size="15" name="advance[lump][p2a]" value="<?= number_format((float)($data["advance"]["lump"]["p2a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[lump][p2b]" value="<?= number_format((float)($data["advance"]["lump"]["p2b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.other_deductions"))?></div>
+	<div><input type="text" size="15" name="advance[lump][p3a]" value="<?= number_format((float)($data["advance"]["lump"]["p3a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[lump][p3b]" value="<?= number_format((float)($data["advance"]["lump"]["p3b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.income_after_deductions"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[lump][p4]" value="<?= number_format((float)($data["advance"]["lump"]["p4"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_on_income"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[lump][p5]" value="<?= number_format((float)($data["advance"]["lump"]["p5"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_deductions"))?></div>
+	<div><input type="text" size="15" name="advance[lump][p6a]" value="<?= number_format((float)($data["advance"]["lump"]["p6a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[lump][p6b]" value="<?= number_format((float)($data["advance"]["lump"]["p6b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.tax_after_deductions"))?></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[lump][p7]" value="<?= number_format((float)($data["advance"]["lump"]["p7"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.due_advance_payment_for_previous_months"))?></div>
+	<div><input type="text" size="15" name="advance[lump][p8a]" value="<?= number_format((float)($data["advance"]["lump"]["p8a"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="advance" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="advance[lump][p8b]" value="<?= number_format((float)($data["advance"]["lump"]["p8b"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><b><?= e(trans("eprog.manager::lang.total_advance_payments_year_to_date"))?></b></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[lump][sum]" value="<?= number_format((float)($data["advance"]["lump"]["sum"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+	<div>
+	<div style="text-align:left"><b><?= e(trans("eprog.manager::lang.due_advance_payment_for_month"))?></b></div>
+	<div></div>
+	<div><input type="text" size="15" name="advance[lump][amount]" value="<?= number_format((float)($data["advance"]["lump"]["amount"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="readonly" style="text-align:right" readonly/></div>
+	</div>
+
+
+
+</div>
+</div>
+
+<br><br>
+
+
+<script>
+
+	line_rate = '';
+	line_limit = '';
+	scale_treshold = '';
+	scale_treshold_up = '';
+	scale_treshold_down = '';
+	scale_reduce = '';
+
+
+	$(function() {  
+
+ 	 	  	 $('.advance').on('keyup', function (e) {
+
+ 	 	  	 	sumKwota();
+
+ 	 	  	 });
+
+ 	 	  	 $('.advance').on('paste input', function (e) {
+
+ 	 	  	 	inputCurrency(this, e);
+
+ 	 	  	 });
+
+
+ 	 	  	 $('.advance').on('focusout', function (e) {
+ 	 	  	     
+ 	 	  	 	inputCurrencyOut(this, e);
+
+ 	 	  	 });
+
+ 	 	  	 $('.advance').on('focusin', function (e) {
+ 	 	  	     
+ 	 	  	 	inputCurrencyIn(this, e);
+
+		 	 });
+
+  	 	  	 $('.lump').on('paste input', function (e) {
+
+  	 	  	 	inputLump(this, e);
+
+  	 	  	 });
+
+
+  	 	  	 $('.lump').on('focusout', function (e) {
+  	 	  	     
+  	 	  	 	inputLumpOut(this, e);
+
+  	 	  	 });
+
+  	 	  	 $('.lump').on('focusin', function (e) {
+  	 	  	     
+  	 	  	 	inputLumpIn(this, e);
+
+ 		 	 });
+
+ 		 	 $("select[name='advance[lump][rate]']").on('change', function (e) {
+
+ 		 	 	sumKwota();
+
+ 		 	 });
+
+ 	 	  	 getIncome(false);
+	
+ 	 	  	 shwoTax();
+	});
+
+	function sumLump() {
+
+		 if($("select[name='advance[lump][rate]']").val() == null) return;
+
+		 income = round2($("input[name='advance[lump][income]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+		 rate   = parseFloat($("select[name='advance[lump][rate]']").val().toString().replace(/\s+/g,'').replace(',', '.')) || 0;
+
+		 p1a = round2($("input[name='advance[lump][p1a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+		 $("input[name='advance[lump][p1b]']").val(number_format(p1a,2,","," "));
+
+		 p2a = round2($("input[name='advance[lump][p2a]']").val().toString().replace(/\s+/g,'').replace(',', '.')/2);
+		 $("input[name='advance[lump][p2b]']").val(number_format(p2a,2,","," "));
+
+		 p3a = round2($("input[name='advance[lump][p3a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+		 $("input[name='advance[lump][p3b]']").val(number_format(p3a,2,","," "));
+
+		 p4 = income - (p1a + p2a + p3a);
+		 if(p4 < 0) p4 = 0;
+		 $("input[name='advance[lump][p4]']").val(number_format(p4,2,","," "));
+
+		 p5 = p4 * (rate/100);
+		 $("input[name='advance[lump][p5]']").val(number_format(p5,2,","," "));
+
+		 p6a = round2($("input[name='advance[lump][p6a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+		 $("input[name='advance[lump][p6b]']").val(number_format(p6a,2,","," "));
+
+		 p7 = p5 - p6a;
+		 if(p7 < 0) p7 = 0;
+		 $("input[name='advance[lump][p7]']").val(number_format(p7,2,","," "));
+
+		 p8a = round2($("input[name='advance[lump][p8a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+		 $("input[name='advance[lump][p8b]']").val(number_format(p8a,2,","," "));
+
+		 amount = round0(p7);
+		 if(amount < 0) amount = 0;
+		 $("input[name='advance[lump][amount]']").val(number_format(amount,2,","," "));
+
+		 sum = round0(amount + p8a);
+		 $("input[name='advance[lump][sum]']").val(number_format(sum,2,","," "));
+		
+
+	}
+
+
+	function sumScale() {
+
+
+	    income = round2($("input[name='advance[scale][income]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    costs  = round2($("input[name='advance[scale][costs]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+
+	    profit = 0;
+	    if(income > costs) profit = round2(income - costs);console.log(costs);
+	    $("input[name='advance[scale][profit]']").val(number_format(profit,2,","," "));
+
+	    p1a = round2($("input[name='advance[scale][p1a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[scale][p1b]']").val(number_format(p1a,2,","," "));
+
+	    p2a = round2($("input[name='advance[scale][p2a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[scale][p2b]']").val(number_format(p2a,2,","," "));
+
+	    p3a = round2($("input[name='advance[scale][p3a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[scale][p3b]']").val(number_format(p3a,2,","," "));
+
+	    p4a = round2($("input[name='advance[scale][p4a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[scale][p4b]']").val(number_format(p4a,2,","," "));
+
+	    p5 = round2($("input[name='advance[scale][p5]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+
+	    p6 = 0;
+	    if(p1a + p2a + p3a + p4a - p5 > 0) p6 = round2(p1a + p2a + p3a + p4a - p5);
+	    $("input[name='advance[scale][p6]']").val(number_format(p6,2,","," "));
+
+	    p7 = 0;
+	    if(profit > p6) p7 = round2(profit - p6);
+	    $("input[name='advance[scale][p7]']").val(number_format(p7,2,","," "));
+
+	    p8 = 0;
+	    if(p7 <= scale_treshold) p8 = p7 * scale_treshold_down/100 - scale_reduce;
+	    else p8 = (scale_treshold * scale_treshold_down/100 - scale_reduce) + (p7 - scale_treshold) * scale_treshold_up/100;
+	    if(p8 < 0) p8 = 0;
+	    p8 = round2(p8);
+	    $("input[name='advance[scale][p8]']").val(number_format(p8,2,","," "));
+
+	    p9a = round2($("input[name='advance[scale][p9a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[scale][p9b]']").val(number_format(p9a,2,","," "));
+
+	    p10 = 0;
+	    if(p8 > p9a) p10 = round2(p8 - p9a);
+	    $("input[name='advance[scale][p10]']").val(number_format(p10,2,","," "));
+
+	    p11a = round0($("input[name='advance[scale][p11a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[scale][p11b]']").val(number_format(p11a,2,","," "));
+
+	    amount = 0;
+	    if(p10 > p11a) amount = round0(p10 - p11a);
+	    $("input[name='advance[scale][amount]']").val(number_format(amount,2,","," "));
+
+	    sum = round0(p11a + amount);
+	    $("input[name='advance[scale][sum]']").val(number_format(sum,2,","," "));
+		
+
+
+
+	}
+
+	function sumLine() {
+
+
+
+	    income = round2($("input[name='advance[line][income]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    costs  = round2($("input[name='advance[line][costs]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+
+	    profit = 0;
+	    if(income > costs) profit = round2(income - costs);
+	    $("input[name='advance[line][profit]']").val(number_format(profit,2,","," "));
+
+	    p1a = round2($("input[name='advance[line][p1a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[line][p1b]']").val(number_format(p1a,2,","," "));
+
+	    p2a = round2($("input[name='advance[line][p2a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[line][p2b]']").val(number_format(p2a,2,","," "));
+	
+	    p3a = round2($("input[name='advance[line][p3a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    if(p3a > line_limit) p3a = line_limit;
+	    $("input[name='advance[line][p3b]']").val(number_format(p3a,2,","," "));
+
+	    p4a = round2($("input[name='advance[line][p4a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[line][p4b]']").val(number_format(p4a,2,","," "));
+
+	    p5a = round2($("input[name='advance[line][p5a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[line][p5b]']").val(number_format(p5a,2,","," "));
+
+	    p6 = round2($("input[name='advance[line][p6]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+
+	    p7 = round2(p1a + p2a + p3a + p4a + p5a - p6);
+	    if(p7 < 0) p7 = 0;
+	    $("input[name='advance[line][p7]']").val(number_format(p7,2,","," "));
+
+	    p8 = 0;
+	    if(profit > p7) p8 = round2(profit - p7);
+	    $("input[name='advance[line][p8]']").val(number_format(p8,2,","," "));
+
+	    p9 = round2(p8 * line_rate/100);
+	    $("input[name='advance[line][p9]']").val(number_format(p9,2,","," "));
+
+	    p10a = round2($("input[name='advance[line][p10a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[line][p10b]']").val(number_format(p10a,2,","," "));
+
+	    p11 = 0;
+	    if(p9 > p10a) p11 = round2(p9 - p10a);
+	    $("input[name='advance[line][p11]']").val(number_format(p11,2,","," "));
+
+	    p12a = round0($("input[name='advance[line][p12a]']").val().toString().replace(/\s+/g,'').replace(',', '.'));
+	    $("input[name='advance[line][p12b]']").val(number_format(p12a,2,","," "));
+
+	    amount = round0(p11 - p12a);
+	    if(amount < 0) amount = 0;
+	    $("input[name='advance[line][amount]']").val(number_format(amount,2,","," "));
+
+	    sum = round0(p12a + amount);
+	    $("input[name='advance[line][sum]']").val(number_format(sum,2,","," "));
+
+	}
+
+
+	function sumKwota(){
+
+			if($('#Form-field-Advance-tax_form').val() == "line") sumLine();
+			if($('#Form-field-Advance-tax_form').val() == "scale") sumScale();
+			if($('#Form-field-Advance-tax_form').val() == "lump") sumLump();
+
+	}
+
+
+
+
+	$('#Form-field-Advance-year').on('select2:select', function(e) {
+		 getIncome();
+	});
+
+	$('#Form-field-Advance-month').on('select2:select', function(e) {
+		 getIncome();
+	});
+
+	$('#Form-field-Advance-tax_form').on('select2:select', function(e) {
+
+		 getIncome();
+		 shwoTax();
+	});
+
+
+
+	function shwoTax() {
+
+		$("#tax_line").hide(); 
+		$("#tax_scale").hide();
+		$("#tax_lump").hide(); 
+
+		if($('#Form-field-Advance-tax_form').val() == "line")  $("#tax_line").show(); 
+		if($('#Form-field-Advance-tax_form').val() == "scale")  $("#tax_scale").show(); 
+		if($('#Form-field-Advance-tax_form').val() == "lump")  $("#tax_lump").show(); 
+
+		//sumKwota();	
+
+	}
+
+	function getIncome(refresh = true) {
+
+	    $.ajax({
+	            type: "POST",
+	            data:"_token=<?= csrf_token() ?>",
+	            url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/getIncome/' + $("#Form-field-Advance-year").val() + '/' + $("#Form-field-Advance-month").val() + '/' + $("#Form-field-Advance-tax_form").val(),
+
+	            success: function(res) {   
+
+	            	data = JSON.parse(res);
+	            	line_rate = data.line_rate;
+	            	line_limit = data.line_limit;
+	            	scale_treshold = data.scale_treshold;
+	            	scale_treshold_up = data.scale_treshold_up;
+	            	scale_treshold_down = data.scale_treshold_down;
+	            	scale_reduce  = data.scale_reduce;
+
+	            	if(refresh){
+		            	income = data.income;  
+		            	$("input[name='advance[line][income]']").val(number_format(income,2,","," ")); 
+		            	$("input[name='advance[scale][income]']").val(number_format(income,2,","," "));     
+		            	$("input[name='advance[lump][income]']").val(number_format(income,2,","," "));  
+
+		            	costs = data.costs;
+		            	$("input[name='advance[line][costs]']").val(number_format(costs,2,","," ")); 
+		            	$("input[name='advance[scale][costs]']").val(number_format(costs,2,","," "));   
+
+		            	sum = data.sum;  
+		            	$("input[name='advance[line][p12a]']").val(number_format(sum,2,","," ")); 
+		            	$("input[name='advance[scale][p11a]']").val(number_format(sum,2,","," "));     
+		            	$("input[name='advance[lump][p8a]']").val(number_format(sum,2,","," "));    
+
+		            	lump = data.lump;
+		            	$("select[name='advance[lump][rate]']").val(lump).trigger("change");
+
+		            	social = data.social;
+		            	$("input[name='advance[line][p2a]']").val(number_format(social ,2,","," ")); 
+		            	$("input[name='advance[scale][p2a]']").val(number_format(social ,2,","," "));     
+		            	$("input[name='advance[lump][p1a]']").val(number_format(social ,2,","," ")); 
+
+		            	health = data.health;
+		            	$("input[name='advance[line][p3a]']").val(number_format(health ,2,","," "));    
+		            	$("input[name='advance[lump][p2a]']").val(number_format(health ,2,","," "));
+
+		            	sumKwota();
+	            	}
+	            },
+	            error: function(xhr,status,error) {
+	                 console.log(error);
+	            }
+	    });
+	
+	}     
+
+
+
+</script>
+
+
+
+
+
+
+
+ 
+
+
+        

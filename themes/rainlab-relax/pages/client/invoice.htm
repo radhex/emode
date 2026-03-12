@@ -1,0 +1,69 @@
+title = "Invoice"
+url = "/invoice/:id?"
+layout = "client"
+is_hidden = 0
+
+[invoice]
+==
+<?php
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Eprog\Manager\Models\Invoice;
+	
+function onInit()
+{ 
+	$this['currency'] = Settings::get("currency") == null ? "PLN" : Settings::get("currency");
+    if(Session::get("locale") == "pl")
+	$this['type'] = ['VAT','PRO Forma','Marża'];
+    if(Session::get("locale") == "en")
+    $this['type'] = ['VAT','PRO Forma','Margin'];
+    $invoice = new Invoice();
+    $this['type'] = $invoice->getTypeOption();
+
+}
+?>
+==
+<div class="row">
+        <div class="col-md-6" style="width:100%">
+            <h3> <i class="icon-file-text"></i> <a href="/invoice">{{ 'Faktury'|_ }}</a> {% if invoice.name %} » {{ invoice.nr}} {% endif %}</h3>
+        </div>
+    </div>
+    <div><br></div>
+
+   {% if not this.param.id %}
+        <div class="mtable mlist">
+        <div class="lhead">
+        <div  class="restitle">{{ 'Nr'|_ }}</div>
+        <div>{{ 'Data sprzedaży'|_ }}</div>
+        <div>{{ 'Typ'|_ }}</div>
+        <div class="resdate">{{ 'Wartość netto'|_ }}</div>
+        <div class="resdate">{{ 'Wartość brutto'|_ }}</div>
+        <div>{{ "Pobierz PDF"|_ }}</div>
+        </div>
+        {% for invoice in invoice %}        
+        <div> 
+        <div>{{invoice.nr}}</div>
+        <div   class="resdate">{% if(invoice.make_at) %}{{invoiceDate(invoice.make_at)}}{% endif %}</a></div>
+        <div>{{  type[invoice.type]  }}</div>
+        <div>{{ currency(invoice.netto) }} {{currency}}</div>
+        <div>{{ currency(invoice.brutto) }} {{currency}}</div>
+        <div><a href="/client/invoicepdf/{{invoice.id}}" class="btn-sm btn-primary oc-icon-file-pdf-o" style="style="color:#fff;padding-left:70px !important"/>PDF</a></div>
+        </div>
+        {% endfor  %}
+        {{ invoice.render|raw }}
+         </div>
+         
+    {% elseif invoice.name %}
+      
+        <div class="mtable mfield" style="float:left;">
+        <div><div class="fhead">{{ 'Miejsce'|_ }}</div><div>{{invoice.place}} {% if(invoice.place_at) %}{{clientDate(invoice.place_at)}}{% endif %}</div></div>
+        <div><div class="fhead">{{ 'Data sprzedaży'|_ }}</div><div>{% if(invoice.make_at) %}{{ clientDate(invoice.make_at) }} {% endif %}</div></div>
+        <div><div class="fhead">{{ 'Typ'|_ }}</div><div>{{  type[invoice.type]  }}</div></div>
+        <div><div class="fhead">{{ 'Wartość netto'|_ }}</div><div>{{ currency(invoice.netto) }} {{currency}}</div></div>
+        <div><div class="fhead">{{ 'Wartość brutto'|_ }}</div><div>{{ currency(invoice.brutto) }} {{currency}}</div></div>
+        <div><div class="fhead">{{ 'Zapłacono'|_ }}</div><div>{% if(invoice.pay_at) %}{{ clientDate(invoice.pay_at) }} {% endif %}</div></div>
+    
+        </div>
+      <a href="/client/invoiceprint/{{invoice.id}}" class="btn btn-primary oc-icon-print" style="margin-top:30px">{{ "Drukuj"|_ }}</a>&nbsp;&nbsp;
+      <a href="/client/invoicepdf/{{invoice.id}}" class="btn btn-primary oc-icon-file-pdf-o" style="margin-top:30px">{{ "Pobierz PDF"|_ }}</a>
+    {% endif %}
+

@@ -1,0 +1,13 @@
+list: $/eprog/manager/models/internal/columns.yaml
+modelClass: Eprog\Manager\Models\Internal
+title: 'eprog.manager::lang.internal'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '20'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/internal/update/:id'
+filter: config_filter.yaml

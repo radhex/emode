@@ -1,0 +1,9 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+    	<li><span  class="oc-icon-calendar-plus-o"></span><a href="<?= Backend::url('eprog/manager/scheduler') ?>"><?= e(trans('eprog.manager::lang.scheduler')) ?></a></li> 
+        <li><span  class="oc-icon-list-ul"></span><a href="<?= Backend::url('eprog/manager/type') ?>"><?= e(trans('eprog.manager::lang.categories')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?= $this->listRender() ?>

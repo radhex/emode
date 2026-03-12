@@ -1,0 +1,30 @@
+scopes:
+    category_id:
+        # Filter name
+        label: eprog.manager::lang.category
+        # Model Class name
+        modelClass: Eprog\Manager\Models\Category
+        # Model attribute to display for the name
+        nameFrom: name
+        # Filter scope
+        scope: filterByCategory
+
+    producent_id:
+        # Filter name
+        label: eprog.manager::lang.producents
+        # Model Class name
+        modelClass: Eprog\Manager\Models\Producent
+        # Model attribute to display for the name
+        nameFrom: name
+        # Filter scope
+        scope: filterByProducent
+
+        
+  
+
+
+
+
+
+
+

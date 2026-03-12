@@ -1,0 +1,10 @@
+name: eprog.manager::lang.products
+form: $/eprog/manager/models/product/fields.yaml
+modelClass: Eprog\Manager\Models\Product
+defaultRedirect: eprog/manager/product
+create:
+    redirect: 'eprog/manager/product/update/:id'
+    redirectClose: eprog/manager/product
+update:
+    redirect: eprog/manager/product
+    redirectClose: eprog/manager/product

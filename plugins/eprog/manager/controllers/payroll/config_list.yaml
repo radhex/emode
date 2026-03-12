@@ -1,0 +1,11 @@
+list: $/eprog/manager/models/payroll/columns.yaml
+modelClass: Eprog\Manager\Models\Payroll
+title: 'eprog.manager::lang.payroll'
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/payroll/update/:id'

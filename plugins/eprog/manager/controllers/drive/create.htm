@@ -1,0 +1,36 @@
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.access_drive') && BackendAuth::getUser()->hasAccess('eprog.manager.manage_drive')) : ?>
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout ']) ?>
+
+        <div class="form-buttons"><center>
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('eprog.manager::lang.drive_sending')) ?>"
+                    class="btn btn-primary oc-icon-paper-plane">
+                    <?= e(trans('eprog.manager::lang.drive_sent')) ?>
+                </button>
+            </div>
+        </div>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+
+
+    <?= Form::close() ?>
+ 
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/mailing') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+#RichEditor-formBody-body {height:100% !important}
+.fr-wrapper {height:100% !important}
+</style>    
+<?php endif ?>

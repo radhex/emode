@@ -1,0 +1,119 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-envelope"></span><a href="<?= Backend::url('eprog/manager/inbox') ?>"><?= e(trans('eprog.manager::lang.post')) ?></a></li> 
+        <li><a class="oc-icon-fire"  href="<?= Backend::url('eprog/manager/spam') ?>"><?= e(trans('eprog.manager::lang.spam'))?></a></li>
+        <li>ID: <?= Input::segment(6) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+
+    <?php
+
+        function addGetParamToUrl(&$url, $varName, $value)
+        {
+            // is there already an ?
+            if (strpos($url, "?"))
+            {
+                $url .= "&" . $varName . "=" . $value; 
+            }
+            else
+            {
+                $url .= "?" . $varName . "=" . $value;
+            }
+
+            return $url;
+        }
+
+        $url = 'eprog/manager/spam';
+        if(Input::segment(7) > 0)
+        $url = addGetParamToUrl($url,"page",Input::segment(7));
+        if(Input::has("term"))
+        $url = addGetParamToUrl($url,"term",Input::get("term"));
+
+
+    ?>
+    <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_inbox')) : ?>
+    <a href="/<?= config('cms.backendUri') ?>/eprog/manager/inbox/create?action=re&folder=spam&id=<?= Input::segment(6) ?>" class="btn btn-primary oc-icon-reply" style="margin-bottom:3px">
+       <?= e(trans('eprog.manager::lang.reply')) ?>
+    </a>
+    &nbsp;
+    <?php endif ?>
+
+    <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_inbox')) : ?>
+    <button
+         type="submit"
+         data-request="onInbox"
+         data-hotkey="ctrl+s, cmd+s"
+         data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+         data-request-confirm ="<?= e(trans('eprog.manager::lang.move_confirm_preview')) ?> <?= e(trans('eprog.manager::lang.inbox')) ?>?"
+         class="btn btn-primary oc-icon-inbox"  style="margin-right:3px;margin-bottom:3px;padding-right:12px">
+
+    </button>
+    <button
+         type="submit"
+         data-request="onSent"
+         data-hotkey="ctrl+s, cmd+s"
+         data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+         data-request-confirm ="<?= e(trans('eprog.manager::lang.move_confirm_preview')) ?> <?= e(trans('eprog.manager::lang.sent')) ?>?"
+         class="btn btn-primary oc-icon-paper-plane"  style="margin-right:3px;margin-bottom:3px;padding-right:12px">
+
+    </button>
+    <button
+         type="submit"
+         data-request="onDraft"
+         data-hotkey="ctrl+s, cmd+s"
+         data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+         data-request-confirm ="<?= e(trans('eprog.manager::lang.move_confirm_preview')) ?> <?= e(trans('eprog.manager::lang.draft')) ?>?"
+         class="btn btn-primary oc-icon-pencil"  style="margin-right:3px;margin-bottom:3px;padding-right:12px">
+
+    </button>
+    <button
+         type="submit"
+         data-request="onArchive"
+         data-hotkey="ctrl+s, cmd+s"
+         data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+         data-request-confirm ="<?= e(trans('eprog.manager::lang.move_confirm_preview')) ?> <?= e(trans('eprog.manager::lang.archive')) ?>?"
+         class="btn btn-primary oc-icon-archive"  style="margin-right:3px;margin-bottom:3px;padding-right:12px">
+
+    </button>
+    <button
+         type="submit"
+         data-request="onTrash"
+         data-hotkey="ctrl+s, cmd+s"
+         data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+         data-request-confirm ="<?= e(trans('eprog.manager::lang.inbox_delete_confirm_preview')) ?>"
+         class="btn btn-primary oc-icon-trash"  style="margin-right:3px;margin-bottom:3px;padding-right:12px">
+    </button>
+    <button
+        id="onPdf"
+        type="submit"
+        data-request="onPdf"
+        data-request-data="folder:'spam';"
+        style="margin-left:10px"
+        class="btn btn-primary oc-icon-download btn-toolbar" >
+        PDF
+    </button>
+
+    &nbsp;
+    <?php endif ?>
+    <a href="<?= Backend::url($url) ?>" class="btn btn-default oc-icon-arrow-left" style="margin-bottom:3px">
+        <?= e(trans('eprog.manager::lang.return')) ?>
+    </a>
+
+
+
+&nbsp;
+<?php if (!$this->fatalError): ?>
+
+    <div class="form-preview"  style="margin-top:15px">
+        <?= $this->formRenderPreview() ?>
+    </div>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e($this->fatalError) ?></p>
+<?php endif ?>
+
+
+
+
+

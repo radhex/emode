@@ -1,0 +1,55 @@
+tabs:
+    fields:
+        invoice_pl:
+            label: 'pl'
+            tab: 'eprog.manager::lang.status_invoice'
+            span: left
+            type: textarea
+            cssClass: col-sm-2
+        invoice_en:
+            label: 'en'
+            tab: 'eprog.manager::lang.status_invoice'
+            span: left
+            type: textarea
+            cssClass: col-sm-2
+        order_pl:
+            label: 'pl'
+            tab: 'eprog.manager::lang.status_order'
+            span: left
+            type: textarea
+            cssClass: col-sm-2
+        order_en:
+            label: 'en'
+            tab: 'eprog.manager::lang.status_order'
+            span: left
+            type: textarea
+            cssClass: col-sm-2
+        project_pl:
+            label: 'pl'
+            tab: 'eprog.manager::lang.status_project'
+            span: left
+            type: textarea
+            cssClass: col-sm-2
+        project_en:
+            label: 'en'
+            tab: 'eprog.manager::lang.status_project'
+            span: left
+            type: textarea
+            cssClass: col-sm-2
+        work_pl:
+            label: 'pl'
+            tab: 'eprog.manager::lang.status_work'
+            span: left
+            type: textarea
+            cssClass: col-sm-2
+        work_en:
+            label: 'en'
+            tab: 'eprog.manager::lang.status_work'
+            span: left
+            type: textarea
+            cssClass: col-sm-2
+
+
+
+
+

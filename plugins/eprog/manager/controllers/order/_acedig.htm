@@ -1,0 +1,34 @@
+<button type="button" id="acedig" value="dodaj" class="btn btn-primary btn-sm oc-icon-users"  style="height:32px;margin-top:22px;margin-left:-3px;padding-top:5px;padding-right:14px"><?= e(trans('eprog.manager::lang.ksef.cedig')) ?></button>
+
+<script>
+$(function() {   
+
+		$("#acedig").click(function() {
+			
+
+			$.ajax({
+			        type: "POST",
+			        data:"_token=<?= csrf_token() ?>",
+			        url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/cedig/' + $('#Form-field-Order-_addbuyer_nip').val(),
+
+			        success: function(res) {
+
+			        	data = JSON.parse(res);		
+			        	if(data.name) $('#Form-field-Order-_addbuyer_name').val(data.name);
+			        	if(data.adres1) $('#Form-field-Order-_addbuyer_adres1').val(data.adres1);
+			        	if(data.adres2) $('#Form-field-Order-_addbuyer_adres2').val(data.adres2);
+			        	if(data.country) $('#Form-field-Order-_addbuyer_country').val(data.country).trigger('change');
+
+			                   
+			        },
+			        error: function(xhr,status,error) {
+			             console.log(error);
+			        }
+
+			});
+			
+
+		});
+			 	  	 		 	
+});
+</script>

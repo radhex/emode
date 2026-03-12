@@ -1,0 +1,14 @@
+tabs:
+    fields:
+        backup_automat:
+            tab: 'eprog.manager::lang.setting_serwer'
+            label: 'eprog.manager::lang.backup_automat'
+            span: left
+            type: switch
+        serwer:
+            tab: 'eprog.manager::lang.setting_serwer'
+            span: full
+            type: partial
+            path: '$/eprog/manager/models/settingserwer/_serwer.htm'
+
+

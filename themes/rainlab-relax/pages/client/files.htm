@@ -1,0 +1,55 @@
+title = "Files"
+url = "/files"
+layout = "client"
+is_hidden = 0
+
+[account]
+paramCode = "code"
+forceSecure = 0
+
+[fileUploader]
+placeholderText = "responsiv.uploader::lang.upload"
+maxSize = 5
+fileTypes = ".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx,.xls,.xlsx,.zip,.rar,.txt"
+
+[imageUploader]
+placeholderText = "responsiv.uploader::lang.upload"
+maxSize = 5
+fileTypes = ".gif,.jpg,.jpeg,.png"
+imageWidth = 100
+imageHeight = 100
+imageMode = "crop"
+==
+<?php
+use Rainlab\User\Models\User;
+use RainLab\User\Facades\Auth;
+use Backend\Models\Preference;
+use Illuminate\Support\Facades\Config;
+
+function onInit()
+{ 
+    if(Auth::getUser() != null){
+
+        $this->fileUploader->bindModel('public_files', User::find(Auth::getUser()->id));
+        $this->imageUploader->bindModel('avatar', User::find(Auth::getUser()->id));
+    }
+    
+
+    $this['regions'] = User::getRegionOptions();
+    $this['sukces'] = "$.oc.flashMsg({text: '".trans('rainlab.user::lang.account.success_saved')."', 'class': 'success', 'interval': 2})";//"alert('".trans('rainlab.user::lang.account.success_saved')."')";
+  
+    $this['config_timezone']  = Config::get("app.timezone");
+    $pre = new Preference();
+    $this['timezone'] = $pre->getTimezoneOptions();
+
+   
+}
+?>
+==
+<div class="row">
+        <div class="col-md-6" style="width:100%;">
+            <h3> <i class="icon-files-o"></i>&nbsp;&nbsp;{{ 'Pliki'|_ }}</h3>
+            <br>
+             <div>{% component 'fileUploader'  %}</div>
+        </div>
+</div>

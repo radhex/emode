@@ -1,0 +1,10 @@
+<?php
+
+use Eprog\Manager\Models\Invoice;
+
+$invoice = new Invoice();
+$paytype = $invoice->getPaytypeOptions();
+
+?>
+
+<?= $paytype[$record->paytype]; ?>

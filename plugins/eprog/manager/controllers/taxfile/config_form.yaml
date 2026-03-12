@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.taxfile'
+form: $/eprog/manager/models/taxfile/fields.yaml
+modelClass: Eprog\Manager\Models\Taxfile
+defaultRedirect: eprog/manager/taxfile
+create:
+    redirect: 'eprog/manager/taxfile/update/:id'
+    redirectClose: eprog/manager/taxfile
+update:
+    redirect: 'eprog/manager/taxfile/update/:id'
+    redirectClose: eprog/manager/taxfile

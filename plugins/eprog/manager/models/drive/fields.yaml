@@ -1,0 +1,8 @@
+fields:
+    files:
+        label: 'eprog.manager::lang.files'
+        span: left
+        oc.commentPosition: ''
+        mode: file
+        type: Patroklo\FormWidgets\FileUpload
+        cssClass: col-sm-12

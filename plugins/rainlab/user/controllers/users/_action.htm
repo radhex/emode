@@ -1,0 +1,14 @@
+<?php
+use Eprog\Manager\Classes\Util;
+?>
+<a href="/<?= config('cms.backendUri') ?>/eprog/manager/inbox/create?action=to&email=<?= $record->email ?? '' ?>" class="btn-sm btn-primary  oc-icon-envelope" style="color:#fff;padding-right:7px" title="<?= e(trans('eprog.manager::lang.create')) ?>"></a>
+<a href="/<?= config('cms.backendUri') ?>/eprog/manager/inbox?term=<?= $record->email ?>" class="btn-sm btn-primary  oc-icon-inbox" style="color:#fff;padding-right:7px" title="<?= e(trans('eprog.manager::lang.inbox')) ?>"></a> 
+<a href="/<?= config('cms.backendUri') ?>/eprog/manager/sent?term=<?= $record->email?>" class="btn-sm btn-primary  oc-icon-paper-plane" style="color:#fff;padding-right:7px" title="<?= e(trans('eprog.manager::lang.sent')) ?>"></a> 
+<a href="/<?= config('cms.backendUri') ?>/eprog/manager/mail/create?user_id=<?= $record->id ?>" class="btn-sm btn-primary  oc-icon-comments" style="color:#fff;padding-right:7px" title="<?= e(trans('eprog.manager::lang.mail_one')) ?>"></a> 
+<?php if(Util::mode("4")) : ?><a href="/<?= config('cms.backendUri') ?>/eprog/manager/order/create?user_id=<?= $record->id ?>" class="btn-sm btn-primary  oc-icon-plus-circle" style="color:#fff;padding-right:7px" title="<?= e(trans('eprog.manager::lang.order_one')) ?>"></a><?php endif; ?> 
+<?php if(Util::mode("2")) : ?><a href="/<?= config('cms.backendUri') ?>/eprog/manager/invoice/create?user_id=<?= $record->id ?>" class="btn-sm btn-primary  oc-icon-file-text-o" style="color:#fff;padding-right:7px" title="<?= e(trans('eprog.manager::lang.invoice_one')) ?>"></a><?php endif; ?> 
+<?php if(Util::mode("5")) : ?><a href="/<?= config('cms.backendUri') ?>/eprog/manager/project/create?user_id=<?= $record->id ?>" class="btn-sm btn-primary  oc-icon-database" style="color:#fff;padding-right:7px" title="<?= e(trans('eprog.manager::lang.project_one')) ?>"></a><?php endif; ?>
+<?php if(BackendAuth::getUser()->is_superuser): ?>
+ <a href="/<?= config('cms.backendUri') ?>/eprog/manager/feed/login_user/<?= $record->id ?>" class="btn-sm btn-primary  oc-icon-lock" style="color:#fff;padding-right:7px" title="<?= e(trans('backend::lang.account.login')) ?>"></a>
+<?php endif ?>
+ 

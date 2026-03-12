@@ -1,0 +1,29 @@
+scopes:
+    type_id:
+        # Filter name
+        label: eprog.manager::lang.category
+        # Model Class name
+        modelClass: Eprog\Manager\Models\Type
+        # Model attribute to display for the name
+        nameFrom: name
+        # Filter scope
+        scope: filterByType
+
+
+    start:
+        label: eprog.manager::lang.start
+        type: daterange
+        conditions: start >= ':after' AND start <= ':before'
+    stop:
+        label: eprog.manager::lang.stop
+        type: daterange
+        conditions: stop >= ':after' AND stop <= ':before'
+        
+  
+
+
+
+
+
+
+

@@ -1,0 +1,22 @@
+
+<?php if(preg_match("/google-apps.folder/", $record->mimeType)) : ?>
+<a href="/<?= config('cms.backendUri') ?>/eprog/manager/driveshared?folder=<?= $record->gid ?>&name=<?= $record->name ?>" gid="<?= $record->gid ?>" style="font-weight:bold !important"><?= $record->name ?></a>
+<?php else: ?>
+
+<a href="javscript:" onclick="window.open('<?= $record->webViewLink ?>','Google', 'left=100,top=100,width=1200,height=700')" gid="<?= $record->gid ?>"><?= $record->name ?></a>
+
+<!--
+<?php if(preg_match("/drive.google.com/", $record->webViewLink)) : ?>
+<a href="javscript:" onclick="window.open('<?= str_replace("view","preview", $record->webViewLink) ?>','Google', 800, 600)"><?= $record->name ?></a>
+<?php else: ?>
+<a href="javscript:" onclick="window.open('<?= $record->webViewLink ?>','Google', 1024, 768)"><?= $record->name ?></a>
+<?php endif ?>
+-->
+
+<?php endif ?>
+
+
+
+
+
+

@@ -1,0 +1,2 @@
+<input type="radio" name="type" value="list" <?= ($value == "list" || $value == null) ? "checked" : "" ?>> <?= e(trans('eprog.manager::lang.send_to_list'))?>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="type" value="group"  <?= $value == "group" ? "checked" : "" ?>> <?= e(trans('eprog.manager::lang.send_to_group'))?>

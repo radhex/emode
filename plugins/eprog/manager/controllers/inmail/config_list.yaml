@@ -1,0 +1,13 @@
+list: $/eprog/manager/models/inmail/columns.yaml
+modelClass: Eprog\Manager\Models\Inmail
+title: 'eprog.manager::lang.inmail'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '20'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/inmail/preview/:id'
+filter: config_filter.yaml

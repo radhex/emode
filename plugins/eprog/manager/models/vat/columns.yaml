@@ -1,0 +1,16 @@
+columns:
+    id:
+        label: 'ID'
+        type: text
+        width: 50px
+    name:
+        label: 'eprog.manager::lang.name'
+        span: left
+        type: text
+        searchable: true
+        width: 90%
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+

@@ -1,0 +1,10 @@
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_mail')) : ?>
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-comments-o"></span><a href="<?= Backend::url('eprog/manager/mail') ?>"><?= e(trans('eprog.manager::lang.mail')) ?> - <?= e(trans('eprog.manager::lang.users')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.mail_all')) ?></li>
+	 </li>
+    </ul>
+<?php Block::endPut() ?>
+<?= $this->listRender() ?>
+<?php endif ?>

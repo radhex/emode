@@ -1,0 +1,61 @@
+<?php 
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\Accountingvalue;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+
+	$accounting = Accounting::find($id);
+	if($accounting){
+		 $currency = $accounting->currency ?? $currency;
+		 $data_document = json_decode($accounting->data_document, true);
+		 $approve_document = $accounting->approved ? 1 : 0;
+		 $this->xml = $accounting->xml;
+		 if(in_array($accounting->type,[1,5,6]))
+		 $this->kor = 1;
+	}
+
+
+
+?>
+
+
+
+
+<div class="valuetable describe sell">
+
+	<div><div><input  size="20" type="text" name="jpk[k33]" value="<?= isset($data_document["jpk"]) && $data_document["jpk"] != "" ? number_format(floatval($data_document["jpk"]["k33"] ?? 0) ?? 0,2,',',' ') : '' ?>"  class="kwota" style="text-align:right"></div><div style="text-align:left"><?= trans("eprog.manager::lang.k33") ?></div></div>
+	<div><div><input  size="20" type="text" name="jpk[k34]" value="<?= isset($data_document["jpk"]) && $data_document["jpk"] != "" ? number_format(floatval($data_document["jpk"]["k34"] ?? 0) ?? 0,2,',',' ') : '' ?>"  class="kwota" style="text-align:right"></div><div style="text-align:left"><?= trans("eprog.manager::lang.k34") ?></div></div>
+	<div><div><input  size="20" type="text" name="jpk[k35]" value="<?= isset($data_document["jpk"]) && $data_document["jpk"] != "" ? number_format(floatval($data_document["jpk"]["k35"] ?? 0) ?? 0,2,',',' ') : '' ?>"  class="kwota" style="text-align:right"></div><div style="text-align:left"><?= trans("eprog.manager::lang.k35") ?></div></div>
+	<div><div><input  size="20" type="text" name="jpk[k36]" value="<?= isset($data_document["jpk"]) && $data_document["jpk"] != "" ? number_format(floatval($data_document["jpk"]["k36"] ?? 0) ?? 0,2,',',' ') : '' ?>"  class="kwota" style="text-align:right"></div><div style="text-align:left"><?= trans("eprog.manager::lang.k36") ?></div></div>
+	<div><div><input  size="20" type="text" name="jpk[k360]" value="<?= isset($data_document["jpk"]) && $data_document["jpk"] != "" ? number_format(floatval($data_document["jpk"]["k360"] ?? 0) ?? 0,2,',',' ') : '' ?>"  class="kwota" style="text-align:right"></div><div style="text-align:left"><?= trans("eprog.manager::lang.k360") ?></div></div>
+
+</div>
+
+<script>
+
+$('.kwota').on('paste input', function (e) {
+
+	inputCurrency(this, e);
+
+});
+
+
+$('.kwota').on('focusout', function (e) {
+    
+	inputCurrencyOut(this, e);
+
+});
+
+$('.kwota').on('focusin', function (e) {
+    
+	inputCurrencyIn(this, e);
+
+});
+
+</script>

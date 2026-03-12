@@ -1,0 +1,67 @@
+<?php 
+use Eprog\Manager\Models\Work;
+
+    $work = Work::find(Input::segment(6));
+    if(!$work) die();
+
+?>
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-wrench"></span><a href="<?= Backend::url('eprog/manager/work') ?>"><?= e(trans('eprog.manager::lang.work')) ?></a></li>
+        <li>ID: <?= Input::segment(6) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/work') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar" style="margin-right:50px"><?= e(trans('eprog.manager::lang.return')) ?></a>
+        		<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_work")) : ?>
+                    <button
+                        type="button"
+                        class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                        data-request="onDelete"
+                        data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                        data-request-confirm="<?= e(trans('eprog.manager::lang.work_delete_confirm')) ?>">
+                        <?= e(trans('backend::lang.form.delete')) ?>
+                    </button>
+        		<?php endif; ?>
+
+                <a href="/<?= config('cms.backendUri') ?>/eprog/manager/inbox/create?action=to&email=<?= $work->project->user->email ?? '' ?>&title=<?= e(trans('eprog.manager::lang.project_one')).": ".$work->project->name." (".$work->project->id.") - ".e(trans('eprog.manager::lang.work_one')).": ".$work->name." (".$work->id.")"  ?>" class="btn btn-primary  oc-icon-envelope btn-toolbar"><?= e(trans('eprog.manager::lang.create')) ?></a> 
+                <a href="/<?= config('cms.backendUri') ?>/eprog/manager/inbox?term=<?= $work->name." (".$work->id.")" ?>" class="btn btn-primary  oc-icon-inbox btn-toolbar" ><?= e(trans('eprog.manager::lang.inbox')) ?></a> 
+                <a href="/<?= config('cms.backendUri') ?>/eprog/manager/sent?term=<?= $work->name." (".$work->id.")" ?>" class="btn btn-primary  oc-icon-paper-plane btn-toolbar"><?= e(trans('eprog.manager::lang.sent')) ?></a> 
+
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/work') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Work-project_id-group {width: 31.7%}
+    #Form-field-Work-status_id-group {width: 15%}
+
+}
+</style>

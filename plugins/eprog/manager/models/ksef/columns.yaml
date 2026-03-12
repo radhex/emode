@@ -1,0 +1,90 @@
+columns:
+    
+    invoiceType:
+        label: 'eprog.manager::lang.type'
+        type: partial
+        path: type
+        searchable: true
+    invoiceNumber:
+        label: 'eprog.manager::lang.nr'
+        type: text
+        searchable: true
+    ksefNumber:
+        label: 'eprog.manager::lang.ksef.nr'
+        type: text
+        searchable: true
+        invisible: true
+    netAmount:
+        label: 'eprog.manager::lang.net'
+        type: partial
+        path: netto
+        searchable: true
+        align: right
+    vatAmount:
+        label: 'eprog.manager::lang.vat'
+        type: partial
+        path: vat
+        searchable: true
+        align: right
+    grossAmount:
+        label: 'eprog.manager::lang.gross'
+        type: partial
+        path: brutto
+        searchable: true
+        align: right
+    currency:
+        label: 'eprog.manager::lang.currency'
+        type: text
+        searchable: true
+    sellerName:
+        label: 'eprog.manager::lang.seller'
+        type: text
+        searchable: true
+    sellerNip:
+        label: 'eprog.manager::lang.ksef.nip'
+        type: text
+        searchable: true
+    buyerName:
+        label: 'eprog.manager::lang.buyer'
+        type: text
+        searchable: true
+    buyerIdentifierValue:
+        label: 'eprog.manager::lang.ksef.nip'
+        type: text
+        searchable: true
+    invoicingMode:
+        label: 'eprog.manager::lang.ksef.mode'
+        type: text
+        searchable: true
+    saleDate:
+        label: 'eprog.manager::lang.make_at'
+        type: partial
+        path: saledate
+        searchable: true
+    issueDate:
+        label: 'eprog.manager::lang.create_at'
+        type: partial
+        path: date
+        searchable: true
+    permanentStorageDate:
+        label: 'eprog.manager::lang.ksef.ksefdate'
+        type: partial
+        path: ksefdate
+        searchable: true
+    accounting:
+        label: 'eprog.manager::lang.accounted'
+        type: partial
+        path: accounting
+        searchable: true
+    paid:
+        label: 'eprog.manager::lang.paid'
+        type: partial
+        path: paid
+        searchable: true
+    action:
+        label: 'eprog.manager::lang.action'
+        type: partial
+        sortable: false
+        path: action
+        cssClass: nowrap
+ 

@@ -1,0 +1,40 @@
+<?php
+
+    if(Input::has("page")) $page = Input::get("page"); else $page = 1;
+
+
+?>
+
+
+<style>
+.backupserwer {display:table; margin-top:30px;}
+.backupserwer > div {display:table-row;background:#fff;  }
+.backupserwer > div > div {border-top:1px solid #eee;display:table-cell; vertical-align:middle; font-size:12px; padding-left:5px;text-align:left; padding-right:5px; padding-top:5px;padding-bottom:5px;}
+.backupserwer .date {color:green;width:150px}
+.backupserwer .desc {width:300px;}
+.backupserwer > div.head {background:#eee}
+.backupserwer input {text-align:right; padding-right:2px;padding-left:2px;border:1px solid #ccc}
+
+@media screen and (max-width: 600px) {
+  
+    #backup-baton > div {width:60%}
+}
+
+</style>    <div id="test"></div>
+        <div id="backup-baton" style="display:table;margin-left:10px;margin-top:-10px"><div style="display:table-cell;">
+          <button
+              type="submit"
+              data-request="onGenerate"
+              data-request-confirm ="<?= e(trans('eprog.manager::lang.ksef.generate_confirm')) ?>"
+              data-hotkey="ctrl+s, cmd+s"
+              data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+              class="btn btn-primary oc-icon-download">
+              <?= e(trans('eprog.manager::lang.ksef.generate_p12')) ?>
+          </button>
+
+        </div>
+
+    <div style="position:relative;top:16px;padding-left:30px">
+        <div class="loading-indicator-container" style="position:relative;"><div  id="load" class="loading-indicator  indicator-center" style="background-color: transparent;display:none"><span></span></div></div>
+    </div></div>
+

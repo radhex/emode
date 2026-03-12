@@ -1,0 +1,10 @@
+[viewBag]
+==
+{% flash %}
+        <script>
+            // only execute once the DOM is loaded
+            document.addEventListener("DOMContentLoaded", function () {
+                $.oc.flashMsg({text: '{{ message }}', 'class': '{{ type }}', 'interval': 3})
+            }, false);
+        </script>
+    {% endflash %}

@@ -1,0 +1,91 @@
+<?php 
+use Eprog\Manager\Models\Project;
+
+    $project = Project::find(Input::segment(6));
+    if(!$project) die();
+
+    $period = "";
+    if($project) $period = date("m",strtotime($project->created_at))."_".date("Y",strtotime($project->created_at));
+
+?>
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-database"></span><a href="<?= Backend::url('eprog/manager/project') ?>"><?= e(trans('eprog.manager::lang.project')) ?></a></li>
+        <li>ID: <?= Input::segment(6) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/project') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar" style="margin-right:50px"><?= e(trans('eprog.manager::lang.return')) ?></a>
+
+        		<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_project")) : ?>
+                    <button
+                        type="button"
+                        class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                        data-request="onDelete"
+                        data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                        data-request-confirm="<?= e(trans('eprog.manager::lang.project_delete_confirm')) ?>">
+                        <?= e(trans('backend::lang.form.delete')) ?>
+                    </button>
+        		<?php endif; ?>
+
+                <a href="/<?= config('cms.backendUri') ?>/eprog/manager/inbox/create?action=to&email=<?= $project->user->email ?? '' ?>&title=<?= e(trans('eprog.manager::lang.project_one')).": ".$project->name." (".$project->id.")" ?>" class="btn btn-primary  oc-icon-envelope btn-toolbar"><?= e(trans('eprog.manager::lang.create')) ?></a> 
+                <a href="/<?= config('cms.backendUri') ?>/eprog/manager/inbox?term=<?= $project->name." (".$project->id.")" ?>" class="btn btn-primary  oc-icon-inbox btn-toolbar" ><?= e(trans('eprog.manager::lang.inbox')) ?></a> 
+                <a href="/<?= config('cms.backendUri') ?>/eprog/manager/sent?term=<?= $project->name." (".$project->id.")" ?>" class="btn btn-primary  oc-icon-paper-plane btn-toolbar" style="margin-right:50px"><?= e(trans('eprog.manager::lang.sent')) ?></a> 
+
+                <button
+                    id="onPdf"
+                    type="submit"
+                    data-request="onPdf"
+                    class="btn btn-primary oc-icon-download btn-toolbar" >
+                    <?= e(trans('eprog.manager::lang.download')) ?> PDF
+                </button>
+                <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_accounting")) : ?>
+                <button
+                    id="ksefPdfGenerate"
+                    type="button"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+                    onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savefile/project/<?= Input::segment(6) ?>/<?= $period ?>/onPdfGenerate','<?= e(trans('eprog.manager::lang.file_confirm')) ?>', 450, 300)"
+                    style="margin-left:-5px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;"
+                ></button>
+                <?php endif ?>
+  
+
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/project') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Project-status_id-group {width: 15%}
+    #Form-field-Project-user_id-group {width: 25%}
+    #Form-field-Project-staff-group {width: 25%}
+
+}
+</style>

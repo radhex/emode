@@ -1,0 +1,261 @@
+<?php 
+use Eprog\Manager\Models\Invoicevalue;
+use Eprog\Manager\Models\Product;
+use Eprog\Manager\Classes\Util;
+use Eprog\Manager\Models\Attribute;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Carbon\Carbon;
+use Backend\Config;
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+	if($id == 0) return;
+	$product = Product::find($id);
+
+	$attributes = Attribute::where("disp","=",1)->get();
+	$productattributes = json_decode($product->attribute, true) ?? [];
+	$values = [];
+
+
+
+
+	$sumnetto = 0;
+	$sumbrutto = 0;
+	$sumvat = 0;
+	$l = 0;
+
+	function array_keys_exist($keys, $array){
+	    foreach($keys as $key){
+	        if(!array_key_exists($key, $array)) {
+	            return false;
+	        }
+	    }
+	    return true;
+	}
+
+?>
+<style>
+/*
+.valuetable {display:table; ;}
+.valuetable > div {display:table-row;background:#fff;  }
+.valuetable > div > div {border-top:1px solid #eee;display:table-cell; vertical-align:top; font-size:12px; padding-left:5px;text-align:left; padding-right:5px; padding-top:5px;padding-bottom:5px;}
+.valuetable .date {color:green;width:150px}
+.valuetable .desc {width:300px;}
+.valuetable > div.head {background:var(--ml2color)}
+.valuetable input {text-align:left; padding:2px;border:1px solid #ccc}
+.valuetable select {padding:2px}
+*/
+.valuetable {display:table; ;}
+.valuetable > div {display:table-row;background:#fff;  }
+.valuetable > div > div {border-top:1px solid #eee;display:table-cell; height:34px;vertical-align:middle; font-size:13px; padding-left:5px;text-align:left; padding-right:5px; padding-top:4px;padding-bottom:4px;}
+.valuetable .date {color:green;width:150px}
+.valuetable .desc {width:300px;}
+.valuetable > div.head {background:var(--ml2color)}
+.valuetable input {text-align:left; padding-right:5px;padding-left:5px;padding-top:5px;padding-bottom:5px;border:1px solid #ccc;}
+.valuetable select {padding:5px}
+
+</style>
+
+
+<div id="attribute">
+<div class="valuetable">
+<div class="head"><div style="width:330px;text-align:left"><?= lcfirst(e(trans("eprog.manager::lang.attribute"))) ?></div><div style="width:330px;text-align:left"><?= lcfirst(e(trans("eprog.manager::lang.attributevalue"))) ?></div><div></div></div>
+<?php foreach($productattributes as $key => $val) : ?>
+
+<div style="padding-top:7px">
+<div>
+	<?= Attribute::find($key)->name ?? ''  ?> <?php if(isset(Attribute::find($key)->unit->short)) : ?>[<?= Attribute::find($key)->unit->short ?? ''  ?>]<?php endif; ?>
+</div>
+<div>
+<input type="text" size="40" name="value_<?= $key  ?>" value="<?= $val; ?>" style="text-align:left"/>
+</div>
+
+<div>
+<button data-request="onSave" data-request-data="redirect:0,edit_value_flag:1,atrr:<?= $key  ?>" data-request-update=" 'attribute' : '#attribute'" type="button" name="btn" value="dodaj" class="btn btn-primary btn-xs oc-icon-floppy-o" style="padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px"><?= e(trans('eprog.manager::lang.save')) ?></button>
+<button data-request="onSave" data-request-data="redirect:0,delete_value_flag:1,atrr:<?= $key  ?>" data-request-update=" 'attribute' : '#attribute'" data-request-confirm="<?= e(trans('eprog.manager::lang.task_confirm')) ?>"  type="button" name="btn" value="dodaj" class="btn btn-primary btn-xs oc-icon-trash"  style="padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px"><?= e(trans('eprog.manager::lang.del')) ?></button>
+</div>
+
+
+</div>
+
+<?php endforeach; ?>
+
+<?php if(!array_keys_exist($attributes->pluck("id")->toArray(), $productattributes)) : ?>	
+<div style="padding-top:7px">
+<div>
+<select name="new_attr">
+<?php foreach($attributes as $attribute) : ?>	
+<?php if(!array_key_exists($attribute->id,$productattributes)) : ?>	
+<option value="<?= $attribute->id  ?>"><?= $attribute->name  ?> <?php if(isset($attribute->unit->short)) : ?>[<?= $attribute->unit->short ?? ''  ?>]<?php endif; ?></option>
+<?php endif; ?>
+<?php endforeach; ?>
+</select>
+</div>
+<div>
+<input type="text" size="40" name="new_value" style="text-align:left"/>
+</div>
+
+<div>
+<button data-request="onSave" data-request-data="redirect:0,add_value_flag:1" data-request-update=" 'attribute' : '#attribute'" type="button" name="btn" value="dodaj" class="btn btn-primary btn-xs oc-icon-plus-circle" style="padding-top:5px;padding-bottom:5px;padding-left:10px;padding-right:10px" onclick="valid(this, this.form)"><?= e(trans('eprog.manager::lang.add')) ?></button>
+</div>
+
+
+</div>
+<?php endif; ?>
+
+</div>
+<br>
+<div style="margin-left:-40px;padding-top:4px"></div>
+</div>
+
+
+
+<script>
+$(function() {   
+
+		$("#btnadd").click(function() {
+
+			modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/product','<?= e(trans('eprog.manager::lang.products')) ?>', 600, 420);;
+
+		});
+		
+		addProduct = function(id,name,netto,vat) {
+				
+			$( "input[name='add_product']" ).val(name);	
+			$( "input[name='add_netto']" ).val(netto.replace(".",","));
+			$( "input[name='add_vat']" ).val(vat);
+
+		        $(".ui-dialog-titlebar-close").click();	
+			$("#dialog").dialog('close');		
+
+		}
+ 		
+ 	 	edit = function(id) {
+		      
+			prod = '<input type="text"  size="40" class="evalue" name="edit_product' + id + '" value="' + $("#val" + id + " .prod").html()  + '"  onClick="this.form.btn' + id + '.disabled=false"  style="text-align:left"/>';
+			qty = '<input type="text"  size="5" class="evalue" name="edit_quantity' + id + '" value="' + $("#val" + id + " .qty").html()  + '"  onClick="this.form.btn' + id + '.disabled=false" style="text-align:left"/>';
+			meas = '<input type="text"  size="5" class="evalue" name="edit_measure' + id + '" value="' + $("#val" + id + " .meas").html()  + '"  onClick="this.form.btn' + id + '.disabled=false" style="text-align:left"/>';
+			net = '<input type="text"  size="10" class="evalue" name="edit_netto' + id + '" value="' + $("#val" + id + " .net").html()  + '"  onClick="this.form.btn' + id + '.disabled=false"/>';
+			vat = '<input type="text"  size="5" class="evalue" name="edit_vat' + id + '" value="' + $("#val" + id + " .vat").html()  + '"  onClick="this.form.btn' + id + '.disabled=false"/>';
+
+
+			but = '<button data-request="onSave" data-request-data="redirect:0,edit_value_flag:1,edit_value_id:' + id + '" data-request-update=" \'value\': \'#value\'" type="button" name="btn' + id + '" value="" class="btn btn-secondary btn-xs" onclick="validrow(this, this.form, ' + id + ')"><?= e(trans('eprog.manager::lang.save')) ?></button>';
+			but += ' <button data-request="onSave" data-request-data="redirect:0,del_value_flag:1,del_value_id:' + id + '" data-request-confirm="<?= e(trans('eprog.manager::lang.task_confirm')) ?>" data-request-update=" \'value\' : \'#value\'" type="button" name="btnd" value="" class="btn btn-secondary btn-xs"><?= e(trans('eprog.manager::lang.del')) ?></button>';
+			$("#val" + id + " .prod").html(prod);
+			$("#val" + id + " .qty").html(qty);
+			$("#val" + id + " .meas").html(meas);
+			$("#val" + id + " .net").html(net);
+			$("#val" + id + " .vat").html(vat);
+
+			$("#val" + id + " .but").html(but);
+
+ 	 	
+
+ 	 	};
+
+ 	 	validrow = function(el, form, id) {
+
+
+
+			eval("form.edit_netto" + id).value = eval("form.edit_netto" + id).value.replace(",",".").replace(" ","");
+			if(isIntBase(eval("form.edit_netto" + id).value)) eval("form.edit_netto" + id).value += ".00";	
+
+
+			if(eval("form.edit_product" + id).value == '' || eval("form.edit_quantity" + id).value == '' || eval("form.edit_measure" + id).value == '' || eval("form.edit_netto" + id).value == '' || eval("form.edit_vat" + id).value == ''){
+				el.disabled = true;
+				alert("<?= e(trans('eprog.manager::lang.valid_fields')) ?>");
+			}
+
+			if(!isNumber(eval("form.edit_vat" + id).value)){
+			
+				el.disabled = true;
+				alert("<?= e(trans('eprog.manager::lang.valid_vat')) ?>");
+			}
+
+			if(!isInt(eval("form.edit_quantity" + id).value)){
+			
+				el.disabled = true;
+				alert("<?= e(trans('eprog.manager::lang.valid_qty')) ?>");
+			}
+
+
+			if(!isNumeric(eval("form.edit_netto" + id).value)){
+			
+				el.disabled = true;
+				alert("<?= e(trans('eprog.manager::lang.valid_price')) ?>");
+			}
+
+
+
+		}
+
+ 	 	valid = function(el, form) {
+
+			form.add_netto.value = form.add_netto.value.replace(",",".").replace(" ","");
+			if(isIntBase(form.add_netto.value)) form.add_netto.value += ".00";	
+
+			if(form.add_product.value == '' || form.add_quantity.value == '' || form.add_measure.value == '' || form.add_netto.value == '' || form.add_vat.value == ''){
+				el.disabled = true;
+				alert("<?= e(trans('eprog.manager::lang.valid_fields')) ?>");
+			}
+
+			if(!isNumber(form.add_vat.value)){
+			
+				el.disabled = true;
+				alert("<?= e(trans('eprog.manager::lang.valid_vat')) ?>");
+			}
+
+			if(!isInt(form.add_quantity.value)){
+			
+				el.disabled = true;
+				alert("<?= e(trans('eprog.manager::lang.valid_qty')) ?>");
+			}
+
+
+			if(!isNumeric(form.add_netto.value)){
+			
+				el.disabled = true;
+				alert("<?= e(trans('eprog.manager::lang.valid_price')) ?>");
+			}
+
+
+		}
+
+
+
+
+		isInt =  function (value) {
+
+  			return isIntBase(value) && value > 0;
+			
+		}
+
+		isNumber =  function (value) {
+
+  			return isIntBase(value) && value >= 0;
+			
+		}
+
+		isIntBase =  function (value) {
+
+  			return (parseFloat(value) == parseInt(value)) && !isNaN(value)  && value.toString().indexOf(',') === -1 && value.toString().indexOf('.') === -1;
+			
+		}
+
+		isNumeric = function (value){
+   			value = value.replace("-",""); 
+   			var regex  = /^\d+(?:\.\d{0,2})$/; 
+   			if (regex.test(value)) return true; else return false;
+ 		} 
+
+ 	 	  	 		 	
+});
+</script>
+
+
+
+
+ 
+
+
+        

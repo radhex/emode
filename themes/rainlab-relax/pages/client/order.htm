@@ -1,0 +1,59 @@
+title = "Order"
+url = "/order/:id?"
+layout = "client"
+is_hidden = 0
+
+[order]
+==
+<?php
+use Eprog\Manager\Models\SettingConfig as Settings;
+
+	
+function onInit()
+{ 
+	$this['currency'] = Settings::get("currency") == null ? "PLN" : Settings::get("currency");
+
+}
+?>
+==
+<div class="row">
+        <div class="col-md-6" style="width:100%">
+            <h3> <i class="oc-icon-plus-circle"></i>&nbsp;&nbsp;<a href="/order">{{ 'Zamówienia'|_ }}</a> {% if order.name %} » {{ order.nr}} {% endif %}</h3>
+        </div>
+    </div>
+    <div><br></div>
+
+   {% if not this.param.id %}
+        <div class="mtable mlist">
+        <div class="lhead">
+        <div  class="restitle">{{ 'Nr'|_ }}</div>
+        <div>{{ 'Data'|_ }}</div>
+        <div class="resdate">{{ 'Wartość netto'|_ }}</div>
+        <div class="resdate">{{ 'Wartość brutto'|_ }}</div>
+        <div>{{ "Pobierz PDF"|_ }}</div>
+        <div>{{ "Pobierz ProForma"|_ }}</div>
+        </div>
+        {% for order in order %}        
+        <div> 
+        <div>{{order.nr}}</div>
+        <div   class="resdate">{% if(order.create_at) %}{{invoiceDate(order.create_at)}}{% endif %}</a></div>
+        <div>{{ currency(order.netto) }} {{currency}}</div>
+        <div>{{ currency(order.brutto) }} {{currency}}</div>
+        <div><a href="/client/orderpdf/{{order.id}}" class="btn-sm btn-primary oc-icon-file-pdf-o" style="style="color:#fff;padding-left:70px !important"/>PDF</a></div>
+        <div><a href="/client/proformapdf/{{order.id}}" class="btn-sm btn-primary oc-icon-file-pdf-o" style="style="color:#fff;padding-left:70px !important"/>ProForma</a></div>
+        </div>
+        {% endfor  %}
+        {{ order.render|raw }}
+         </div>
+         
+    {% elseif order.name  %}
+      
+        <div class="mtable mfield" style="float:left;">
+        <div><div class="fhead">{{ 'Miejsce'|_ }}</div><div>{{order.place}} {% if(order.place_at) %}{{clientDate(order.place_at)}}{% endif %}</div></div>
+        <div><div class="fhead">{{ 'Data'|_ }}</div><div>{% if(order.create_at) %}{{ clientDate(order.create_at) }} {% endif %}</div></div>
+        <div><div class="fhead">{{ 'Wartość brutto'|_ }}</div><div>{{ currency(order.brutto) }} {{currency}}</div></div>
+        <div><div class="fhead">{{ 'Wartość netto'|_ }}</div><div>{{ currency(order.netto) }} {{currency}}</div></div>    
+        </div>
+      <a href="/client/orderprint/{{order.id}}" class="btn btn-primary oc-icon-print" style="margin-top:30px">{{ "Drukuj"|_ }}</a>&nbsp;&nbsp;
+      <a href="/client/orderpdf/{{order.id}}" class="btn btn-primary oc-icon-file-pdf-o" style="margin-top:30px">{{ "Pobierz PDF"|_ }}</a>
+    {% endif %}

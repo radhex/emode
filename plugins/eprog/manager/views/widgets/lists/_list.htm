@@ -1,0 +1,321 @@
+<?php
+
+use Eprog\Manager\Classes\Util;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Vat;
+/*
+	$vars = ["brutto"=> 0,"netto"=> 0,"vat"=>0,"quantity"=> 0];
+	$sum = false;
+	foreach ($columns as $key => $column) {
+		if(array_key_exists($column->getName(),$vars)){
+		 	 $sum = true;
+			 $vars[$key] = $this->prepareModel()->sum($key); 
+		}
+	}
+*/
+
+
+$model = clone $this->prepareModel(); 
+$table = $model->getModel()->table;
+$allRecords = $model->get(); 
+
+if(in_array($table,["eprog_manager_order","eprog_manager_invoice","eprog_manager_accounting","eprog_manager_ksef","eprog_manager_product"])){
+
+        $columnsToSum = ["netto","vat","brutto"];
+        if($table == "eprog_manager_ksef")
+        $columnsToSum = ["netAmount","vatAmount","grossAmount"];
+
+        $vars = [];
+        $sum = false;
+
+        foreach ($allRecords as $record) {
+            $currency = $record->currency;
+            if (!isset($vars[$currency])) {
+                $vars[$currency] = array_fill_keys($columnsToSum, 0);
+            }
+            foreach ($columnsToSum as $col) {
+                if (isset($record->$col)) {
+                    $vars[$currency][$col] += (float)$record->$col;
+                    if ($vars[$currency][$col] > 0) {
+                        $sum = true;
+                    }
+                }
+            }
+        }
+
+        if(isset($vars['PLN'])){
+            $pln = ['PLN' => $vars['PLN']];
+            unset($vars['PLN']);
+            $vars = $pln + $vars; 
+        }
+
+}
+
+if(in_array($table,["eprog_manager_accounting"])){
+
+
+        for ($i = 10; $i <= 69; $i++) ${"p".$i} = 0;
+        $p360 = 0;
+
+
+        $kpir = [];
+        $kpir["revenue"] = 0;
+        $kpir["costs"] = 0;
+        $kpir["income"] = 0;
+        $kpir["lump"] = 0;
+
+
+        $tax_form =  User::where("firm_nip", Session::get("selected.nip") ?? '')->first()->tax_form ?? "";
+        if($tax_form  == "") $tax_form = Settings::get("tax_form") ?? ""; 
+
+
+        $sum = false;
+
+        foreach ($allRecords as $record) {
+
+            for($i = 10; $i <= 47; $i++) 
+            ${"k".$i} = 0;
+            $k360 = 0;
+
+            if (isset($record->data_document)) {
+                $data = json_decode($record->data_document, true);
+
+                if (!empty($data['vat_summary'])) {
+
+                    if($record->mode == 0 && $record->approve == 1 && $record->vat_register > 0){
+
+                        $type = Vat::find($record->vat_register)->type ?? 1;
+                        $vats = json_decode($record->data_document,true)['vat_summary'] ?? [];
+                        $base = $vats['net_zw'] + $vats['net_0'] + $vats['net_5'] + $vats['net_8'] + $vats['net_23'];
+                        $basetax = $vats['vat_5'] + $vats['vat_8'] + $vats['vat_23'];
+
+
+                        if($type == 1) $k16 = $vats['vat_5'];
+                        if($type == 1) $k18 = $vats['vat_8'];
+                        if($type == 1) $k20 = $vats['vat_23'];
+                        if($type == 9) $k24 = $basetax;
+                        if($type == 16) $k26 = $basetax;
+                        if($type == 10) $k28 = $basetax;
+                        if($type == 18) $k30 = $basetax;
+                        if($type == 12) $k32 = $basetax;
+                        if($type == 20) $k33 = $basetax;
+                        if($type == 21) $k34 =  $base;
+                        if($type == 22) $k35 = $basetax;
+                        if($type == 23) $k36 = $basetax;
+                        if($type == 28) $k360 = $basetax;
+
+                        $p16 += $k16;
+                        $p18 += $k18;
+                        $p20 += $k20;
+                        $p24 += $k24;
+                        $p26 += $k26;
+                        $p28 += $k28;
+                        $p30 += $k30;
+                        $p33 += $k33;
+                        $p34 += $k34;
+                        $p35 += $k35;
+                        $p36 += $k36;
+                        $p360 += $k360;
+
+                    }
+
+                    if($record->mode == 1 && $record->approve == 1 && $record->vat_register > 0){
+
+                        $type = Vat::find($record->vat_register)->type ?? 2;
+                        $vats = json_decode($record->data_document,true)['vat_summary'] ?? [];
+
+                        $net = $vats['net_23'] + $vats['net_8'] + $vats['net_5']; 
+                        $vat = $vats['vat_23'] + $vats['vat_8'] + $vats['vat_5'];
+                    
+                        if($type == 4)  $k41 = $vat; 
+                        if($type == 2)  $k43 = $vat;
+                        if($type == 24) $k44 = $vat; 
+                        if($type == 25) $k45 = $vat; 
+                        if($type == 26) $k46 = $vat; 
+                        if($type == 27) $k47 = $vat; 
+
+                        $p41 += $k41;
+                        $p43 += $k43;
+                        $p44 += $k44;
+                        $p45 += $k45;
+                        $p46 += $k46;
+                        $p47 += $k47;
+
+                    }
+
+                }
+
+                if (!empty($data['kpir'])) {
+
+                    if($record->tax_form == "lump"){
+                        if($record->mode == 0 && $record->approve == 1)
+                        $kpir["revenue"] += (float)($data['kpir']['ewpz9'] ?? 0);
+
+                        if($record->mode == 1 && $record->approve == 1)
+                        $kpir["costs"] += (float)($data['kpir']['ewpz12'] ?? 0);
+
+                        $lump = (float)$data['lump'] ?? '';
+                        $rate = $lump / 100;
+                        $tax  = round(($data['kpir']['ewpz9'] ?? 0) * $rate, 2);
+                        $kpir["lump"] += $tax;
+                    }
+                    if($record->tax_form == "scale" || $record->tax_form == "line"){
+                        if($record->mode == 0 && $record->approve == 1)
+                        $kpir["revenue"] += (float)($data['kpir']['kpir9'] ?? 0) + (float)($data['kpir']['kpir10'] ?? 0);
+
+                        if($record->mode == 1 && $record->approve == 1)
+                        $kpir["costs"] += (float)($data['kpir']['kpir12'] ?? 0) + (float)($data['kpir']['kpir13'] ?? 0) + (float)($data['kpir']['kpir14'] ?? 0) + (float)($data['kpir']['kpir15'] ?? 0);
+
+                    }
+                    $kpir["income"]  = $kpir["revenue"] -  $kpir["costs"];
+                }
+       
+            }
+        }
+
+        $p38 = round($p16) + round($p18) + round($p20) + round($p24) + round($p26) + round($p28) + round($p30) + round($p32) + round($p33) + round($p34) - round($p35) - round($p36) - round($p360);
+
+        $p48 = $p41 + $p43 + $p44 + $p45 + $p46 + $p47;
+        $p51 = $p38 - $p48;
+
+}
+
+if(in_array($table,["eprog_manager_internal"])){
+
+        $columnsToSum = ["amount"];
+        $vars = [];
+        foreach ($columnsToSum as $col)
+        $vars[$col] = 0;
+
+        foreach ($allRecords as $record) {
+            foreach ($columnsToSum as $col) {                
+                if (isset($record->$col)) {
+                    $vars[$col] += (float)$record->$col;
+
+                }
+            }
+        }
+}
+
+
+if(in_array($table,["eprog_manager_zus"])){
+
+        $columnsToSum = ["social","health"];
+        $vars = [];
+        foreach ($columnsToSum as $col)
+        $vars[$col] = 0;
+
+        foreach ($allRecords as $record) {
+            foreach ($columnsToSum as $col) {                
+                if (isset($record->$col)) {
+                    $vars[$col] += (float)$record->$col;
+
+                }
+            }
+        }
+}
+
+
+
+
+$sum =  $this->prepareModel()->count() > 0;
+?>
+
+<style>
+.razem {display:table}
+.razem > div{display:table-row;}
+.razem > div > div {display:table-cell;padding-top:2px;font-size:13px}
+.razem .opis {padding-right:10px}
+.razem .cena {text-align:right}
+
+</style>
+
+<div class="control-list list-scrollable" data-control="listwidget">
+    <table class="table data" data-control="rowlink">
+        <thead>
+            <?= $this->makePartial('list_head_row') ?>
+        </thead>
+        <tbody>
+            <?php if (count($records)): ?>
+                <?= $this->makePartial('list_body_rows') ?>
+            <?php else: ?>
+                <tr class="no-data">
+                    <td colspan="<?= $columnTotal ?>" class="nolink">
+                        <p class="no-data"><?= $noRecordsMessage ?></p>
+                    </td>
+                </tr>
+            <?php endif ?>
+        </tbody>
+    </table>
+
+    <?php if(in_array($table,["eprog_manager_order","eprog_manager_invoice","eprog_manager_accounting","eprog_manager_ksef","eprog_manager_product"])) : ?>
+     <?php if($sum) : ?>
+     <div style="float:left;margin-left:15px;margin-top:18px;color:#888">
+     <div class="razem">    
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.net_sum")) ?></div></div>
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.vat_sum")) ?></div></div>
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.gross_sum")) ?></div></div>
+     </div></div>
+
+    <?php foreach($vars as $currency => $values): ?>
+    <div style="float:left;margin-left:15px;margin-top:18px;color:#888">
+	 <div class="razem">	
+	 <div><div class="cena"><?= Util::currency($values[$columnsToSum[0]]) ?> <?= $currency ?></div></div>
+	 <div><div class="cena"><?= Util::currency($values[$columnsToSum[1]]) ?> <?= $currency ?></div></div>
+	 <div><div class="cena"><?= Util::currency($values[$columnsToSum[2]]) ?> <?= $currency ?></div></div>
+	 </div>
+    </div>
+    <?php endforeach; ?>
+    <?php endif ?>
+    <?php endif ?>
+
+    <?php if(in_array($table,["eprog_manager_accounting"])) : ?>
+     <?php if($sum) : ?>
+     <div style="float:left;margin-left:60px;margin-top:18px;color:#888">
+     <div class="razem">    
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.revenue"))?></div><div class="cena"><?= Util::currency($kpir["revenue"]) ?> PLN</div></div>
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.costs"))?></div><div class="cena"><?= Util::currency($kpir["costs"]) ?> PLN</div></div>
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.income"))?></div><div class="cena"><?= Util::currency($kpir["income"]) ?> PLN</div></div>
+     <?php if($tax_form == "lump") : ?>
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.lump"))?></div><div class="cena"><?= Util::currency($kpir["lump"]) ?> PLN</div></div>
+     <?php endif ?>
+     </div></div>
+     <div style="float:left;margin-left:60px;margin-top:18px;color:#888">
+     <div class="razem">    
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.vat_due"))?></div><div class="cena"><?= number_format($p38, 0, ',', ' ') ?> PLN</div></div>
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.vat_charged"))?></div><div class="cena"><?= number_format($p48, 0, ',', ' ') ?> PLN</div></div>
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.vat_topay"))?></div><div class="cena"><?= number_format($p51, 0, ',', ' ') ?> PLN</div></div>
+     </div></div>
+    <?php endif ?>
+    <?php endif ?>
+
+    <?php if(in_array($table,["eprog_manager_internal"])) : ?>
+     <?php if($sum) : ?>
+     <div style="float:left;margin-left:15px;margin-top:18px;color:#888">
+     <div class="razem">    
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.summary")) ?> <?= strtolower(e(trans("eprog.manager::lang.value"))) ?></div><div class="cena"><?= Util::currency($vars["amount"]) ?> PLN</div></div>
+     </div></div>
+    <?php endif ?>
+    <?php endif ?>
+
+    <?php if(in_array($table,["eprog_manager_zus"])) : ?>
+     <?php if($sum) : ?>
+     <div style="float:left;margin-left:15px;margin-top:18px;color:#888">
+     <div class="razem">    
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.summary")) ?> <?= strtolower(e(trans("eprog.manager::lang.social_insurance"))) ?></div><div class="cena"><?= Util::currency($vars["social"]) ?> PLN</div></div>
+     <div><div class="opis"><?= e(trans("eprog.manager::lang.summary")) ?> <?= strtolower((trans("eprog.manager::lang.health_insurance"))) ?></div><div class="cena"><?= Util::currency($vars["health"]) ?> PLN</div></div>
+     </div></div>
+    <?php endif ?>
+    <?php endif ?>
+
+    
+
+    <?php if ($showPagination): ?>
+        <div class="list-footer">
+            <div class="list-pagination">
+                <?= $this->makePartial('list_pagination') ?>
+            </div>
+        </div>
+    <?php endif ?>
+</div>

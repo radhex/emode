@@ -1,0 +1,138 @@
+tabs:
+    fields:
+        tax_type:
+            tab: 'eprog.manager::lang.data_owner'
+            label: ''
+            span: storm
+            type: radio
+            default: 0
+            cssClass: col-sm-2
+        surname:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.user.surname'
+            span: left
+            type: text
+            cssClass: "col-sm-2 w300"
+        name:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.user.name'
+            span: storm
+            type: text
+            cssClass: "col-sm-2 w200"
+        birthday:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'eprog.manager::lang.birthday'
+            span: storm
+            type: text
+            cssClass: "col-sm-2 w200"
+        firm:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.add.firm'
+            span: left
+            type: text
+            cssClass: "col-sm-2 w500"
+        nip:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.add.nip'
+            span: storm
+            type: text
+            cssClass: "col-sm-2 w200"
+        email:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.user.email'
+            span: left
+            type: text
+            cssClass: "col-sm-2 w500"
+        phone:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.user.phone'
+            span: storm
+            type: text
+            cssClass: "col-sm-2 w200"
+        region:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.add.region'
+            span: left
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: "col-sm-2 w500"
+        country:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.add.country'
+            span: storm
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: "col-sm-2 w200"
+        city:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.add.city'
+            span: left
+            type: text
+            cssClass: "col-sm-2 w500"
+        code:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.add.code'
+            span: storm
+            type: text
+            cssClass: "col-sm-2 w200"
+        street:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.add.street'
+            span: left
+            type: text
+            cssClass: "col-sm-2 w500"
+        number:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'rainlab.user::lang.add.number'
+            span: storm
+            type: text
+            cssClass: "col-sm-2 w200"
+        bank:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'eprog.manager::lang.note'
+            span: left
+            type: text
+            cssClass: "col-sm-2 w500"            
+        currency:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'eprog.manager::lang.currency'
+            span: storm
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: "col-sm-2 w200"
+        tax_office:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'eprog.manager::lang.tax_office'
+            span: left
+            type: dropdown
+            cssClass: "col-sm-2 w500"
+        tax_amount:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'eprog.manager::lang.ksef.amount_revenue'
+            span: storm
+            type: text
+            cssClass: "col-sm-2 w200"
+        tax_form:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'eprog.manager::lang.tax_form'
+            span: left
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: "col-sm-2 w500"
+        tax_lump:
+            tab: 'eprog.manager::lang.data_owner'
+            label: 'eprog.manager::lang.lump'
+            span: storm
+            type: dropdown
+            cssClass: "col-sm-2 w200"
+            dependsOn: tax_form
+            trigger:
+                action: show
+                field: tax_form
+                condition: value[lump]
+        theme:
+            tab: 'eprog.manager::lang.theme'
+            label: 'eprog.manager::lang.theme'
+            span: left
+            type: dropdown
+            cssClass: "col-sm-2 w500"

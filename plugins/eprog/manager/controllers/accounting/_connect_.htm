@@ -1,0 +1,52 @@
+<?php
+use Eprog\Manager\Models\Invoice;
+use Eprog\Manager\Models\Order;
+
+$correct = null;
+$correct_id = null;
+if(Input::has("correct")) $correct = Order::find(Input::get("correct"));
+
+
+if(Input::segment(5) == "update"){
+
+	$order = Order::find($this->params[0]);
+
+	if($order->xml){
+		$xml = simplexml_load_string($order->xml, "SimpleXMLElement", LIBXML_NOCDATA);
+		$json = json_encode($xml);
+		$data = json_decode($json, true);
+		$correct = Order::where("nr",$data['Fa']['DaneFaKorygowanej']['NrFaKorygowanej'] ?? '')->first();
+	}
+
+}
+
+
+if($correct) $correct_id = $correct->id;
+
+if(Input::segment(5) == "update"){
+	$order = Order::find($this->params[0]);
+	if($order->pro) $pro_id = $order->pro;
+}
+
+
+$order_id = null;
+if(Input::has("order")) $order_id = Input::get("order");
+
+if(Input::segment(5) == "update"){
+	$order = Order::find($this->params[0]);
+	if($order->order) $order_id = $order->order;
+}
+
+$order = Order::find($order_id);
+
+
+?>
+
+<?php if(isset($correct) && $correct->id) : ?> 
+<?= e(trans('eprog.manager::lang.correct_to'))  ?> <a href="/<?= config('cms.backendUri') ?>/eprog/manager/order/update/<?= $correct->id ?>" target="_blank" style="margin-right:15px"><?= $correct->nr ?? '' ?></a>
+<?php endif; ?>
+
+
+<?php if(isset($order) && $order->id) : ?> 
+<?= e(trans('eprog.manager::lang.order_one'))  ?> <a href="/<?= config('cms.backendUri') ?>/eprog/manager/order/update/<?= $order->id ?>" target="_blank" style="margin-right:15px"><?= $order->nr ?></a>
+<?php endif; ?>

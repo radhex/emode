@@ -1,0 +1,35 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Payroll;
+use Eprog\Manager\Models\SettingConfig;
+
+$payroll  = Payroll::find(Input::segment(6));
+$firm = User::where("firm_nip",$payroll->nip)->first()->firm_name ?? '';
+if($payroll->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+?>
+<?php Block::put('breadcrumb') ?>
+    <ul>
+       <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+       <li><span  class="oc-icon-list-ol"></span><a href="<?= Backend::url('eprog/manager/payroll') ?>"><?= e(trans('eprog.manager::lang.payroll')) ?></a></li> 
+       <li>ID: <?= Input::segment(6) ?></li>
+       <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <div class="form-preview">
+        <?= $this->formRenderPreview() ?>
+    </div>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e($this->fatalError) ?></p>
+<?php endif ?>
+
+<p>
+    <a href="<?= Backend::url('eprog/manager/payroll') ?>" class="btn btn-default oc-icon-chevron-left">
+        <?= e(trans('eprog.manager::lang.return')) ?>
+    </a>
+</p>

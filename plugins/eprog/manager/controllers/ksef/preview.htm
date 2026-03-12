@@ -1,0 +1,102 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Ksef;
+use Eprog\Manager\Models\SettingConfig;
+use Eprog\Manager\Classes\Util;
+
+$ksef = Ksef::find(Input::segment(6));
+$period = "";
+if($ksef) $period = date("m",strtotime($ksef->saleDate))."_".date("Y",strtotime($ksef->saleDate));
+
+?>
+
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-area-chart"></span><a href="<?= Backend::url('eprog/manager/ksef') ?>"><?= e(trans('eprog.manager::lang.ksef.title')) ?></a></li>
+
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <div class="form-preview">
+        <?= $this->formRenderPreview() ?>
+    </div>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e($this->fatalError) ?></p>
+<?php endif ?>
+
+<p>
+
+    <?php $invoice = Eprog\Manager\Models\Ksef::find(Input::segment(6));  ?>
+
+    <a href="<?= Backend::url('eprog/manager/ksef') ?>" class="btn btn-default oc-icon-chevron-left">
+        <?= e(trans('eprog.manager::lang.return')) ?>
+    </a>
+
+    <?php if(!in_array($invoice->invoiceType,["Kor","KorZal","KorRoz"])) : ?>
+            <a href="<?= Backend::url('eprog/manager/invoice/create?ksef_id=') ?><?= Input::segment(6) ?>" target="_blank"
+                id="ksefSimilar" class="btn btn-primary oc-icon-file-text-o btn-toolbar"
+                style="margin-left:50px;margin-right:0px" >
+                <?= e(trans('eprog.manager::lang.ksef.create_similar')) ?>
+            </a>
+    <?php endif ?>
+
+    <?php if(!$ksef->accounting) : ?>
+    <button
+        id="ksefAccounting"
+        type="submit"
+        data-request="onKsefAccounting"
+        data-request-data="ksefNumber:'<?= $invoice->ksefNumber ?>'"
+        data-request-confirm="<?= e(trans('eprog.manager::lang.accounting_confirm_one')) ?>"
+        data-request-success="$(this).hide()"
+        style="margin-left:10px"
+        class="btn btn-primary oc-icon-calculator btn-toolbar" <?php if(!$invoice->ksefNumber) : ?>style="display:none"<?php endif ?>>
+        <?= e(trans('eprog.manager::lang.accounting_set')) ?>
+    </button>
+    <?php endif ?>
+
+    <button
+        id="ksefXml"
+        type="submit"
+        data-request="onKsefXml"
+        data-request-data="ksefNumber:'<?= $invoice->ksefNumber ?>'"
+        style="margin-left:50px"
+        class="btn btn-primary oc-icon-file-code-o btn-toolbar" <?php if(!$invoice->ksefNumber) : ?>style="display:none"<?php endif ?>>
+        <?= e(trans('eprog.manager::lang.download')) ?> XML
+    </button>
+    <?php if(Util::mode("3") && BackendAuth::getUser()->hasAccess("eprog.manager.access_accounting")) : ?>
+    <button
+        id="ksefXmlGenerate"
+        type="button"
+        class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+        onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savefile/ksef/<?= Input::segment(6) ?>/<?= $period ?>/onKsefXmlGenerate','<?= e(trans('eprog.manager::lang.file_confirm')) ?>', 450, 300)"
+        style="margin-left:0px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;<?php if(!$invoice->ksefNumber) : ?>display:none<?php endif ?>"
+    >
+    <?php endif ?>
+
+
+    <button
+        id="ksefPdf"
+        type="submit"
+        data-request="onKsefPdf"
+        data-request-data="ksefNumber:'<?= $invoice->ksefNumber ?>'"
+        style="margin-left:10px"
+        class="btn btn-primary oc-icon-file-pdf-o btn-toolbar" <?php if(!$invoice->ksefNumber) : ?>style="display:none"<?php endif ?>>
+        <?= e(trans('eprog.manager::lang.download')) ?> PDF
+    </button>
+    <?php if(Util::mode("3") &&  BackendAuth::getUser()->hasAccess("eprog.manager.access_accounting")) : ?>
+    <button
+      id="ksefPdfGenerate"
+      type="button"
+      class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+      onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savefile/ksef/<?= Input::segment(6) ?>/<?= $period ?>/onKsefPdfGenerate','<?= e(trans('eprog.manager::lang.file_confirm')) ?>', 450, 300)"
+      style="margin-left:0px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;<?php if(!$invoice->ksefNumber) : ?>display:none<?php endif ?>"
+    ></button>
+    <?php endif ?>
+
+
+</p>

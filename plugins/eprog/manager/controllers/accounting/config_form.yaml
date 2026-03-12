@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.accounting_one'
+form: $/eprog/manager/models/accounting/fields.yaml
+modelClass: Eprog\Manager\Models\Accounting
+defaultRedirect: eprog/manager/accounting
+create:
+    redirect: 'eprog/manager/accounting/update/:id'
+    redirectClose: eprog/manager/accounting
+update:
+    redirect: eprog/manager/accounting
+    redirectClose: eprog/manager/accounting

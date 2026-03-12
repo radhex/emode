@@ -1,0 +1,17 @@
+<?php
+use Eprog\Manager\Models\Mailing;
+
+	if(!isset($this->params[0])) return false;
+        $mailing = Mailing::find($this->params[0]);
+        $history = json_decode($mailing->send, true);
+?>
+<?php if(is_array($history) && sizeof($history) > 0): ?>	
+<div id="send">
+<?php foreach($history as $key => $val): ?>
+<a href="javascript:" onclick="modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/mailing_history/<?= $this->params[0] ?>/<?= $key ?>','<?= e(trans('eprog.manager::lang.send_to')) ?> <?= $val['to'] ?>', 500, 300);"><?= $val['to'] ?></a><br>
+<?php endforeach ?>
+<br>
+<input type="checkbox" name="send_clear" /> <?= e(trans('eprog.manager::lang.clear')) ?>
+</div>
+<?php endif ?>	
+

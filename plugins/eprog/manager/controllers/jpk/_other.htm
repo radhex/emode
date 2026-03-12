@@ -1,0 +1,321 @@
+<?php 
+use Eprog\Manager\Models\Jpk;
+use Eprog\Manager\Models\Accountingvalue;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+
+	$jpk = jpk::find($id);
+	if($jpk){
+
+		 $other = json_decode($jpk->other, true);
+
+	}
+
+
+
+?>
+
+
+<style>
+
+
+ input {padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+ input.kwotamod {text-align:right;}
+ input.kwotanum {text-align:right;}
+
+
+</style>
+<div>
+
+	<div><input id="correct" type="checkbox" name="other[correct]" value="1" <?php if($other["correct"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="B_MPV_PROWIZJA"><?= trans("eprog.manager::lang.pcorrect") ?></label></div>
+
+	<div style="margin-top:10px"><?= trans("eprog.manager::lang.pcorrect_reason") ?><br><input id="correct_reason" type="text" size="80" name="other[correct_reason]" value="<?= $other["correct_reason"] ?? '' ?>"></div>
+
+	<div style="margin-top:20px;border-top:1px solid #777;padding-top:10px"><?= trans("eprog.manager::lang.p49") ?> <br><input id="P_49" type="text" size="10" name="other[p49]" value="<?= $other["p49"] ?? '' ?>" class="kwotamod"></div>
+
+	<div style="margin-top:10px"><?= trans("eprog.manager::lang.p52") ?> <br><input id="P_52" type="text" size="10" name="other[p52]" value="<?= $other["p52"] ?? '' ?>" class="kwotamod"></div>
+
+	<div style="margin-top:10px"><?= trans("eprog.manager::lang.p50") ?><br><input id="P_50" type="text" size="10" name="other[p50]" value="<?= $other["p50"] ?? '' ?>" class="kwotamod"></div>
+
+	<div style="margin-top:20px;border-top:1px solid #777;padding-top:10px"><?= trans("eprog.manager::lang.p39") ?> <br><input id="P_39" type="text" size="10" name="other[p39]" value="<?= $other["p39"] ?? '' ?>" class="kwotanum"></div>
+
+	<div style="margin-top:10px"><?= trans("eprog.manager::lang.p62") ?><br><input id="P_62" type="text" size="10" name="other[p62]" value="<?= $other["p62"] ?? '' ?>" class="kwotanum"></div>
+
+	<div style="margin-top:10px"><?= trans("eprog.manager::lang.p54") ?><br><input id="P_54" type="text" size="10" name="other[p54]" value="<?= $other["p54"] ?? '' ?>" class="kwotanum"></div>
+
+	<div style="margin-top:10px"><input id="P_540" type="checkbox" name="other[p540]" value="1" class="bool" <?php if($other["p540"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_540"><?= trans("eprog.manager::lang.p540") ?></label></div>
+
+	<div style="margin-top:10px"><input id="P_55" type="checkbox" name="other[p55]" value="1" class="bool" <?php if($other["p55"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_55"><?= trans("eprog.manager::lang.p55") ?></label></div>
+
+	<div style="margin-top:10px"><input id="P_56" type="checkbox" name="other[p56]" value="1" class="bool" <?php if($other["p56"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_56"><?= trans("eprog.manager::lang.p56") ?></label></div>
+
+	<div style="margin-top:10px"><input id="P_560" type="checkbox" name="other[p560]" value="1" class="bool" <?php if($other["p560"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_560"><?= trans("eprog.manager::lang.p560") ?></label></div>
+
+	<div style="margin-top:10px"><input id="P_58" type="checkbox" name="other[p58]" value="1" class="bool" <?php if($other["p58"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_58"><?= trans("eprog.manager::lang.p58") ?></label></div>
+
+	<div style="margin-top:10px;"><input id="P_59" type="checkbox" name="other[p59]" value="1" class="bool" <?php if($other["p59"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_59"><?= trans("eprog.manager::lang.p59") ?></label></div>
+
+	<div style="margin-top:10px"><?= trans("eprog.manager::lang.p60") ?> <br><input id="P_60" type="text" size="10" name="other[p60]" value="<?= $other["p60"] ?? '' ?>" class="kwotanum"></div>
+
+	<div style="margin-top:10px"><?= trans("eprog.manager::lang.p61") ?> <br><input id="P_61" type="text" size="40" name="other[p61]" value="<?= $other["p61"] ?? '' ?>"></div>
+
+	<div style="margin-top:20px;border-top:1px solid #777;padding-top:10px"><input id="P_65" type="checkbox" name="other[p65]" value="1" class="bool" <?php if($other["p65"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_65"><?= trans("eprog.manager::lang.p65") ?></label></div>
+
+	<div style="margin-top:10px"><input id="P_66" type="checkbox" name="other[p66]" value="1" class="bool" <?php if($other["p66"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_66"><?= trans("eprog.manager::lang.p66") ?></label></div>
+
+	<div style="margin-top:10px"><input id="P_660" type="checkbox" name="other[p660]" value="1" class="bool" <?php if($other["p660"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_660"><?= trans("eprog.manager::lang.p660") ?></label></div>
+
+	<div style="margin-top:10px"><input id="P_67" type="checkbox" name="other[p67]" value="1" class="bool" <?php if($other["p67"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="P_67"><?= trans("eprog.manager::lang.p67") ?></label></div>
+
+</div>
+
+
+<script>
+
+	var xmlString = $('#Form-field-Jpk-xml').val();
+	var parser = new DOMParser();
+	var xmlDoc = parser.parseFromString($('#Form-field-Jpk-xml').val(), "text/xml");
+	var ns = xmlDoc.documentElement.namespaceURI;
+
+$(function() {   
+
+	<?php if (Input::segment(5) == "create"): ?>
+	pozycje = xmlDoc.getElementsByTagNameNS(ns, "PozycjeSzczegolowe")[0];
+	p62Node = pozycje.getElementsByTagNameNS(ns, "P_62")[0];
+	p62 = p62Node ? Math.floor(parseFloat(p62Node.textContent)) : 0;
+	$('#P_62').val(number_format(p62.toString(),0,","," "));
+	<?php endif ?>
+
+	$('.kwotamod').on('paste input', function (e) {
+
+		inputCurrencyMod(this, e);
+
+	});
+
+	$('.kwotamod').on('focusout', function (e) {
+	    
+		inputCurrencyOut(this, e);
+
+	});
+
+	$('.kwotamod').on('focusin', function (e) {
+	    
+		inputCurrencyIn(this, e);
+
+	});
+
+	$('.kwotanum').on('paste input', function (e) {
+
+		inputCurrencyNum(this, e);
+
+	});
+
+	$('.kwotanum').on('focusout', function (e) {
+	    
+		inputCurrencyNumOut(this, e);
+
+	});
+
+	$('.kwotanum').on('focusin', function (e) {
+	    
+		inputCurrencyNumIn(this, e);
+
+	});
+
+	$('#correct').on('change', function(e) {
+
+	        if($(this).is(':checked')){
+	            xml = $('#Form-field-Jpk-xml').val();
+	            xml = xml.replace(
+	                /(<CelZlozenia[^>]*>)[12](<\/CelZlozenia>)/,
+	                '$12$2'
+	            );
+	            $('#Form-field-Jpk-xml').val(xml);
+	        }
+	        else{
+	            xml = $('#Form-field-Jpk-xml').val();
+	            xml = xml.replace(
+	                /(<CelZlozenia[^>]*>)[12](<\/CelZlozenia>)/,
+	                '$11$2'
+	            );
+	            $('#Form-field-Jpk-xml').val(xml);
+	        }
+	});
+
+	$('#correct_reason').on('focusout', function(e) {
+
+		setText("P_ORDZU",$(this).val().trim());
+
+	});
+
+	$('#P_61').on('focusout', function(e) {
+
+		setText("P_61",$(this).val().trim());
+
+	});
+
+
+	$('.kwotamod').on('focusout', function (e) {
+	
+		setKwota($(this).attr("id"),$(this).val().trim());
+
+	});
+
+	$('.kwotanum').on('focusout', function (e) {
+	
+		setKwota($(this).attr("id"),$(this).val().trim());
+
+	});
+
+
+	$('.bool').on('change', function (e) {
+	
+		if($(this).is(':checked'))
+			setKwota($(this).attr("id"),"1");
+		else
+			setKwota($(this).attr("id"),"");
+	}); 	 	
+  	 		 	
+});
+
+
+
+function setKwota(tag, wartosc) {
+
+
+    var pozycje = xmlDoc.getElementsByTagNameNS(ns, "PozycjeSzczegolowe")[0];
+    if(!pozycje) return;
+
+    if(tag === "P_39") {
+        var p39Node = pozycje.getElementsByTagNameNS(ns, "P_39")[0];
+        var staraP39 = p39Node ? Math.floor(parseFloat(p39Node.textContent)) : 0;
+        var p39 = wartosc.length > 0 ? Math.floor(parseFloat(wartosc.replace(/\s+/g, "").replace(",", "."))) : 0;
+
+        if(p39 !== 0) setPozycja("P_39", p39.toString());
+        else usunPozycje("P_39");
+
+        var p48Node = pozycje.getElementsByTagNameNS(ns, "P_48")[0];
+        var aktualneP48 = p48Node ? Math.floor(parseFloat(p48Node.textContent)) : 0;
+        setPozycja("P_48", (aktualneP48 - staraP39 + p39).toString());
+
+    } else if(tag === "P_49") {
+        var p49Node = pozycje.getElementsByTagNameNS(ns, "P_49")[0];
+        var staraP49 = p49Node ? Math.floor(parseFloat(p49Node.textContent)) : 0;
+        var p49 = wartosc.length > 0 ? Math.floor(parseFloat(wartosc.replace(/\s+/g, "").replace(",", "."))) : 0;
+
+        if(p49 !== 0) setPozycja("P_49", p49.toString());
+        else usunPozycje("P_49");
+
+        var p38Node = pozycje.getElementsByTagNameNS(ns, "P_38")[0];
+        var aktualneP38 = p38Node ? Math.floor(parseFloat(p38Node.textContent)) : 0;
+        setPozycja("P_38", (aktualneP38 + staraP49 - p49).toString());
+    } else {
+        if(wartosc.length > 0) setPozycja(tag, Math.floor(parseFloat(wartosc.replace(/\s+/g, "").replace(",", "."))).toString());
+        else usunPozycje(tag);
+    }
+
+    var p38Node = pozycje.getElementsByTagNameNS(ns, "P_38")[0];
+    var p38 = p38Node ? Math.floor(parseFloat(p38Node.textContent)) : 0;
+    var p48Node = pozycje.getElementsByTagNameNS(ns, "P_48")[0];
+    var p48 = p48Node ? Math.floor(parseFloat(p48Node.textContent)) : 0;
+
+    var p51 = Math.max(p38 - p48, 0);
+    var p53 = Math.abs(p38 - p48);
+    setPozycja("P_51", p51.toString());
+    setPozycja("P_53", p53.toString());
+
+    if(tag != "P_62" ){
+    	setPozycja("P_62", p53.toString());
+    	$('#P_62').val(number_format(p53.toString(),0,","," "));
+    }
+    $('#Form-field-Jpk-xml').val(new XMLSerializer().serializeToString(xmlDoc));
+}
+
+
+	
+
+
+function setText(tag, wartosc) {
+
+
+	if(wartosc.length > 0)
+		setPozycja(xtag, wartosc);
+	else
+		usunPozycje(tag);
+	var xmlOutput = new XMLSerializer().serializeToString(xmlDoc);
+
+	$('#Form-field-Jpk-xml').val(xmlOutput);
+
+}	
+
+function setPozycja(tag, wartosc) {
+
+    var pozycje = xmlDoc.getElementsByTagNameNS(ns, "PozycjeSzczegolowe")[0];
+    if (!pozycje) return;
+
+    var existing = pozycje.getElementsByTagNameNS(ns, tag)[0];
+    if (existing) {
+        existing.textContent = wartosc;
+        return;
+    }
+
+    var existingORDZU = pozycje.getElementsByTagNameNS(ns, "P_ORDZU")[0];
+    if (existingORDZU) usunPozycje('P_ORDZU');
+
+    var numer = parseInt(tag.split("_")[1], 10);
+    if (!isNaN(numer) && numer >= 100) numer = Math.floor(numer / 10); // 560 → 56, 660 → 66, 670 → 67 itp.
+
+    var newNode = xmlDoc.createElementNS(ns, tag);
+    newNode.textContent = wartosc;
+
+    if (!isNaN(numer)) {
+        var children = Array.from(pozycje.children);
+        var inserted = false;
+        for (var i = 0; i < children.length; i++) {
+            var name = children[i].localName;
+            if (name && name.indexOf("P_") === 0) {
+                var currentNumber = parseInt(name.split("_")[1], 10);
+                if (!isNaN(currentNumber) && currentNumber >= 100) currentNumber = Math.floor(currentNumber / 10);
+                if (currentNumber > numer) {
+                    pozycje.insertBefore(newNode, children[i]);
+                    pozycje.insertBefore(xmlDoc.createTextNode("\n      "), children[i]);
+                    inserted = true;
+                    break;
+                }
+            }
+        }
+        if (!inserted) {
+            pozycje.appendChild(xmlDoc.createTextNode("  "));
+            pozycje.appendChild(newNode);
+            pozycje.appendChild(xmlDoc.createTextNode("\n    "));
+        }
+    } else {
+        pozycje.appendChild(xmlDoc.createTextNode("  "));
+        pozycje.appendChild(newNode);
+        pozycje.appendChild(xmlDoc.createTextNode("\n    "));
+    }
+
+    if (existingORDZU) setPozycja('P_ORDZU',existingORDZU.textContent);
+}
+
+
+function usunPozycje(tag) {
+    var pozycje = xmlDoc.getElementsByTagNameNS(ns, "PozycjeSzczegolowe")[0];
+    if (!pozycje) return;
+    var node = pozycje.getElementsByTagNameNS(ns, tag)[0];
+    if (node) {
+        var prev = node.previousSibling;
+        if (prev && prev.nodeType === 3 && prev.textContent.trim() === "") {
+            pozycje.removeChild(prev);
+        }
+        pozycje.removeChild(node);
+    }
+}
+
+</script>

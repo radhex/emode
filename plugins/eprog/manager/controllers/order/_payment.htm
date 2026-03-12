@@ -1,0 +1,16 @@
+<?php
+
+use Eprog\Manager\Classes\Util;
+
+$xml = simplexml_load_string($record->xml);
+
+$namespaces = $xml->getNamespaces(true);
+$xml->registerXPathNamespace('f', $namespaces['']);
+
+$data = $xml->xpath('//f:Fa/f:Platnosc/f:DataZaplaty');
+
+$payment = $data ? (string)$data[0] : "";
+
+?>
+
+<?= $payment ?>

@@ -1,0 +1,416 @@
+<?php
+use RainLab\User\Models\User;
+use Eprog\Manager\Models\SettingKsef;
+use Eprog\Manager\Models\SettingConfig;
+use Eprog\Manager\Classes\Util;
+
+$users =  User::where("tax",1)->orderBy("firm_name")->get();
+
+//dd(Session::all());
+
+?>
+
+<div data-control="toolbar">
+
+
+    <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_accounting') || BackendAuth::getUser()->hasAccess('eprog.manager.manage_ksef')) : ?>
+
+    <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions" style="margin-top:-3px;">
+        <button
+            data-primary-button
+            type="button"
+            class="btn btn-default"
+            data-request="onBulkAction"
+            data-request-data="nip: ''"
+            data-trigger-action="enable"
+            data-trigger=".control-list input[type=checkbox]"
+            data-trigger-condition="checked"
+            data-request-success="$(this).prop('disabled', true).next().prop('disabled', true);updateInbox();"
+            data-stripe-load-indicator>
+            <?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>
+        </button>
+        <button
+            type="button"
+            class="btn btn-default dropdown-toggle"
+            data-trigger-action="enable"
+            data-trigger=".control-list input[type=checkbox]"
+            data-trigger-condition="checked"
+            data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+
+        <ul class="dropdown-menu" data-dropdown-title="<?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>">
+            <?php if(Util::mode("3") && BackendAuth::getUser()->hasAccess('eprog.manager.manage_accounting')) : ?>
+            <li>
+                <a href="javascript:;" class="oc-icon-calculator" data-action="accounting" data-confirm="<?= e(trans('eprog.manager::lang.accounting_confirm')) ?>">
+                    <?= e(trans('eprog.manager::lang.accounting_set')) ?>
+                </a>
+            </li>
+            <?php endif ?>
+            <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_ksef')) : ?>
+            <li>
+                <a href="javascript:;" class="oc-icon-dollar" data-action="paid" data-confirm="<?= e(trans('eprog.manager::lang.mark_aspaid_confirm')) ?>">
+                    <?= e(trans('eprog.manager::lang.mark_aspaid')) ?>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="oc-icon-times" data-action="unpaid" data-confirm="<?= e(trans('eprog.manager::lang.mark_asunpaid_confirm')) ?>">
+                    <?= e(trans('eprog.manager::lang.mark_asunpaid')) ?>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="oc-icon-trash-o" data-action="delete" data-confirm="<?= e(trans('backend::lang.list.delete_selected_confirm')) ?>">
+                    <?= e(trans('eprog.manager::lang.del')) ?>
+                </a>
+            </li>
+            <?php endif ?>
+        </ul>
+    </div>
+    <?php endif ?>
+
+    <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_ksef')) : ?>
+    <button
+    id="clear"
+    class="btn btn-default oc-icon-minus-circle btn-toolbar"
+    data-request="onClear"
+    data-request-confirm="<?= e(trans('eprog.manager::lang.ksef.clear_confirm')) ?>"
+    data-request-success="onClear(data)"
+    >
+    <?= e(trans('eprog.manager::lang.ksef.clear')) ?>
+    </button>
+   
+
+    <button
+    id="KsefDownload"
+    data-request="onKsefDownload"
+    data-request-data="from: '', to: ''"
+    class="btn btn-primary oc-icon-cloud-download btn-toolbar"
+    data-request-confirm="<?= e(trans('eprog.manager::lang.ksef.ksef_confirm')) ?>"
+    data-load-indicator="<?= e(trans('eprog.manager::lang.sending')) ?>"
+    data-request-success="onKsefDownload(data)"
+    style="float:right"
+    >
+    <?= e(trans('eprog.manager::lang.ksef.ksef_download')) ?>
+    </button>
+    <?php endif ?>
+
+    <div id="spinner-toolbar" class="spinner-toolbar" ></div>
+
+    <input type="text" id="toolbar-datepicker-to" placeholder="Do" class="form-control" value="<?= Session::has("selected.to") ?  Session::get("selected.to") : date("Y-m-d", time())?>" style="margin-top:-5px;float:right;width:100px!important">
+    <input type="text" id="toolbar-datepicker-from" placeholder="Od" class="form-control"   value="<?=  Session::has("selected.from") ?  Session::get("selected.from") : date("Y-m-d", strtotime("-1 months"))?>" style="margin-top:-5px;float:right;width:100px!important">
+    
+
+
+    <div  id="cssubject"  class="toolbar-item cs" style="float:right;margin-top:0px">
+    <select id="subject" name="subject" class="form-control custom-select" style="width:270px;float:right !important;" >
+        <option value="Subject1" <?= Session::has("selected.subject") && Session::get("selected.subject") == "Subject1" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subject1") ?></option>
+        <option value="Subject2" <?= Session::has("selected.subject") && Session::get("selected.subject") == "Subject2" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subject2") ?></option>
+        <option value="Subject3" <?= Session::has("selected.subject") && Session::get("selected.subject") == "Subject3" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subject3") ?></option>
+        <option value="SubjectAuthorized" <?= Session::has("selected.subject") && Session::get("selected.subject") == "SubjectAuthorized" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subjectauthorized") ?></option>
+    </select> 
+    </div>
+    
+    <div id="csnip" class="toolbar-item"  style="float:right;margin-top:0px">
+    <select id="nip" name="nip" class="form-control custom-select" style="width:270px;float:right !important;" >
+        <optgroup>
+        <option value="<?= str_replace("-","", SettingConfig::get("nip")) ?>" <?= Session::has("selected.nip") && Session::get("selected.nip") == str_replace("-","", SettingConfig::get("nip")) ? "selected" : "" ?>><?= SettingConfig::get("firm") ?? trans("eprog.manager::lang.ksef.my") ?></option>
+        </optgroup>
+        <?php if(Util::mode("3")) : ?>
+        <optgroup label="<?=  trans("eprog.manager::lang.clients") ?>">
+        <?php foreach($users as $user) : ?>
+        <option value="<?=  $user->firm_nip ?>" <?= Session::has("selected.nip") && Session::get("selected.nip") == $user->firm_nip ? "selected" : "" ?>><?= $user->firm_name ?? '' ?></option>
+        <?php endforeach  ?>
+        </optgroup>
+        <?php endif; ?>
+    </select> 
+    </div>
+
+
+</div>
+
+
+<style>
+
+    @media (max-width: 600px) {
+        #csnip {
+            width: auto;
+            margin-top:6px !important;
+            margin-right:0px  !important;
+            padding-right:0px  !important;
+        }
+        #cssubject {
+            width: auto;
+            margin-top:10px !important;
+            margin-right:-20px  !important;
+        }
+
+
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+
+        padding-top:1px
+
+    }
+
+    #done[disabled] {
+      color: var(--mcolor) !important;             
+      background-color: var(--mlcolor) !important;  
+      opacity: 1 !important;             
+      cursor: default !important;
+      caret-color: transparent !important;
+      -webkit-text-fill-color: var(--mcolor) !important; 
+      border: 1px solid var(--mcolor) !important; 
+    }
+
+
+    #done[disabled]:focus {
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    .div-toolbar {
+        float:right;
+        margin-top:3px;
+        margin-right:10px;
+        width: 250px;
+        height: 32px;
+        color:var(--mcolor) !important;
+        border: 1px solid var(--mcolor);
+        background:var(--mlcolor);
+        vertical-align: middle;
+        display:inline-block;
+    }
+    .spinner-toolbar {
+
+        float:right;
+        margin-top:6px;
+        margin-right:10px;
+        width: 24px;
+        height: 24px;
+        border: 3px solid #eee;
+        border-top-color: var(--mcolor);
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+
+        /* Ustawienia dla toolbar */
+        margin-left: 10px; /* oddziel od przycisków */
+        vertical-align: middle;
+        display:none;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+    .ui-datepicker {
+        background: #fff !important;      /* białe tło */
+        border: 1px solid #ccc !important;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        z-index: 10000 !important;         /* nad toolbar i innymi elementami */
+    }
+
+    /* Jeśli używasz theme WinterCMS */
+    .ui-datepicker .ui-state-default {
+        background: #f5f5f5 !important;
+        border-radius: 3px;
+    }
+
+    .ui-datepicker .ui-state-hover {
+        background: #e0e0e0 !important;
+    }
+
+
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        
+        padding-top: 2px !important;
+        
+    }
+
+    .loading-indicator-container.size-input-text { margin-top: -7px !important; }
+
+</style>
+
+<script>
+
+    $(document).on('ajaxSetup', function(event, context) {
+
+        if (context.handler === 'onKsefDownload') {
+     
+            context.options.data = context.options.data || {};
+            context.options.data.from = $('#toolbar-datepicker-from').val();
+            context.options.data.to = $('#toolbar-datepicker-to').val();
+        }
+
+        if (context.handler === 'onBulkAction') {
+
+           context.options.data.nip = $('#nip').val();
+
+        }
+    });
+
+
+
+    $(function() { 
+
+        <?php if(Input::get("done") == "true") : ?>
+            <?php if(Input::filled("truncate")) : ?>
+                $.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.ksef.invoice_truncate')) ?> <?= Input::get("truncate")?>', 'class': 'success', 'interval': 30})
+            <?php else :?>
+                $.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.ksef.invoice_download')) ?>', 'class': 'success', 'interval': 4})
+            <?php endif ?>
+        <?php endif ?>
+
+        <?php if(Input::get("clear") == "true") : ?>
+        $.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.ksef.clear_done')) ?>', 'class': 'success', 'interval': 4})
+        <?php endif ?>
+
+        $('#subject').on('select2:select', function(e) {
+          
+            $.ajax({
+                    type: "POST",
+                    data:"_token=<?= csrf_token() ?>",
+                    url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/selected/subject/' + $(this).val(),
+
+                    success: function(res) {   
+                    window.location.href =  window.location.href;                            
+                    },
+                    error: function(xhr,status,error) {
+                         console.log(error);
+                    }
+            });
+
+        });
+
+
+        $('#nip').on('select2:select', function(e) {
+
+
+            $.ajax({
+                    type: "POST",
+                    data:"_token=<?= csrf_token() ?>",
+                    url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/selected/nip/' + $(this).val(),
+
+                    success: function(res) {   
+                    window.location.href =  window.location.href;                            
+                    },
+                    error: function(xhr,status,error) {
+                         console.log(error);
+                    }
+            });
+             
+        });
+
+        var $button = $('#KsefDownload');
+        var $spinner = $('#spinner-toolbar');
+
+
+        $button.on('click', function(e) {
+
+            if($('#toolbar-datepicker-from').val().trim() == "" || $('#toolbar-datepicker-to').val().trim() == ""){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                alert('<?= e(trans('eprog.manager::lang.ksef.export_range')) ?>');
+                return false;
+            }
+            
+            var date1 = $('#toolbar-datepicker-from').val().trim();
+            var date2 = $('#toolbar-datepicker-to').val().trim();
+
+
+            if(!within3Months(date1,date2)){
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                alert('<?= e(trans('eprog.manager::lang.ksef.export_error')) ?>');
+                return false;
+            }
+
+        });
+
+        $button.on('ajaxPromise', function(e) {
+       
+            e.preventDefault();
+            $spinner.show();
+            $button.prop('disabled', true);
+            $("#clear").prop('disabled', true);
+            $("#subject").prop('disabled', true);
+            $("#nip").prop('disabled', true);
+            $("body").css('pointer-events', "none");
+
+        });
+
+        $button.on('ajaxDone ajaxFail', function() {
+            $spinner.hide();
+            $button.prop('disabled', false);
+            $("#clear").prop('disabled', false);
+            $("#subject").prop('disabled', false);
+            $("#nip").prop('disabled', false);
+            $("body").css('pointer-events', "auto");
+        });
+
+        $.datepicker.regional['pl'] = {
+            closeText: 'Zamknij',
+            prevText: '&#x3c;Poprzedni',
+            nextText: 'Następny&#x3e;',
+            currentText: 'Dziś',
+            monthNames: ['Styczeń','Luty','Marzec','Kwiecień','Maj','Czerwiec',
+                'Lipiec','Sierpień','Wrzesień','Październik','Listopad','Grudzień'],
+            monthNamesShort: ['Sty','Lut','Mar','Kwi','Maj','Cze',
+                'Lip','Sie','Wrz','Paź','Lis','Gru'],
+            dayNames: ['Niedziela','Poniedziałek','Wtorek','Środa','Czwartek','Piątek','Sobota'],
+            dayNamesShort: ['Nie','Pon','Wt','Śr','Czw','Pt','Sob'],
+            dayNamesMin: ['N','Pn','Wt','Śr','Cz','Pt','So'],
+            weekHeader: 'Tydz',
+            dateFormat: 'yy-mm-dd',
+            firstDay: 1,
+            isRTL: false,
+            showMonthAfterYear: false,
+            yearSuffix: ''
+        };
+
+
+        $('#toolbar-datepicker-from').datepicker($.datepicker.regional['pl']);
+        $('#toolbar-datepicker-to').datepicker($.datepicker.regional['pl']);
+
+
+    });
+
+    function within3Months(a, b) {
+
+      const [y1, m1, d1] = a.split('-').map(Number);
+      const [y2, m2, d2] = b.split('-').map(Number);
+
+      const date1 = Date.UTC(y1, m1 - 1, d1);
+      const date2 = Date.UTC(y2, m2 - 1, d2);
+
+      const diffDays = Math.abs((date2 - date1) / 86400000);
+      return diffDays <= 91;
+    }
+
+
+    function onKsefDownload(data){
+
+
+        setTimeout(function (){          
+          href = deleteParam(window.location.href, ["clear","truncate"]);
+          if(data[0])
+          window.location.href = replaceParam(href, ["done", "truncate"], ["true",data[1]]);   
+          else
+            window.location.href = replaceParam(href, ["done"], ["true"]);
+
+
+        }, 1000);
+
+    }
+
+    function onClear(data){
+    
+        setTimeout(function (){
+          href = deleteParam(window.location.href, [,"done","truncate","from","to"]);
+          window.location.href = replaceParam(href, "clear", "true");
+                    
+        }, 1000);
+    
+    }
+
+
+</script>

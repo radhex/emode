@@ -1,0 +1,101 @@
+fields:
+    lp:
+        label: LP
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-5
+    create_at:
+        label: 'eprog.manager::lang.fixed_create_at'
+        oc.commentPosition: ''
+        span: storm
+        type: datepicker
+        mode: date
+        format: Y-m-d
+        default: now
+        cssClass: col-sm-2
+    make_at:
+        label: 'eprog.manager::lang.fixed_make_at'
+        oc.commentPosition: ''
+        span: storm
+        type: datepicker
+        mode: date
+        format: Y-m-d
+        default: now
+        cssClass: col-sm-2
+    liquidation_at:
+        label: 'eprog.manager::lang.fixed_liquidation_at'
+        oc.commentPosition: ''
+        span: storm
+        type: datepicker
+        mode: date
+        format: Y-m-d
+        default: now
+        cssClass: col-sm-2
+    ord:
+        label: 'eprog.manager::lang.sort'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        default: 0
+        cssClass: col-sm-1
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true	
+        cssClass: col-sm-1
+    name:
+        label: 'eprog.manager::lang.fixed_name'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-5
+    fixed:
+        label: 'eprog.manager::lang.fixed_fixed'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-2
+    kst:
+        label: 'eprog.manager::lang.fixed_kst'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-1
+    initial:
+        label: 'eprog.manager::lang.fixed_initial'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: "col-sm-4 kwota"
+    rate:
+        label: 'eprog.manager::lang.fixed_rate'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-4
+    initialupdate:
+        label: 'eprog.manager::lang.fixed_initialupdate_short'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-4
+    liquidation:
+        label: 'eprog.manager::lang.fixed_liquidation'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-4
+

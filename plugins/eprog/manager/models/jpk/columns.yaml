@@ -1,0 +1,36 @@
+columns:
+    name:
+        label: 'eprog.manager::lang.name'
+        span: left
+        type: text
+        searchable: true
+    version:
+        label: 'eprog.manager::lang.version'
+        type: text
+        searchable: true
+    period:
+        label: 'eprog.manager::lang.period'
+        type: text
+        searchable: true
+    correct:
+        label: 'eprog.manager::lang.ksef.kor'
+        type: partial
+        searchable: true
+    jpk_at:
+        label: 'eprog.manager::lang.sent'
+        type: partial
+        searchable: true
+    created_at:
+        label: 'eprog.manager::lang.date'
+        type: partial
+        searchable: true
+    desc:
+        label: 'eprog.manager::lang.desc'
+        type: text
+        invisible: true
+        searchable: true
+    xml:
+        label: 'xml'
+        type: text
+        invisible: true
+        searchable: true

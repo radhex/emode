@@ -1,0 +1,62 @@
+<?php 
+use Eprog\Manager\Models\Task;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Carbon\Carbon;
+use Backend\Config;
+
+use Eprog\Manager\Models\Mail;
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+	$mail = Mail::where("id","=",$id);
+	if(!BackendAuth::getUser()->hasAccess('eprog.manager.manage_mail'))
+	$mail = $mail->where("admin_id","=",BackendAuth::getUser()->id);
+	$mail = $mail->get();
+
+?>
+<style>
+
+
+.tasktable {display:table}
+.tasktable > div {display:table-row; }
+.tasktable > div > div {border-top:1px solid #eee; display:table-cell; vertical-align:top; font-size:12px; padding-left:8px; padding-right:8px; padding-top:8px;padding-bottom:8px;}
+.tasktable .date {color:green;width:150px}
+.tasktable .desc {width:400px;}
+.tasktable .head > div {font-size:14px;background:#fff}
+.title {padding:8px !important;font-size:16px;font-weight:normal;font-family:Arial}
+
+</style>
+
+<div id="inbox">
+<?php if(isset($mail[0])) : ?>
+
+<div style="padding-top:5px !important;padding-bottom:5px !important;"><?= e(trans('eprog.manager::lang.date')) ?>: <?= Util::dateLocale($mail[0]->date,"Y-m-d H:i"); ?></div>
+
+<?php if($mail[0]->send) : ?>
+<div style="padding-top:5px !important;padding-bottom:5px !important;"><?= e(trans('eprog.manager::lang.from')) ?>: <?= $mail[0]->admin ? $mail[0]->admin ->first_name." ".$mail[0]->admin ->last_name : '' ?></div>
+<div style="padding-top:5px !important;padding-bottom:5px !important;"><?= e(trans('eprog.manager::lang.to')) ?>: <?= $mail[0]->user ? $mail[0]->user->surname : ''; ?> <?= $mail[0]->user ? $mail[0]->user->firm_name : ''; ?> </div>
+<?php else : ?>
+<div style="padding-top:5px !important;padding-bottom:5px !important;"><?= e(trans('eprog.manager::lang.from')) ?>: <?= $mail[0]->user ? $mail[0]->user->surname : '';  ?> <?= $mail[0]->user ? $mail[0]->user->firm_name : ''; ?></div>
+<div style="padding-top:5px !important;padding-bottom:5px !important;"><?= e(trans('eprog.manager::lang.to')) ?>: <?= $mail[0]->admin ? $mail[0]->admin ->first_name." ".$mail[0]->admin ->last_name : '' ?></div>
+<?php endif; ?>
+
+<div style="padding-top:5px !important;padding-bottom:5px !important;"><?= e(trans('eprog.manager::lang.title')) ?>: <?= $mail[0]->name; ?></div>
+
+
+<div style="padding-top:5px !important;padding-bottom:5px !important;"><?= e(trans('eprog.manager::lang.attachments')) ?>: <?= $mail[0]->adminattachments;  ?></div>
+
+<br>
+<div><?= nl2br($mail[0]->desc); ?></div>
+
+
+<?php endif; ?>
+</div>
+
+
+
+
+
+ 
+
+
+        

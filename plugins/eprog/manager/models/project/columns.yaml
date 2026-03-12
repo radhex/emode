@@ -1,0 +1,55 @@
+columns:
+    id:
+        label: id
+        type: number
+        width: 50px
+    name:
+        label: 'eprog.manager::lang.name'
+        type: partial
+        searchable: true
+        path: name
+    user_id:
+        label: 'eprog.manager::lang.user'
+        type: partial
+        path: user
+    desc:
+        label: 'eprog.manager::lang.desc'
+        type: partial
+        searchable: true
+        invisible: true
+    info:
+        label: 'eprog.manager::lang.info'
+        type: partial
+        searchable: true
+        invisible: true
+        path: info
+    product:
+        label: 'eprog.manager::lang.product'
+        type: text
+        searchable: true
+        invisible: true
+    model:
+        label: 'eprog.manager::lang.model'
+        type: text
+        searchable: true
+        invisible: true
+    number:
+        label: 'eprog.manager::lang.number'
+        type: text
+        searchable: true
+        invisible: true
+    start:
+        label: 'eprog.manager::lang.start'
+        type: partial
+        path: start
+    stop:
+        label: 'eprog.manager::lang.stop'
+        type: partial
+        path: stop
+    status_id:
+        label: 'eprog.manager::lang.status'
+        type: partial
+        path: status
+    public:
+        label: 'eprog.manager::lang.public'
+        type: switch

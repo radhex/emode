@@ -1,0 +1,18 @@
+columns:
+    id:
+        label: ID
+        type: number
+        width: 50px
+    name:
+        label: 'eprog.manager::lang.title'
+        type: text
+        searchable: true
+    groups:
+        label: 'eprog.manager::lang.group'
+        type: partial
+        path: group
+        sortable: false
+    date:
+        label: 'eprog.manager::lang.date'
+        type: partial
+        path: date

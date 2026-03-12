@@ -1,0 +1,38 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-comments"></span><a href="<?= Backend::url('eprog/manager/inmail/inbox') ?>" ><?= e(trans('eprog.manager::lang.inmail')) ?> - <?= e(trans('eprog.manager::lang.mail')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.outbox')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+	<div>
+
+  <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_mail')) : ?>
+    <a href="<?= Backend::url('eprog/manager/inmail') ?><?= $this->name ?>" class="btn btn-primary oc-icon-comments">
+        <?= e(trans('eprog.manager::lang.mail_all')) ?>
+    </a>
+  <?php endif ?>
+
+    <p></p>
+        
+	</div>
+
+    <?= Form::close() ?>
+
+
+
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/inmail') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+

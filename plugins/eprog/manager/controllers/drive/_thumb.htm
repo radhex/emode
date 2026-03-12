@@ -1,0 +1,15 @@
+<?php
+
+    use Eprog\Manager\Classes\Util; 
+    $icon = Util::driveIcon($record->mimeType);     
+                 
+?>
+<?php if(preg_match("/google-apps.folder/",urldecode($record->mimeType))) : ?>
+<i class="oc-icon-folder" style="font-size:22px;color:var(--mcolor)"></i>
+<?php else: ?>
+<?php if(!preg_match("/excel|\.sheet|\.spreadsheet|\.document|zip|presentation|drawing|xml|json|pdf|text\/plain/",$record->mimeType)) : ?>
+<img src="<?= $record->thumb ?>" style="width:30px">
+<?php else: ?>
+<i class="<?= $icon["icon"] ?>" style="font-size:25px;margin-top:-7px;color:<?= $icon["color"] ?>"></i>
+<?php endif ?>
+<?php endif ?>

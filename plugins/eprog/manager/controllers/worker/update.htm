@@ -1,0 +1,111 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Worker;
+use Eprog\Manager\Models\SettingConfig;
+
+$worker  = Worker::find(Input::segment(6));
+$firm = User::where("firm_nip",$worker->nip)->first()->firm_name ?? '';
+if($worker->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+?>
+<?php Block::put('breadcrumb') ?>
+    <ul>
+       <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+       <li><span  class="oc-icon-users"></span><a href="<?= Backend::url('eprog/manager/worker') ?>"><?= e(trans('eprog.manager::lang.workers')) ?></a></li> 
+       <li>ID: <?= Input::segment(6) ?></li>
+       <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-request-update=""
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/worker') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a>
+
+                
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.worker_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/worker') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+   
+}
+
+@media (min-width: 768px){
+    
+    #Form-field-Worker-name-group {width: 15%}
+    #Form-field-Worker-surname-group {width: 20%}
+    #Form-field-Worker-surname-group {width: 25%}
+    #Form-field-Worker-phone-group {width: 25%}
+    #Form-field-Worker-email-group {width: 25%}
+    #Form-field-Worker-password-group {width: 25%}
+    #Form-field-Worker-timezone-group {width: 25%}
+    #Form-field-Worker-groups-group {width: 25%}
+    #Form-field-Worker-region-group {width: 25%}
+    #Form-field-Worker-city-group {width: 25%}
+    #Form-field-Worker-code-group {width:7%}
+    #Form-field-Worker-country-group {width:18%}
+    #Form-field-Worker-street-group {width: 25%}
+    #Form-field-Worker-username-group {width: 25%}
+    #Form-field-Worker-firm_name-group {width: 25%}
+    #Form-field-Worker-firm_region-group {width: 25%}
+    #Form-field-Worker-firm_city-group {width: 25%}
+    #Form-field-Worker-firm_code-group {width:7%}
+    #Form-field-Worker-firm_country-group {width:18%}
+    #Form-field-Worker-firm_street-group {width: 25%}
+    #Form-field-Worker-tax_office-group {width: 25%}
+    #Form-field-Worker-tax_form-group {width: 25%}
+    #Form-field-Worker-tax-group {width: 25%}
+
+}
+
+</style>
+
+<script>
+
+
+
+
+    $(function() { 
+        
+
+
+    });
+
+
+
+</script>
+

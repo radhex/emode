@@ -1,0 +1,157 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Fixed;
+use Eprog\Manager\Models\SettingConfig;
+
+$fixed  = Fixed::find(Input::segment(6));
+$firm = User::where("firm_nip",$fixed->nip)->first()->firm_name ?? '';
+if($fixed->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+?>
+
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+        <li><span  class="oc-icon-car"></span><a href="<?= Backend::url('eprog/manager/fixed') ?>"><?= e(trans('eprog.manager::lang.fixed')) ?></a></li> 
+        <li>ID: <?= Input::segment(6) ?></li>
+        <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    fixed="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/fixed') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a>
+                <button
+                    fixed="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.fixed_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/category') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+
+@media (max-width: 450px){
+
+#Form-field-Fixed-value-group {margin-left:-25px}
+
+}
+
+@media (min-width: 768px){
+  
+    #Form-field-Fixed-lp-group {width:6%}
+    #Form-field-Fixed-disp-group {margin-top:26px}
+    #Form-field-Fixed-place-group {width:13.7%}
+    #Form-field-Fixed-create_at-group {width:10.5%}
+    #Form-field-Fixed-make_at-group {width:10.5%}
+    #Form-field-Fixed-name-group {width:37.5%}
+    #Form-field-Fixed-fixed-group {width:37.5%}
+    #Form-field-Fixed-kst-group {width:37.5%}
+    #Form-field-Fixed-initial-group {width:12.5%}
+    #Form-field-Fixed-rate-group {width:12.5%}
+    #Form-field-Fixed-initialupdate-group {width:12.5%}
+    #Form-field-Fixed-liquidation-group {width:37.5%}
+    #Form-field-Fixed-liquidation_at-group {width:10.5%}
+
+    .hide {
+      display: none !important;
+    }
+
+    .show {
+      font-size:15px !important;
+      display: inline-block !important;
+      float: none !important;
+      z-index: 8 !important;
+      vertical-align: bottom !important;
+      position:relative !important;
+      margin-right:-20px !important;
+    }
+
+    .required {binternal:1px solid red !important}
+
+ 
+}
+
+</style>
+
+
+<script>
+
+
+
+
+    $(function() { 
+
+        $('#Form-field-Fixed-initial').on('paste input', function (e) {
+
+            inputCurrency(this, e);
+
+        });
+
+
+        $('#Form-field-Fixed-initial').on('focusout', function (e) {
+            
+            inputCurrencyOut(this, e);
+
+        });
+
+        $('#Form-field-Fixed-initial').on('focusin', function (e) {
+            
+            inputCurrencyIn(this, e);
+
+        });
+
+        $('#Form-field-Fixed-initialupdate').on('paste input', function (e) {
+
+            inputCurrency(this, e);
+
+        });
+
+
+        $('#Form-field-Fixed-initialupdate').on('focusout', function (e) {
+            
+            inputCurrencyOut(this, e);
+
+        });
+
+        $('#Form-field-Fixed-initialupdate').on('focusin', function (e) {
+            
+            inputCurrencyIn(this, e);
+
+        });
+                
+
+    });
+
+
+
+</script>
+
+

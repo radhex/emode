@@ -1,0 +1,74 @@
+<div data-control="toolbar">
+    <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_inbox')) : ?>
+    <a href="<?= Backend::url('eprog/manager/inbox/create') ?>" class="btn btn-primary oc-icon-envelope"><?= e(trans('eprog.manager::lang.create')) ?></a>
+    <?php endif ?>
+    <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions"
+    <?php if(!BackendAuth::getUser()->hasAccess('eprog.manager.manage_inbox')) : ?>
+        style="display:none"
+    <?php endif ?>
+    >
+        <button
+            data-primary-button
+            type="button"
+            class="btn btn-default"
+            data-request="onBulkAction"
+            data-trigger-action="enable"
+            data-trigger=".control-list input[type=checkbox]"
+            data-trigger-condition="checked"
+            data-request-success="$(this).prop('disabled', true).next().prop('disabled', true);"
+            data-stripe-load-indicator>
+            <?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>
+        </button>
+        <button
+            type="button"
+            class="btn btn-default dropdown-toggle"
+            data-trigger-action="enable"
+            data-trigger=".control-list input[type=checkbox]"
+            data-trigger-condition="checked"
+            data-toggle="dropdown">
+            <span class="caret"></span>
+        </button>
+
+        <ul class="dropdown-menu" data-dropdown-title="<?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>">
+            <li>
+                <a href="javascript:;" class="oc-icon-trash-o" data-action="delete" data-confirm="<?= e(trans('eprog.manager::lang.inbox_delete_confirm')) ?>">
+                    <?= e(trans('eprog.manager::lang.inbox_delete')) ?>
+                </a>
+            </li>
+            <li role="separator" class="divider"></li>
+            <li>
+                <a href="javascript:;" class="oc-icon-inbox" data-action="inbox" data-confirm="<?= e(trans('eprog.manager::lang.move_confirm')) ?> <?= e(trans('eprog.manager::lang.inbox')) ?>?">
+                    <?= e(trans('eprog.manager::lang.move_label')) ?> <?= e(trans('eprog.manager::lang.inbox')) ?>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="oc-icon-paper-plane" data-action="sent" data-confirm="<?= e(trans('eprog.manager::lang.move_confirm')) ?> <?= e(trans('eprog.manager::lang.sent')) ?>?">
+                    <?= e(trans('eprog.manager::lang.move_label')) ?> <?= e(trans('eprog.manager::lang.sent')) ?>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="oc-icon-archive" data-action="archive" data-confirm="<?= e(trans('eprog.manager::lang.move_confirm')) ?> <?= e(trans('eprog.manager::lang.archive')) ?>?">
+                    <?= e(trans('eprog.manager::lang.move_label')) ?> <?= e(trans('eprog.manager::lang.archive')) ?>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="oc-icon-fire" data-action="spam" data-confirm="<?= e(trans('eprog.manager::lang.move_confirm')) ?> <?= e(trans('eprog.manager::lang.spam')) ?>?">
+                    <?= e(trans('eprog.manager::lang.move_label')) ?> <?= e(trans('eprog.manager::lang.spam')) ?>
+                </a>
+            </li>
+            <li role="separator" class="divider"></li>
+            <li>
+                <a href="javascript:;" class="oc-icon-envelope-open-o" data-action="seen" data-confirm="<?= e(trans('eprog.manager::lang.mark_seen_confirm')) ?>">
+                    <?= e(trans('eprog.manager::lang.mark_seen')) ?>
+                </a>
+            </li>
+            <li>
+                <a href="javascript:;" class="oc-icon-envelope" data-action="unseen" data-confirm="<?= e(trans('eprog.manager::lang.mark_unseen_confirm')) ?>">
+                    <?= e(trans('eprog.manager::lang.mark_unseen')) ?>
+                </a>
+            </li>
+        </ul>
+
+    </div>
+</div>  
+

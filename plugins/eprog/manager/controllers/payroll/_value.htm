@@ -1,0 +1,502 @@
+<?php 
+use Eprog\Manager\Models\Payroll;
+use Eprog\Manager\Models\Worker;
+use Eprog\Manager\Models\Internalvalue;
+use Eprog\Manager\Classes\Util;
+use Rainlab\User\Models\User;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+	$currency = SettingConfig::get("currency") == null ? "PLN" : SettingConfig::get("currency");
+	$values  = [];
+
+	$data = [];
+	$payroll = Payroll::find($id);
+
+	if($payroll)
+	$data = json_decode($payroll->data, true);
+
+	if(Input::segment(5) == "create"){
+
+		$nip = Session::get("selected.nip") ?? '';
+		$firm = User::where("firm_nip",$nip)->first()->firm_name ?? '';
+		if($nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+		$data = [];
+		$workers = Worker::where("nip",$nip)->where("disp",1)->get();
+		$l = 1;
+		foreach($workers as $worker){
+			$data[$l-1]["p1"] = $l;
+			$data[$l-1]["p2"] = $worker->surname." ".$worker->name;
+			$l++;
+		}
+	}
+
+
+//dd($data);
+
+
+?>
+<style>
+
+.valuetable {display:table; ;}
+.valuetable > div {display:table-row;background:#fff;  }
+.valuetable > div > div {border-top:1px solid #eee;display:table-cell; height:34px;vertical-align:middle; font-size:13px; padding-left:0px;text-align:right; padding-right:0px; padding-top:4px;padding-bottom:4px;}
+.valuetable .date {color:green;width:150px}
+.valuetable .desc {width:300px;}
+.valuetable > div.head {background:var(--ml2color);}
+.valuetable > div.head div{font-size:12px}
+.valuetable input {text-align:right; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:0px;border-left:0px}
+.valuetable select {text-align:left; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+#waluta select {text-align:left; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+//.sum_netto,.sum_vat,.sum_brutto {font-weight:bold}
+
+.head_pkwiu {display:none !important}
+.show_pkwiu {display:none !important}
+.head_cn {display:none !important}
+.show_cn {display:none !important}
+.head_gtu {display:none !important}
+.show_gtu {display:none !important}
+.value_netto,.value_vat,.value_brutto {margin-left:5px;}
+.required, .gtu_error, .qty_error, .qty_error_max, .curr_error {border:1px solid red !important}
+.desk {display:none; background:var(--ml2color);padding:5px;padding-left:6px;padding-right:6px;font-size:12px;text-align:right}
+.extra {display:none !important}
+.exchange {display:none !important}
+.exch {display:none !important}
+.extra_row {display:none !important}
+.ext{display:none !important}
+#nbp {display:none}
+#waluta {padding-bottom:15px}
+
+@media (max-width: 1200px){
+
+	.valuetable > div {display:block;}
+	.valuetable > div > div {white-space: nowrap;display:block;text-align:left;height:38px !important}
+	.valuetable input {text-align:left !important;border-left:1px solid #d1d6d9}
+	.valuetable input.product {}
+	.valuetable select {margin-left:-4px !important}
+
+	.mob {display:none !important}
+	.desk {display:inline-block;width:250px}
+	.order {font-size:16px !important;}
+}
+
+@media (max-width: 1650px){
+
+	.custom-checkbox{display:inline-block !important}
+}
+
+</style>
+<div id="value" style="margin-left:-10px">
+
+	<div class="valuetable">
+	<div class="mob head"><div style="width:20px;text-align:center;padding-left:5px;padding-right:10px">LP</div>
+	<div style="width:120px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p2")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p3")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p4")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p5")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p6")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p7")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p8")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p9")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p10")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p11")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p12")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p13")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p14")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p15")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p16")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p17")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p18")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p19")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p20")) ?></div>
+	<div style="width:70px;text-align:left"><?= e(trans("eprog.manager::lang.payroll_p21")) ?></div>
+
+	<div style="width:40px"></div>
+	</div>
+<?php foreach($data as $dat) : ?>
+<?php 
+
+
+?>
+<div class="rows">
+<div  style="text-align:left;"><span class="desk">LP</span><input type="text" size="2" name="data[p1][]" value="<?= $dat['p1'] ?? ''?>" maxlength="255" class="product lp" style="text-align:left;border-left:1px solid #d1d6d9;"/></div>
+<div  style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p2")) ?></span><input type="text" size="20" name="data[p2][]" value="<?= $dat['p2'] ?? '' ?>" maxlength="255" class="product" style="text-align:left"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p3")) ?></span><input type="text" size="7" name="data[p3][]"  value="<?= number_format((float)($dat['p3'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p4")) ?></span><input type="text" size="7" name="data[p4][]" value="<?= number_format((float)($dat['p4'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p5")) ?></span><input type="text" size="7" name="data[p5][]" value="<?= number_format((float)($dat['p5'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p6")) ?></span><input type="text" size="7" name="data[p6][]" value="<?= number_format((float)($dat['p6'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p7")) ?></span><input type="text" size="7" name="data[p7][]" value="<?= number_format((float)($dat['p7'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p8")) ?></span><input type="text" size="7" name="data[p8][]" value="<?= number_format((float)($dat['p8'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p9")) ?></span><input type="text" size="7" name="data[p9][]" value="<?= number_format((float)($dat['p9'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p10")) ?></span><input type="text" size="7" name="data[p10][]" value="<?= number_format((float)($dat['p10'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p11")) ?></span><input type="text" size="7" name="data[p11][]" value="<?= number_format((float)($dat['p11'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p12")) ?></span><input type="text" size="7" name="data[p12][]" value="<?= number_format((float)($dat['p12'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p13")) ?></span><input type="text" size="7" name="data[p13][]" value="<?= number_format((float)($dat['p13'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p15")) ?></span><input type="text" size="7" name="data[p14][]" value="<?= number_format((float)($dat['p14'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p16")) ?></span><input type="text" size="7" name="data[p15][]" value="<?= number_format((float)($dat['p15'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p17")) ?></span><input type="text" size="7" name="data[p16][]" value="<?= number_format((float)($dat['p16'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p18")) ?></span><input type="text" size="7" name="data[p17][]" value="<?= number_format((float)($dat['p17'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p18")) ?></span><input type="text" size="7" name="data[p18][]" value="<?= number_format((float)($dat['p18'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p19")) ?></span><input type="text" size="7" name="data[p19][]" value="<?= number_format((float)($dat['p19'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p20")) ?></span><input type="text" size="7" name="data[p20][]" value="<?= number_format((float)($dat['p20'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p21")) ?></span><input type="text" size="7" name="data[p21][]" value="<?= number_format((float)($dat['p21'] ?? 0),2,","," ") ?>" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+
+<div><div class="oc-icon-minus-circle delRow" style="color:var(--mcolor);font-size:18px;padding-left:15px;cursor:pointer;"></div></div>
+</div>
+<?php endforeach; ?>
+
+<div class="summmary">
+<div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div>
+<div><div class="oc-icon-plus-circle addRow" style="color:var(--mcolor);font-size:18px;padding-left:15px;cursor:pointer;"></div></div>
+
+<div id="add" style="display:none">
+<div  style="text-align:left;"><span class="desk">LP</span><input type="text" size="2" name="data[p1][]" value="" maxlength="255" class="product lp" style="text-align:left;border-left:1px solid #d1d6d9;"/></div>
+<div  style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p2")) ?></span><input type="text" size="20" name="data[p2][]" value="" maxlength="255" class="product" style="text-align:left"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p3")) ?></span><input type="text" size="7" name="data[p3][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p4")) ?></span><input type="text" size="7" name="data[p4][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p5")) ?></span><input type="text" size="7" name="data[p5][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p6")) ?></span><input type="text" size="7" name="data[p6][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p7")) ?></span><input type="text" size="7" name="data[p7][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p8")) ?></span><input type="text" size="7" name="data[p8][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p9")) ?></span><input type="text" size="7" name="data[p9][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p10")) ?></span><input type="text" size="7" name="data[p10][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p11")) ?></span><input type="text" size="7" name="data[p11][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p12")) ?></span><input type="text" size="7" name="data[p12][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p13")) ?></span><input type="text" size="7" name="data[p13][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p14")) ?></span><input type="text" size="7" name="data[p14][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p15")) ?></span><input type="text" size="7" name="data[p15][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p16")) ?></span><input type="text" size="7" name="data[p16][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p17")) ?></span><input type="text" size="7" name="data[p17][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p18")) ?></span><input type="text" size="7" name="data[p18][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p19")) ?></span><input type="text" size="7" name="data[p19][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p20")) ?></span><input type="text" size="7" name="data[p20][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.payroll_p21")) ?></span><input type="text" size="7" name="data[p21][]" value="" maxlength="255" class="product kwota" style="text-align:right;"/></div>
+<div><div class="oc-icon-minus-circle delRow" style="color:var(--mcolor);font-size:18px;padding-left:15px;cursor:pointer;"></div></div>
+</div>
+
+
+</div>
+</div>
+<br>
+<div style="margin-left:-40px;padding-top:4px"></div>
+</div>
+
+
+
+<script>
+
+
+	var segment = '<?= Input::segment(5);?>';	
+
+	$(function() {
+
+		if($('.rows').length == 0)
+		addRow();
+		sumKwota();
+		valueReorder();
+		initValidate();
+
+		addProduct = function(el,id,name,netto,vat, currency) {
+		
+			if(currency == "PLN"){
+				$('#value .rows:nth-child(' + el  +')').find('.product').val(name);	
+				$('#value .rows:nth-child(' + el  +')').find('.amount').val(number_format(netto.replace(",","."),2,","," "));	
+				$('#value .rows:nth-child(' + el  +')').find('.select_vat').val(vat);
+				$('#value .rows:nth-child(' + el  +')').find('.netto').keyup();	
+
+				parent.window.sumKwota();
+			    $(".ui-dialog-titlebar-close").click();	
+				$("#dialog").dialog('close');		
+			}
+
+		}
+		$('.addRow').on('click', function (e) {
+		 
+			addRow();
+
+		});
+
+
+		if(segment == "create" && $('.rows').length < 1)
+		$('.addRow').click();
+
+
+
+ 		 	 	  	 		 	
+});
+
+function addRow(){
+
+		var next = $("#add").clone().html();
+
+	 	$("#value .summmary").before('<div class="rows">' + $("#add").clone().html() + '</div>');
+	 	if($('.rows').eq(-2).find('.lp').val() > 0)
+	 	$('.rows').last().find('.lp').val(parseInt($('.rows').eq(-2).find('.lp').val())+1);
+
+	 	if($('.rows').length == 1)
+	 	$('.rows').last().find('.lp').val(1);
+	 	valueReorder();
+
+	 	initValidate();
+}
+
+
+
+function modalProduct(el){
+
+	modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/product?el=' + (parseInt($(el).parent().parent().find(".order").text()) + 1),'<?= e(trans('eprog.manager::lang.products')) ?>', 600, 420);
+
+}
+
+
+
+
+function initValidate(){
+
+
+		$('.netto').on('paste input', function (e) {
+			
+			if($(this).val() >  81300813008130.07){				
+				$(this).val(0);
+			}
+		});
+
+		$('.brutto').on('paste input', function (e) {
+
+			if($(this).val() > 99999999999999.99){				
+				$(this).val(0);
+			}
+		});
+
+		$('.kwota').on('paste input', function (e) {
+
+			inputCurrency(this, e);
+
+		});
+
+
+		$('.kwota').on('focusout', function (e) {
+		    
+			inputCurrencyOut(this, e);
+
+		});
+
+		$('.kwota').on('focusin', function (e) {
+		    
+			inputCurrencyIn(this, e);
+
+		});
+
+		$('.kwotazero').on('paste input', function (e) {
+
+			inputCurrencyZero(this, e);
+
+		});
+
+
+		$('.kwotazero').on('focusout', function (e) {
+		    
+			inputCurrencyZeroOut(this, e);
+
+		});
+
+		$('.kwotazero').on('focusin', function (e) {
+		    
+			inputCurrencyZeroIn(this, e);
+
+		});
+
+		$('.ilosc').on('paste input', function (e) {
+		
+			//var regex = /^[\d]+(|\.[\d]+)$/g;
+			if(!is_numeric($(this).val()))
+			$(this).val("");
+
+
+		});
+
+		$('exchange').on('paste input', function (e) {
+		        
+		    inputCourse(this, e);
+		    
+		});
+
+		$('.exchange').on('focusout', function (e) {
+		        
+		    inputCourseOut(this, e);
+		    
+		});
+
+
+		$('.exchange').on('focusin', function (e) {
+		        
+		    inputCourseIn(this, e);
+		    
+		});
+
+
+
+		$('.ilosc').on('keyup', function (e) {
+
+			sumKwota();
+
+		});
+
+		$('.amount').on('keyup', function (e) {
+
+			sumKwota();
+
+		});
+
+
+		$('input').on('focusin', function (e) {
+
+			$("#save").attr("disabled",false);
+		
+
+		});
+
+
+
+
+		$('.req').on('focusout', function (e) {
+
+			if($(this).val().trim() != "")
+			$(this).removeClass("required");
+
+		});
+
+
+		$('.delRow').on('click', function (e) {
+		 
+		 	if($('.rows').length > 1){
+			 	$(this).parent().parent().remove();
+			 	sumKwota();
+			 	valueReorder();
+			 	$("#save").attr("disabled",false);
+			 	$("#ksefSend").attr("disabled",false);
+		 	}
+
+		});
+
+}
+
+function is_numeric(str) {
+	  if (typeof str != "string") return false // we only process strings!  
+	  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+	         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
+
+
+function numDigitsAfterDecimal(x) {
+
+		var afterDecimalStr = x.toString().split('.')[1] || x.toString().split(',')[1] || ''
+		return afterDecimalStr.length
+
+}
+
+
+
+function sumKwota() {
+
+
+
+
+}
+
+function valueValidate() {
+
+
+	var send = true;
+	$("#value .rows").each(function( index ) {
+
+			$(this).find(".req").each(function( index ) {
+
+				if($(this).val().trim() == "")
+					$(this).addClass("required");
+				else
+					$(this).removeClass("required");
+
+			});
+
+
+			qty = $(this).find(".qty input").val().trim();
+			if(!is_numeric(qty) || qty < 0)
+				$(this).find(".qty input").addClass("qty_error");
+			else
+				$(this).find(".qty input").removeClass("qty_error");
+
+			if(qty > 2147483647)
+				$(this).find(".qty input").addClass("qty_error_max");
+			else
+				$(this).find(".qty input").removeClass("qty_error_max");
+
+			amount = $(this).find(".amount input").val().trim().replace(",",".").replace(/\s+/g, '');
+			if(!isCurrency(amount))
+				$(this).find(".amount input").addClass("curr_error");
+			else
+				$(this).find(".amount input").removeClass("curr_error");
+
+	
+
+
+	});
+
+	
+	if($("#value").find('.required').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= trans('eprog.manager::lang.valid_required') ?>', 'class': 'error', 'interval': 2});
+	}
+	else if($("#value").find('.curr_error').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_currency')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if(number_format($(".sum_brutto").text().replace(",",".").replace(/\s+/g, ''),2,".","") > 99999999999999.99){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_amount')) ?>', 'class': 'error', 'interval': 2});
+	}	
+	else
+		send = true;
+
+	if(send) {
+		$("#save").attr("disabled",false);
+
+	}
+	else{
+		$("#save").attr("disabled",true);
+
+	}
+
+
+}
+
+
+function valueReorder(type = 1) {
+
+	i = 1; j = 1;
+	$("#value .rows").each(function( index ) {
+
+		$(this).find(".order").text(j);
+		if(type == 1 || (type == 2 && i%2 == 0)) j++;
+	i++;
+	});
+
+}
+
+
+</script>
+
+
+
+
+
+
+ 
+
+
+        

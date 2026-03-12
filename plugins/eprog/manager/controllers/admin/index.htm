@@ -1,0 +1,10 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+
+        <li><span  class="oc-icon-cogs"></span><a href="<?= Backend::url('eprog/manager/admin') ?>"><?= e(trans('eprog.manager::lang.manage')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+
+<?= $this->listRender() ?>

@@ -1,0 +1,57 @@
+title = "Scheduler"
+url = "/scheduler/:type?/:id?"
+layout = "client"
+is_hidden = 0
+
+[viewBag]
+
+[scheduler]
+==
+<div class="tabs" style="margin-top:15px">
+                       <ul>
+
+                        <li class="{{ this.param.type == "before" ? 'active' : ''}}"><a href="/scheduler/before" class="oc-icon-sign-in">{{ 'Nadchodzące'|_ }}</a></li>
+                        <li class="{{ this.param.type == "after" ? 'active' : ''}}"><a href="/scheduler/after" class="oc-icon-sign-out">{{ 'Zakończone'|_ }}</a></li>
+               
+            
+    </ul> </div>
+
+<div class="row">
+        <div class="col-md-6" style="width:100%">
+            <h3> <i class="icon-calendar-check-o"></i>&nbsp;&nbsp;<a href="/scheduler/{{this.param.type}}/">{{ 'Terminarz'|_ }} - {{this.param.type == "before" ? lcfirst('Wydarzenia nadchodzące'|_) : lcfirst('Wydarzenia zakończone'|_) }}</a> {% if scheduler.name %} » {{ scheduler.name}} ({{ scheduler.id}}) {% endif %}</h3>
+        </div>
+    </div>
+    <div><br></div>
+ 
+
+    
+   {% if not this.param.id %}
+        <div class="mtable mlist">
+        <div class="lhead">
+        <div  class="restitle">{{ 'Nazwa'|_ }}</div>
+        <div>{{ 'Kategoria'|_ }}</div>
+        <div class="resdate">{{ 'Rozpoczęcie'|_ }}</div>
+        <div class="resdate">{{ 'Zakończenie'|_ }}</div>
+        </div>
+        {% for scheduler in scheduler %}        
+        <div> 
+        <div><a href="/scheduler/{{this.param.type}}/{{scheduler.id}}" >{{scheduler.name}}</a></div>
+        <div>{{scheduler.category.name}}</a></div>
+        <div  class="resdate">{% if(scheduler.start) %}{{ clientDate(scheduler.start) }} {% endif %}</div>
+        <div  class="resdate">{% if(scheduler.stop) %}{{ clientDate(scheduler.stop) }} {% endif %}</div>
+        </div>
+        {% endfor  %}
+         </div>
+         {{ scheduler.render|raw }}
+
+    {% elseif scheduler.name  %}
+      
+        <div class="mtable mfield" style="float:left;">
+        <div><div class="fhead">{{ 'Kategoria'|_ }}</div><div>{{scheduler.category.name}}</div></div>
+        <div><div class="fhead">{{ 'Rozpoczęcie'|_ }}</div><div>{% if(scheduler.start) %}{{ clientDate(scheduler.start) }} {% endif %}</div></div>
+        <div><div class="fhead">{{ 'Zakończenie'|_ }}</div><div>{% if(scheduler.stop) %}{{ clientDate(scheduler.stop) }} {% endif %}</div></div>
+        <div><div class="fhead">{{ 'Opis'|_ }}</div><div>{{scheduler.desc|raw }}</div></div>
+        <div><div class=" fhead  noborder">{{ 'Pliki'|_ }}</div><div>{{ scheduler.file|raw }}</div></div>
+        </div>
+   
+    {% endif %}

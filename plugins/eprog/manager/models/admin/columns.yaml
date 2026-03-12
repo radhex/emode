@@ -1,0 +1,52 @@
+columns:
+    id:
+        label: 'ID'
+        type: text
+        width: 50px
+    server:
+        label: 'eprog.manager::lang.remote_server'
+        span: left
+        type: text
+        searchable: true
+    remote:
+        label: 'eprog.manager::lang.remote_addr'
+        span: left
+        type: text
+        searchable: true
+    subscription:
+        label: 'eprog.manager::lang.subscription'
+        span: left
+        type: partial
+        searchable: true
+    user_id:
+        label: 'eprog.manager::lang.user'
+        type: partial
+        path: user
+    capacity:
+        label: 'eprog.manager::lang.capacity'
+        span: left
+        type: text
+        searchable: true
+    key:
+        label: 'eprog.manager::lang.remote_key'
+        type: text
+        searchable: true
+
+    rotation:
+        label: 'eprog.manager::lang.rotation_id'
+        type: text
+        searchable: true
+    mode:
+        label: 'eprog.manager::lang.emode_mode'
+        type: text
+        searchable: true
+    expires:
+        label: 'eprog.manager::lang.expires_at'
+        type: text
+        searchable: true
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+
+

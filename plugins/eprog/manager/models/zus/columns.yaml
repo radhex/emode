@@ -1,0 +1,32 @@
+columns:
+    year:
+        label: 'eprog.manager::lang.year'
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: "col-sm-1 w10"
+    month:
+        label: 'eprog.manager::lang.month'
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        cssClass: "col-sm-1 w10"
+    social:
+        label: 'eprog.manager::lang.social_insurance'
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        cssClass: col-sm-1
+    health:
+        label: 'eprog.manager::lang.health_insurance'
+        oc.commentPosition: ''
+        span: storm
+        type: partial
+        cssClass: col-sm-1
+        width: 80%
+   
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+

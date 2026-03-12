@@ -1,0 +1,74 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-external-link"></span><a href="<?= Backend::url('eprog/manager/mailing') ?>"><?= e(trans('eprog.manager::lang.mailing')) ?></a></li>
+        <li>ID: <?= Input::segment(6) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-request-update="'send_' : '#send'"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/mailing') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a>
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.mailing_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+
+  
+		<span style="padding-left:50px;">&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <button
+                    id="send_button"
+                    data-request="onMail"
+                    data-request-data="id:<?= Request::segment(6) ?>"
+                    data-hotkey="ctrl+s, cmd+s"
+		            data-request-confirm="<?= e(trans('eprog.manager::lang.confirm_mailing')) ?>"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary btn-toolbar oc-icon-paper-plane">
+                     <?= e(trans('eprog.manager::lang.send')) ?>
+                </button>
+ 
+            </div>
+
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/mailing') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<script type="text/javascript">
+  $(document).ready(function(){
+      $('input[type=radio]').change(function(){
+
+            if($(this).val() == "list")
+                $("#send_button").attr("data-request-confirm","<?= e(trans('eprog.manager::lang.confirm_mailing_list')) ?>");
+            else
+                $("#send_button").attr("data-request-confirm","<?= e(trans('eprog.manager::lang.confirm_mailing_group')) ?>");
+
+            console.log($("#send_button").attr("data-request-confirm"));
+
+      });
+  });
+</script>

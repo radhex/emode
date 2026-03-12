@@ -1,0 +1,30 @@
+<button type="button" id="nbpu" value="dodaj" class="btn btn-secondary btn-sm oc-icon-money"  style="margin-top:26px;margin-left:-3px"><?= e(trans('eprog.manager::lang.ksef.nbp')) ?></button>
+
+<script>
+$(function() {   
+
+		$("#nbpu").click(function() {
+			if($('#Form-field-Order-_wu').val() == "") return;
+
+			$.ajax({
+			        type: "POST",
+			        data:"_token=<?= csrf_token() ?>",
+			        url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/nbp/' + $('#Form-field-Order-_wu').val(),
+
+			        success: function(res) {
+
+			        	if($('#Form-field-Order-_wu').val() != "PLN")
+			     		$('#Form-field-Order-_ku').val(res); 
+			                   
+			        },
+			        error: function(xhr,status,error) {
+			             console.log(error);
+			        }
+
+			});
+			
+
+		});
+			 	  	 		 	
+});
+</script>

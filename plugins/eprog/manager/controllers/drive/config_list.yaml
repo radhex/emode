@@ -1,0 +1,11 @@
+list: $/eprog/manager/models/drive/columns.yaml
+modelClass: Eprog\Manager\Models\Drive
+title: 'eprog.manager::lang.drive'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '5'
+showSetup: false
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:         
+      prompt: 'backend::lang.list.search_prompt'

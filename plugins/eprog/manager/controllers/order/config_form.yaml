@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.order_one'
+form: $/eprog/manager/models/order/fields.yaml
+modelClass: Eprog\Manager\Models\Order
+defaultRedirect: eprog/manager/order
+create:
+    redirect: 'eprog/manager/order/update/:id'
+    redirectClose: eprog/manager/order
+update:
+    redirect: eprog/manager/order
+    redirectClose: eprog/manager/order

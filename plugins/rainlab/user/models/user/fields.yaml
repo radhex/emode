@@ -1,0 +1,296 @@
+fields:
+
+tabs:
+    fields:
+        username:
+            label: 'rainlab.user::lang.user.username'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            tab: 'rainlab.user::lang.add.firm'
+            cssClass: col-sm-3
+        firm_name:
+            label: 'rainlab.user::lang.add.firm'
+            tab: 'rainlab.user::lang.add.firm'
+            oc.commentPosition: ''
+            span: storm
+            cssClass: col-sm-3
+            type: text
+        cedig:
+            label: ''
+            tab: 'rainlab.user::lang.add.firm'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: cedig
+            cssClass: col-sm-3
+        firm_region:
+            label: 'rainlab.user::lang.add.region'
+            tab: 'rainlab.user::lang.add.firm'
+            oc.commentPosition: ''
+            span: left
+            cssClass: col-sm-3
+            type: dropdown
+        firm_nip:
+            label: 'rainlab.user::lang.add.nip'
+            tab: 'rainlab.user::lang.add.firm'
+            oc.commentPosition: ''
+            span: storm
+            cssClass: col-sm-3
+            type: text
+        firm_city:
+            label: 'rainlab.user::lang.add.city'
+            tab: 'rainlab.user::lang.add.firm'
+            oc.commentPosition: ''
+            span: auto
+            cssClass: col-sm-2
+            type: text
+        firm_code:
+            label: 'rainlab.user::lang.add.code'
+            tab: 'rainlab.user::lang.add.firm'
+            oc.commentPosition: ''
+            span: storm
+            cssClass: col-sm-3
+            type: text
+        firm_country:
+            label: 'rainlab.user::lang.add.country'
+            tab: 'rainlab.user::lang.add.firm'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        firm_street:
+            label: 'rainlab.user::lang.add.street'
+            tab: 'rainlab.user::lang.add.firm'
+            span: auto
+            cssClass: col-sm-2
+            type: text
+        firm_number:
+            label: 'rainlab.user::lang.add.number'
+            tab: 'rainlab.user::lang.add.firm'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        email:
+            label: 'rainlab.user::lang.user.email'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            tab: 'rainlab.user::lang.user.account'
+            cssClass: col-sm-3
+        surname:
+            label: 'rainlab.user::lang.user.surname'
+            tab: 'rainlab.user::lang.user.account'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-3
+        name:
+            label: 'rainlab.user::lang.user.name'
+            tab: 'rainlab.user::lang.user.account'
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        send_invite:
+            type: checkbox
+            label: 'rainlab.user::lang.user.send_invite'
+            comment: 'rainlab.user::lang.user.send_invite_comment'
+            tab: 'rainlab.user::lang.user.account'
+            default: false
+            context: create
+            cssClass: col-sm-3
+        phone:
+            label: 'rainlab.user::lang.add.phone'
+            tab: 'rainlab.user::lang.user.account'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-3
+        birthday:
+            label: 'eprog.manager::lang.birthday'
+            tab: 'rainlab.user::lang.user.account'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        password@create:
+            label: 'rainlab.user::lang.user.create_password'
+            comment: 'rainlab.user::lang.user.create_password_comment'
+            tab: 'rainlab.user::lang.user.account'
+            type: password
+            required: true
+            span: left
+            cssClass: col-sm-3
+        password@update:
+            label: 'rainlab.user::lang.user.reset_password'
+            comment: 'rainlab.user::lang.user.reset_password_comment'
+            tab: 'rainlab.user::lang.user.account'
+            type: password
+            span: left
+            cssClass: col-sm-3
+        password_confirmation:
+            label: 'rainlab.user::lang.user.confirm_password'
+            comment: 'rainlab.user::lang.user.confirm_password_comment'
+            tab: 'rainlab.user::lang.user.account'
+            type: password
+            span: storm
+            cssClass: col-sm-3
+            context:
+                - create
+                - update
+        groups:
+            label: 'rainlab.user::lang.user.groups'
+            tab: 'rainlab.user::lang.user.account'
+            type: relation
+            span: left
+            emptyOption: 'rainlab.user::lang.user.empty_groups'
+            cssClass: col-sm-3
+        timezone:
+            label: 'rainlab.user::lang.add.timezone'
+            tab: 'rainlab.user::lang.user.account'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            cssClass: col-sm-3
+        region:
+                label: 'rainlab.user::lang.add.region'
+                tab: 'rainlab.user::lang.add.address'
+                oc.commentPosition: ''
+                span: storm
+                cssClass: col-sm-3
+                type: dropdown
+        copyfirm:
+            label: ''
+            tab: 'rainlab.user::lang.add.address'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: copyfirm
+            cssClass: col-sm-3
+        city:
+            label: 'rainlab.user::lang.add.city'
+            tab: 'rainlab.user::lang.add.address'
+            oc.commentPosition: ''
+            span: auto
+            cssClass: col-sm-2
+            type: text
+        code:
+            label: 'rainlab.user::lang.add.code'
+            tab: 'rainlab.user::lang.add.address'
+            oc.commentPosition: ''
+            span: storm
+            cssClass: col-sm-3
+            type: text
+        country:
+            label: 'rainlab.user::lang.add.country'
+            tab: 'rainlab.user::lang.add.address'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        street:
+            label: 'rainlab.user::lang.add.street'
+            tab: 'rainlab.user::lang.add.address'
+            span: auto
+            cssClass: col-sm-2
+            type: text
+        number:
+            label: 'rainlab.user::lang.add.number'
+            tab: 'rainlab.user::lang.add.address'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        tax:
+            tab: 'eprog.manager::lang.taxes'
+            label: 'eprog.manager::lang.tax_service'
+            span: left
+            type: checkbox
+            cssClass: col-sm-1
+        tax_type:
+            tab: 'eprog.manager::lang.taxes'
+            label: ''
+            span: left
+            type: radio
+            cssClass: col-sm-3
+            default: 0
+        tax_office:
+            tab: 'eprog.manager::lang.taxes'
+            label: 'eprog.manager::lang.tax_office'
+            span: left
+            type: dropdown
+            cssClass: col-sm-3
+        tax_amount:
+            tab: 'eprog.manager::lang.taxes'
+            label: 'eprog.manager::lang.ksef.amount_revenue'
+            span: storm
+            type: text
+            cssClass: "col-sm-2 w200"
+        tax_form:
+            tab: 'eprog.manager::lang.taxes'
+            label: 'eprog.manager::lang.tax_form'
+            span: left
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        tax_lump:
+            tab: 'eprog.manager::lang.taxes'
+            label: 'eprog.manager::lang.lump'
+            span: storm
+            type: dropdown
+            cssClass: "col-sm-2 w200"
+            dependsOn: tax_form
+            trigger:
+                action: show
+                field: tax_form
+                condition: value[lump]
+        staff:
+            label: 'eprog.manager::lang.staff'
+            tab: 'eprog.manager::lang.staff'
+            oc.commentPosition: ''
+            span: storm
+            type: checkboxlist
+            cssClass: col-sm-3
+        public_files:
+            label: 'rainlab.user::lang.add.public_files'
+            tab: 'rainlab.user::lang.add.files'
+            oc.commentPosition: ''
+            mode: file
+            useCaption: true
+            thumbOptions:
+                mode: crop
+                extension: auto
+            span: storm
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-3
+        private_files:
+            label: 'rainlab.user::lang.add.private_files'
+            tab: 'rainlab.user::lang.add.files'
+            oc.commentPosition: ''
+            mode: file
+            useCaption: true
+            thumbOptions:
+                mode: crop
+                extension: auto
+            span: storm
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-3
+        comment:
+            label: 'rainlab.user::lang.add.comment'
+            tab: 'rainlab.user::lang.add.comment'
+            size: large
+            oc.commentPosition: ''
+            span: storm
+            type: richeditor
+            cssClass: col-sm-6
+        info:
+            label: 'rainlab.user::lang.add.info_user'
+            tab: 'rainlab.user::lang.add.info'
+            size: large
+            oc.commentPosition: ''
+            span: storm
+            type: richeditor
+            cssClass: col-sm-6

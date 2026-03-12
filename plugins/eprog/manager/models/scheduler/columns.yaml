@@ -1,0 +1,42 @@
+columns:
+    id:
+        label: 'ID'
+        type: text
+        width: 50px
+    name:
+        label: 'eprog.manager::lang.name'
+        span: left
+        type: text
+        searchable: true
+    type_id:
+        label: 'eprog.manager::lang.category'
+        relation: type
+        select: name
+    admin_id:
+        label: 'eprog.manager::lang.staff'
+        type: partial
+        path: admin
+    user_id:
+        label: 'eprog.manager::lang.user'
+        type: partial
+        path: user
+    desc:
+        label: 'eprog.manager::lang.desc'
+        type: text
+        searchable: true
+        invisible: true
+    start:
+        label: 'eprog.manager::lang.start'
+        type: partial
+        path: start
+    stop:
+        label: 'eprog.manager::lang.stop'
+        type: partial
+        path: stop
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+
+
+

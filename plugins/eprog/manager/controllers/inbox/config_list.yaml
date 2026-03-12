@@ -1,0 +1,12 @@
+list: $/eprog/manager/models/inbox/columns.yaml
+modelClass: Eprog\Manager\Models\Inbox
+title: 'eprog.manager::lang.inbox'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '5'
+showSetup: false
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:         
+      prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/inbox/preview/:id/:currentPage'

@@ -1,0 +1,26 @@
+scopes:
+    user_id:
+        # Filter name
+        label: eprog.manager::lang.user
+        # Model Class name
+        modelClass: RainLab\User\Models\User
+        # Model attribute to display for the name
+        nameFrom: surname
+        # Filter scope
+        scope: filterByUser            
+    expires:
+        label: eprog.manager::lang.expires_at
+        type: daterange
+        conditions: expires >= ':after' AND expires <= ':before'
+
+
+           
+        
+
+
+
+
+
+
+
+

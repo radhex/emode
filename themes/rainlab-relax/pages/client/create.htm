@@ -1,0 +1,92 @@
+title = "Create"
+url = "/mail/create"
+layout = "client"
+is_hidden = 0
+
+[viewBag]
+
+[usermail]
+==
+<?php
+use Eprog\Manager\Models\Mail as ModelMail;
+use Eprog\Manager\Classes\Util;
+use Illuminate\Support\Facades\Config;
+
+function onInit()
+{ 
+    
+     $mail = ModelMail::find(Input::get("reply"));
+     if($mail) {         
+         $this['title'] = "Re:".$mail->name;
+          $this['body'] = "\n\n\n------------------------   ".($mail->admin ? $mail->admin->first_name." ".$mail->admin->last_name   :  config("app.name"))." ".$mail->date." ".Util::timeZoneOffset()."  ------------------------\n".$mail->desc;
+         //$this['body'] = "\n\n\n------------------------   ".config("app.name")." ".$mail->date."   ------------------------\n".$mail->desc;
+     }
+     
+    if($mail) $this['sel']  = $mail->admin_id;
+    $st = []; 
+    $staff = Auth::getUser()->staff;
+
+
+    if(!is_array($staff) && !Input::has("reply")) $this['nostaff'] = true; else $this['nostaff'] = false;
+
+    if(is_array($staff) && sizeof($staff) > 0) {
+        foreach($staff as $stf){
+             $st[$stf]  = \Backend\Models\User::find($stf)->first_name." ".\Backend\Models\User::find($stf)->last_name; 
+        }
+        
+        $this['staff'] = $st;
+    }
+   
+
+ 
+
+}
+?>
+==
+<div class="tabs" style="margin-top:15px">
+                       <ul>
+ 
+                        <li><a href="/mail/inbox" class="oc-icon-inbox">{{ 'Odebrane'|_ }}</a></li>
+                        <li><a href="/mail/outbox" class="oc-icon-paper-plane">{{ 'Wysłane'|_ }}</a></li>
+                        <li class="active"><a  href="/mail/create"  class="oc-icon-plus-circle"> {{ 'Utwórz nową'|_ }}</a></li>
+            
+    </ul> </div>
+
+
+<div class="row">
+        <div class="col-md-6" style="width:100%">
+            <h3> <i class="icon-comments"></i> <a href="/mail/inbox">{{ 'Wiadomości'|_ }} - {{ lcfirst('Utwórz nową'|_) }}</a> {% if mail.name %} » {{ mail.name}} [id:{{ mail.id}}] {% endif %}</h3>
+        </div>
+    </div>
+    <div><br></div>
+ 
+
+
+{% if nostaff == false  %}
+{{  form_ajax('onCreate') }}
+
+
+        <div class="mtable mfield" style="float:left;"> 
+        
+        {% if staff  %}
+        <div><div class="fhead">{{ 'Do'|_ }}</div><div class="form-group"><select  name="admin" style="padding:7px;border: 1px solid #ddd;border-radius:4px">
+            {% for key,user in staff %}
+            <option value="{{key}}" {{ sel == key ? 'selected' : ''}}>{{user}}</option>
+            {% endfor %}    
+        </select></div></div>
+        {% else %}	
+	       <input type="hidden" name="admin" value="{{sel}}">
+
+        {% endif %}
+        
+        <div><div class="fhead">{{ 'Tytuł'|_ }}</div><div class="form-group"><input type="text" id="name" name="name" size="70" value="{{title}}" style="padding:7px;border: 1px solid #ddd;border-radius:4px"></div></div>
+        <div><div class="fhead noborder">{{ 'Treść'|_ }}</div><div  class="form-group"><textarea id="desc" name="desc" cols="100" rows"20" style="height:300px;padding:7px;border: 1px solid #ddd;border-radius:4px">{{body}}</textarea></div></div>
+        </div>
+        
+
+       <button type="submit" class="btn btn-primary oc-icon-send" style="margin-top:20px">{{ "Wyślij"|_ }}</button>
+        
+{{ form_close() }}
+    {% else %} 
+    {{ 'Brak przypisanych administratorów'|_ }}
+    {% endif %} 

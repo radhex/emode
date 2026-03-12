@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.file'
+form: $/eprog/manager/models/file/fields.yaml
+modelClass: Eprog\Manager\Models\File
+defaultRedirect: eprog/manager/file
+create:
+    redirect: 'eprog/manager/file/update/:id'
+    redirectClose: eprog/manager/file
+update:
+    redirect: 'eprog/manager/file/update/:id'
+    redirectClose: eprog/manager/file

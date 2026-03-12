@@ -1,0 +1,39 @@
+title = "Polityka prywatności"
+url = "/rodo"
+layout = "blank"
+description = "Autoryzacja"
+hidden = "0"
+meta_title = "Autoryzacja"
+
+==
+<?
+use Eprog\Manager\Models\User;
+use Eprog\Manager\Classes\Ksef;
+use Redirect;
+use Illuminate\Support\Facades\Session;
+use BackendAuth;
+
+function onStart()
+{
+
+    $this['partial'] = 'client/rodo_'.(Session::get("locale") ?? "pl");
+ 
+}
+
+
+
+?>
+==
+<div class="row">
+    <div class="col-md-12">
+        <div id="partialContactForm">
+            {% partial partial %}
+        </div>
+    </div>
+
+    <div class="col-md-12">
+    <br>
+    <center><a href="https://ksef.emode.pl/send" class="btn btn-default oc-icon-chevron-left">{{ 'Powrót'|_ }}</a></center>
+    </div>
+</div>
+

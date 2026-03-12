@@ -1,0 +1,363 @@
+description = "Client area"
+
+[session]
+security = "user"
+redirect = "client/account"
+
+[staticMenu mainMenu]
+code = "main-menu"
+
+[staticMenu clientMenu]
+code = "client-menu"
+
+[staticPage]
+
+[localePicker]
+forceUrl = 0
+==
+<?php
+use Eprog\Manager\Models\Mail as ModelMail;
+use RainLab\User\Facades\Auth;
+use RainLab\Translate\Classes\Translator;
+
+function onInit()
+{ 
+
+    if(isset(Session::get("rainlab")["translate"]["locale"])){	
+    	Session::put("locale",Session::get("rainlab")["translate"]["locale"]);
+    	$translator = Translator::instance();
+    	$translator->setLocale(Session::get("locale"));
+    }
+    else {
+        Session::put("locale","pl");
+        $translator = Translator::instance();
+        $translator->setLocale(Session::get("locale"));
+    }
+
+}
+
+function OnStart(){
+
+
+    $this['segment'] = Input::segment(1);
+    if(Auth::getUser()){
+        $ismail = ModelMail::where("user_id","=",Auth::getUser()->id)->where("send","=",1)->where("read","=",0)->get();
+        if($ismail)
+        $this['new_mail'] = sizeof($ismail);
+    }
+    $this['appname'] = config("app.name");
+    $this['colorCssVersion'] = filemtime(base_path('storage/cms/css/color.css'));
+}
+?>
+==
+<!DOCTYPE html>
+<html lang="pl" class="no-js webkit safari chrome win">
+    <head>
+    {% partial 'meta' %}
+
+<link rel="icon" type="image/png" href="{{ url("/") }}/modules/backend/assets/images/favicon.png">
+<title data-title-template="{{ appname }}">
+    {{ appname }}</title>
+<link href="{{ url("/") }}/modules/system/assets/ui/storm.css?v=1.2.3" rel="stylesheet">
+<link href="{{ url("/") }}/modules/backend/assets/css/winter.css?v=1.2.3" rel="stylesheet">
+<link href="{{ url("/") }}/modules/system/assets/ui/icons.css?v=1.2.3" rel="stylesheet">
+<link href="{{ url("/") }}/storage/cms/css/color.css?v={{ colorCssVersion }}" rel="stylesheet">
+
+<script src="{{ url("/") }}/modules/backend/assets/js/vendor/jquery.min.js?v=1.2.3"></script>
+<!--
+<script src="{{ url("/") }}/modules/backend/assets/js/vendor/jquery-migrate.min.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/plugins/eprog/manager/assets/js/jquery-ui.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/system/assets/js/framework.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/system/assets/js/build/manifest.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/system/assets/js/snowboard/build/snowboard.vendor.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/system/assets/js/build/system.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/backend/assets/ui/js/build/manifest.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/backend/assets/ui/js/build/vendor.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/backend/assets/ui/js/build/backend.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/system/assets/ui/storm-min.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/backend/assets/js/winter-min.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/system/assets/js/lang/lang.pl.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/backend/assets/js/winter.flyout.js?v=1.2.3" importance="high"></script>
+<script src="{{ url("/") }}/modules/backend/assets/js/winter.tabformexpandcontrols.js?v=1.2.3" importance="high"></script>
+-->
+
+<!--<link rel="stylesheet" href="http://october.eprogmedia.pl/modules/cms/widgets/mediamanager/assets/css/mediamanager.css?v419">-->
+<!--<script src="{{ url("/") }}/modules/cms/widgets/mediamanager/assets/js/mediamanager-browser-min.js?v419"></script>-->
+
+    <style>
+        .form-group {position:static}
+
+        .br-p{color:#34495e}.br-s{color:#e67e22}.br-a{color:#3498db}.br-p-s10{color:#2d4965}.br-s-s10{color:#f27d16}.br-a-s10{color:#289ae7}.br-p-s20{color:#25496d}.br-s-s20{color:#ff7c09}.br-a-s20{color:#1c9df3}.bg-p{background-color:#34495e}.bg-s{background-color:#e67e22}.bg-a{background-color:#3498db}.bg-p-s10{background-color:#2d4965}.bg-s-s10{background-color:#f27d16}.bg-a-s10{background-color:#289ae7}.bg-p-s20{background-color:#25496d}.bg-s-s20{background-color:#ff7c09}.bg-a-s20{background-color:#1c9df3}#layout-sidenav ul li a .nav-label,#layout-sidenav ul li a .nav-icon{text-shadow:0 -1px 0 rgba(16,22,28,0.6)}.sidenav-tree ul.top-level>li>div.group:before{border-top-color:#34495e}.sidenav-tree ul.top-level>li>ul li.active{border-color:#e67e22}body.outer{background:#293e53}table.table.data tbody tr.active td:first-child{border-left:3px solid #e67e22}.fancy-layout .form-tabless-fields{background:#e67e22}.fancy-layout .form-tabless-fields .loading-indicator-container .loading-indicator{background:#e67e22}.fancy-layout .control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li.active a>span.title,.fancy-layout.control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li.active a>span.title,.fancy-layout .control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li.active a>span.title:before,.fancy-layout.control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li.active a>span.title:before,.fancy-layout .control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li.active a>span.title:after,.fancy-layout.control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li.active a>span.title:after{background:#e67e22}.fancy-layout .control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li a>span.title,.fancy-layout.control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li a>span.title,.fancy-layout .control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li a>span.title:before,.fancy-layout.control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li a>span.title:before,.fancy-layout .control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li a>span.title:after,.fancy-layout.control-tabs.master-tabs>div>div.tabs-container>ul.nav-tabs>li a>span.title:after{background-color:#b05606}.fancy-layout .control-tabs.master-tabs>div>div.tabs-container,.fancy-layout.control-tabs.master-tabs>div>div.tabs-container{background-color:#bf5d07}.fancy-layout .control-tabs.primary-tabs>div>ul.nav-tabs.master-area,.fancy-layout.control-tabs.primary-tabs>div>ul.nav-tabs.master-area{background:#e67e22}.fancy-layout .control-tabs.secondary-tabs.secondary-content-tabs.primary-collapsed>div>ul.nav-tabs,.fancy-layout.control-tabs.secondary-tabs.secondary-content-tabs.primary-collapsed>div>ul.nav-tabs{background:#e67e22}.control-filelist ul li.active>a:after{background:#e67e22}div.control-componentlist.droppable{background-color:#f0b37e}.stripe-loading-indicator .stripe,.stripe-loading-indicator .stripe-loaded{background:#3498db}ul.pagination{list-style:none;float:left;vertical-align:middle;padding-top:3px}ul.pagination li{float:left;padding-left:2px}ul.pagination li a{float:left;color:#3a9bdc;text-decoration:none}ul.pagination li.active{color:#aaa}ul.pagination li.disabled{color:#aaa}.layout #layout-mainmenu.navbar{background-color:#333}   
+       
+             nav#layout-mainmenu.navbar-mode-inline, nav#layout-mainmenu.navbar-mode-inline_no_icons {height:49px}
+             nav#layout-mainmenu .toolbar-item {margin-top:-6px}  
+             .navbar {min-height:49px}      
+            .layout > .my-size {height:80px}
+            .layout > .fright {float:right}
+            .layout #layout-mainmenu.navbar {background-color: var(--navcolor);}
+            //.layout #layout-mainmenu.navbar ul li a img {display:none}
+            .layout #layout-mainmenu.navbar ul li a span {color:#fff;text-shadow:none;font-weight:normal }
+            .layout #layout-mainmenu.navbar ul li a i {color:#fff;text-shadow:none;font-size: 2.5rem;display: inline-block;margin: 0;}
+            .layout #layout-mainmenu.navbar ul li a {color:#fff;text-shadow:none;}
+            .layout #layout-mainmenu.navbar ul li:hover a i,
+            .layout #layout-mainmenu.navbar ul li:hover a span,
+            .layout #layout-mainmenu.navbar ul li.active a i,
+            .layout #layout-mainmenu.navbar ul li.active a span
+              {color: #cde5f5}
+            .layout #layout-mainmenu .menu-toggle     {color: #cde5f5}  
+            .layout #layout-mainmenu.navbar ul li.active a i {color: #var(--md1color)}
+            .layout #layout-mainmenu.navbar ul li.active a span  {color: #fff}
+            
+             h3, h3 a {font-weight:normal; }
+            .btn-primary{font-weight:normal;background:var(--mcolor)}
+            .btn-primary:hover,.btn-default:hover {background:var(--m2color)}
+            .btn-primary .badge{color:#59a1d1;background:#ffffff}
+            
+            .flash-message{position:fixed;width: 350px !important;left:50% !important;top:65px !important;margin-left:-175px !important; color:#ffffff;font-size:14px;text-shadow:none !important;box-shadow:none !important;-webkit-box-shadow:none !important}
+
+            .flash-message.success{background: #f3fbf0;border: 1px solid #52a838; color: #52a838}
+            .flash-message.error{background:#fee5e5;border: 1px solid red; color: red}
+            .flash-message.warning{background:#ffecd2;border: 1px solid #db8509; color: #db8509}
+            .flash-message.info{background: var(--mlcolor);border: 1px solid var(--mcolor); color: var(--mcolor)}
+            .flash-message button{float:none;position:absolute;right:10px;top:8px;color:#777 !important;outline:none}
+            .flash-message button:hover{color:white}
+            .flash-message.static{position:static !important;width:auto !important;display:block !important;margin-left:0 !important;-webkit-box-shadow:none;box-shadow:none}
+
+            .responsiv-uploader-fileupload.style-file-multi .upload-files-container .upload-object:hover{background:#59a1d1 !important}
+
+    </style>
+    </head>
+    <body class="slim-container">
+        <div id="layout-canvas">
+            <div class="layout">
+
+                <!-- Main Menu -->
+                <div class="layout-row my-size" >
+                    <nav class="navbar control-toolbar navbar-mode-inline" id="layout-mainmenu" role="navigation">
+    <div class="toolbar-item toolbar-primary">
+        <div data-control="toolbar">
+            <a class="menu-toggle" href="javascript:">
+                <span class="menu-toggle-icon">
+                    <i class="icon-bars"></i>
+                </span>
+                <span class="menu-toggle-title">
+                    {% if segment == 'project' %} {{ 'Project'|_ }} {% endif %}                
+                     {% if segment == 'regulations' %} {{ 'Regulamin'|_ }}   {% endif %}
+                    {% if segment == 'mydata' %}   {{ 'Moje konto'|_ }}    {% endif %}  
+                    
+                    </span>
+            </a>
+
+            <ul class="nav mainmenu-nav">
+                                               
+                   <li class=" {% if segment == 'project' %} active {% endif %} svg-icon-container svg-active-effects">
+                        <a href="/project">
+                            <span class="nav-icon">
+                                
+                                <i class="oc-icon-database modicon"></i>
+                            </span>
+                            <span class="nav-label">
+                                {{ 'Projekty'|_ }} 
+                            </span>
+                        </a>
+                   </li>
+
+                   <li class="  {% if segment == 'order' %} active {% endif %}  svg-icon-container svg-active-effects">
+                                                                                          
+                        <a href="/order">
+                            <span class="nav-icon">
+                              
+                                <i class="oc-icon-plus-circle modicon"></i>
+                            </span> 
+                            <span class="nav-label">
+                                {{ 'Zamówienia'|_ }}
+                            </span> 
+                                
+                           
+                        </a>
+                         
+                    </li>    
+
+                    <li class="  {% if segment == 'invoice' %} active {% endif %}  svg-icon-container svg-active-effects">
+                                                                                          
+                        <a href="/invoice">
+                            <span class="nav-icon">
+                              
+                                <i class="oc-icon-file-text modicon"></i>
+                            </span> 
+                            <span class="nav-label">
+                                {{ 'Faktury'|_ }}
+                            </span> 
+                                
+                           
+                        </a>
+                         
+                    </li>
+                    
+                    <li class="  {% if segment == 'mail' %} active {% endif %}  svg-icon-container svg-active-effects">
+                                                                                          
+                        <a href="/mail/inbox">
+                            <span class="nav-icon">
+                              
+                                <i class="oc-icon-comments modicon"></i>
+                            </span> <div class="new-mail">{{new_mail}}</div> 
+                            <span class="nav-label">
+                                {{ 'Wiadomości'|_ }} 
+                            </span> 
+                                
+                           
+                        </a>
+                         
+                    </li>
+
+                    <li class="  {% if segment == 'scheduler' %} active {% endif %}  svg-icon-container svg-active-effects">
+                                                                                          
+                        <a href="/scheduler/before">
+                            <span class="nav-icon">
+                              
+                                <i class="oc-icon-calendar-plus-o modicon"></i>
+                            </span> 
+                            <span class="nav-label">
+                                {{ 'Terminarz'|_ }}
+                            </span> 
+                                
+                           
+                        </a>
+                         
+                    </li>
+                    
+                     <li class="  {% if segment == 'calendar' %} active {% endif %}  svg-icon-container svg-active-effects">
+                                                                                          
+                        <a href="/calendar">
+                            <span class="nav-icon">
+                              
+                                <i class="oc-icon-calendar modicon"></i>
+                            </span> 
+                            <span class="nav-label">
+                                {{ 'Kalendarz'|_ }}
+                            </span> 
+                                
+                           
+                        </a>
+                         
+                    </li>
+
+                    <li class="  {% if segment == 'mydata' %} active {% endif %}  svg-icon-container svg-active-effects">
+                        <a href="/mydata">
+                            <span class="nav-icon">
+                                
+                                <i class="oc-icon-user modicon"></i>
+                            </span>
+                            <span class="nav-label">
+                                {{ 'Moje konto'|_ }}
+                            </span>
+                        </a>
+                    </li>     
+
+                    <li class="  {% if segment == 'files' %} active {% endif %}  svg-icon-container svg-active-effects">
+                        <a href="/files">
+                            <span class="nav-icon">
+                                
+                                <i class="oc-icon-files-o modicon"></i>
+                            </span>
+                            <span class="nav-label">
+                                {{ 'Pliki'|_ }} 
+                            </span>
+                        </a>
+                    </li>   
+                    <!--
+                    <li class=" {% if segment == 'info' %} active {% endif %} svg-icon-container svg-active-effects">
+                        <a href="/info">
+                            <span class="nav-icon">
+                                
+                                <i class="oc-icon-info-circle modicon"></i>
+                            </span>
+                            <span class="nav-label">
+                                {{ 'Informacje'|_ }} 
+                            </span>
+                        </a>
+                    </li>      
+                    -->
+                    <li class="  svg-icon-container svg-active-effects">
+                        <a  href="javascript:" data-request="onLogout">
+                            <span class="nav-icon">
+                                                                
+                             <i class="oc-icon-unlock modicon"></i>
+                            </span>
+                            <span class="nav-label">
+                               {{ 'Wyloguj się'|_ }}
+                           </span>
+                        </a>
+                    </li>
+                    
+     
+                            </ul>
+        </div>
+    </div>
+    <div class="toolbar-item" data-calculate-width>
+   
+             <ul class="mainmenu-toolbar" style="float:right;padding-right:10px;">
+
+            <li class="mainmenu-account {% if activeLocale == 'pl' %} active {% endif %}  ">
+            
+      <a href="#" data-request="onSwitchLocale" data-request-data="locale: 'pl'"> <img src="/themes/rainlab-relax/assets/images/flag/pl.png">&nbsp;&nbsp;{{ 'polski'|_ }}</a>
+  
+                    </li>
+                       <li class="mainmenu-account  {% if activeLocale == 'en' %} active {% endif %}  ">
+            
+    
+      <a href="#" data-request="onSwitchLocale" data-request-data="locale: 'en'"><img src="/themes/rainlab-relax/assets/images/flag/en.png">&nbsp;&nbsp;{{ 'angielski'|_ }}</a>
+                    </li>       
+         <li class="mainmenu-account"><a href="http://emode.pl" class="oc-icon-copyright">Emode</a></li>
+                            </ul>
+                     
+    </div>
+</nav>
+                </div>
+
+
+
+
+           
+        
+        <section id="layout-content">  
+            <div class="container"  style="min-height:600px">{% page %} 
+
+            </div>
+        </section> 
+         </div>
+</div>
+
+         {% partial 'flash' %}
+    </body>
+{% partial 'scripts' %}
+
+
+</html>
+
+
+
+     
+<script>
+$(function() {   
+ 
+ 
+        newmail = {{new_mail}};
+        if(newmail > 0) $(".new-mail").show();
+     
+
+ 	 	$(window).on('ajaxErrorMessage', function(event, message){
+ 	 	    
+ 	 	
+            event.preventDefault();
+          
+       
+        });
+        $(window).on('ajaxError', function(event, context, status,jqXHR ){
+            
+            event.preventDefault();
+            
+        });
+ 	 	  	 		 	
+});
+</script>

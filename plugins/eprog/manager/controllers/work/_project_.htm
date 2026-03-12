@@ -1,0 +1,12 @@
+<?php
+use Eprog\Manager\Models\Work;
+use Rainlab\User\Models\User;
+
+ 	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+	$work = Work::find($id);
+
+
+?>
+<?php if($work) : ?>
+<div style="padding-top:14px"><a href="/<?= config('cms.backendUri') ?>/eprog/manager/project/update/<?= $work->project_id ?>" style="color:<?= ($work->project->public ?? 0) ? 'var(--mdcolor)' : '#bb2424' ?>"><span  class="oc-icon-database"> <?= $work->project->name ?? '' ?></a></div>
+<?php endif; ?>

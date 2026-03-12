@@ -1,0 +1,9 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+    	<li><span  class="oc-icon-shopping-basket"></span><a href="<?= Backend::url('eprog/manager/product') ?>"><?= e(trans('eprog.manager::lang.assortment')) ?></a></li> 
+        <li><span  class="oc-icon-sitemap"></span><a href="<?= Backend::url('eprog/manager/category') ?>"><?= e(trans('eprog.manager::lang.categories')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?= $this->listRender() ?>

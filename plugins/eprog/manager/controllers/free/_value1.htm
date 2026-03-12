@@ -1,0 +1,1000 @@
+<?php 
+use Eprog\Manager\Models\Invoice;
+use Eprog\Manager\Models\Invoicevalue;
+use Eprog\Manager\Models\Ksef;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+	$currency = Settings::get("currency") == null ? "PLN" : Settings::get("currency");
+	$values  = [];
+	$fields = ["pkwiu"=> false, "cn" => false, "gtu" => false];
+
+	if(Input::has("correct_id") && Input::get("correct_id") > 0){
+	 	$id = Input::get("correct_id");
+	 	$this->xml = null;
+	}
+
+	if(Input::filled("advance")){
+	 	$invoice = Invoice::where("ksefNumber",Input::get("advance"))->first();
+	 	if($invoice) $id = $invoice->id; 
+	 	$this->xml = null;
+	}
+
+	if(Input::filled("invoice_id")){
+	 	$invoice = Invoice::where("id",Input::get("invoice_id"))->first();
+	 	if($invoice) $id = $invoice->id; 
+	 	$this->xml = null;
+	}
+
+
+	$invoice = Invoice::find($id);
+	if($invoice) $currency = $invoice->currency ?? $currency;
+
+	if(Session::has("fields"))
+		$fields = Session::get("fields");
+	
+	if($invoice){	
+			$values = Invoicevalue::where("invoice_id","=",$id)->orderBy("id")->get();//paginate(50);
+			$fields = ["pkwiu"=> preg_match("/<PKWiU>/",$invoice->xml), "cn" => preg_match("/<CN>/",$invoice->xml), "gtu" => preg_match("/<GTU>/",$invoice->xml)];
+	}
+
+	if($this->xml) {
+
+		$xml = simplexml_load_string($this->xml, "SimpleXMLElement", LIBXML_NOCDATA);
+		$json = json_encode($xml);
+		$data = json_decode($json, true);
+		$values = isset($data["Fa"]["FaWiersz"][0]) ? $data["Fa"]["FaWiersz"] : [$data["Fa"]["FaWiersz"]];
+		$currency = $data["Fa"]["KodWaluty"];
+		$fields = ["pkwiu"=> preg_match("/<PKWiU>/",$this->xml), "cn" => preg_match("/<CN>/",$this->xml), "gtu" => preg_match("/<GTU>/",$this->xml)];
+
+	}
+
+	$stawki_vat = Util::getVat();
+
+	$label_vat = "";
+
+	if(isset($invoice->type) && ($invoice->type == 2 || $invoice->type == 3 || $invoice->type == 5 || $invoice->type == 6))
+		$ext = 1;
+	else	
+		$ext = 0;
+
+	$extra_label = "";
+	if(isset($invoice->type) && $invoice->type == 2)
+	$extra_label = e(trans("eprog.manager::lang.ksef.advance_amount"));
+	if(isset($invoice->type) && $invoice->type == 3)
+	$extra_label = e(trans("eprog.manager::lang.ksef.settlement_amount"));
+
+?>
+<style>
+
+.valuetable {display:table; ;}
+.valuetable > div {display:table-row;background:#fff;  }
+.valuetable > div > div {white-space: nowrap;border-top:1px solid #eee;display:table-cell; height:34px;vertical-align:middle; font-size:13px; padding-left:5px;text-align:right; padding-right:5px; padding-top:4px;padding-bottom:4px;}
+.valuetable .date {color:green;width:150px}
+.valuetable .desc {width:300px;}
+.valuetable > div.head {background:var(--ml2color);}
+.valuetable > div.head div{font-size:12px}
+.valuetable input {text-align:right; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+.valuetable select {text-align:left; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+//.sum_netto,.sum_vat,.sum_brutto {font-weight:bold}
+
+.head_pkwiu {display:none !important}
+.show_pkwiu {display:none !important}
+.head_cn {display:none !important}
+.show_cn {display:none !important}
+.head_gtu {display:none !important}
+.show_gtu {display:none !important}
+.value_netto,.value_vat,.value_brutto {margin-left:5px;}
+.required, .gtu_error, .qty_error, .qty_error_max, .curr_error {border:1px solid red !important}
+.desk {display:none; background:var(--ml2color);padding:5px;padding-left:6px;padding-right:6px;font-size:12px;text-align:right}
+
+@media (max-width: 1200px){
+
+	.valuetable > div {display:block;}
+	.valuetable > div > div {display:block;text-align:left;height:38px !important}
+	.valuetable input {text-align:left !important}
+	.valuetable input.product {}
+	.valuetable select {margin-left:-4px !important}
+	.mob {display:none !important}
+	.desk {display:inline-block;width:130px}
+	.order {font-size:16px !important;}
+}
+
+</style>
+<div id="value">
+	<div style="float:right">
+	<input type="checkbox" id="pkwiu" name="pkwiu" <?= $fields["pkwiu"] ? "checked":"" ?> class="addfield">  PKWiU&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="checkbox" id="cn" name="cn" <?= $fields["cn"]  ? "checked":"" ?> class="addfield">  CN&nbsp;&nbsp;&nbsp;&nbsp;
+	<input type="checkbox" id="gtu" name="gtu" <?= $fields["gtu"]  ? "checked":"" ?> class="addfield">  GTU
+	</div>
+<div class="valuetable">
+<div class="mob head"><div style="width:20px;text-align:center">lp.</div><div></div><div style="width:330px;text-align:left"><?= e(trans("eprog.manager::lang.product_name")) ?></div><div style="width:80px;text-align:left" class="head_pkwiu">PKWiU</div><div style="width:80px;text-align:left" class="head_cn">CN</div><div style="width:80px;text-align:left" class="head_gtu">GTU</div><div style="text-align:left"><?= e(trans("eprog.manager::lang.quantity")) ?></div><div style="text-align:left"><?= e(trans("eprog.manager::lang.measure")) ?></div><div style="width:100px"><?= e(trans("eprog.manager::lang.net_price")) ?> <span class="curr"><?= $currency ?></span></div><div style="width:80px;"><?= e(trans("eprog.manager::lang.vat")) ?></div><div style="width:110px"><?= e(trans("eprog.manager::lang.gross_price")) ?> <span class="curr"><?= $currency ?></span></div><div style="width:120px"><?= e(trans("eprog.manager::lang.net_value")) ?> <span class="curr"><?= $currency ?></span></div><div style="width:120px"><?= e(trans("eprog.manager::lang.vat_value")) ?> <span class="curr"><?= $currency ?></span></div><div style="width:130px"><?= e(trans("eprog.manager::lang.gross_value")) ?> <span class="curr"><?= $currency ?></span></div><div style="width:130px" class="extra"><span  class="extra_label"><?= $extra_label ?></span> <span class="curr"><?= $currency ?></span></div><div></div></div>
+<?php foreach($values as $value) : ?>
+<?php 
+
+
+
+	if($this->xml) {
+
+		$value = (object)$value;
+		$product = $value->P_7;
+		$measure = $value->P_8A ?? "szt.";
+		$quantity = $value->P_8B ?? 1;
+		$pkwiu = $value->PKWiU?? "";
+		$cn = $value->CN ?? "";
+		$gtu = $value->GTU?? "";
+
+		if(!isset($value->P_12)) 
+			$label_vat = "ma";
+		else 
+			$label_vat = $value->P_12;
+	
+		$vat = $label_vat;$vat = is_numeric($vat) ? $vat : 0;
+
+		$netto = $value->P_9A ?? 0;
+		$brutto = $netto*((100+$vat)/100);
+		$extra = "";
+
+	}	
+
+	else{
+
+		$product = $value->product;
+		$measure = $value->measure;
+		$quantity = $value->quantity;
+		$pkwiu = $value->pkwiu ?? "";
+		$cn = $value->cn ?? "";
+		$gtu = $value->gtu ?? "";
+	
+		$label_vat = $value->vat;
+		$vat = $label_vat;$vat = is_numeric($vat) ? $vat : 0;
+
+		$netto = $value->netto;
+		$brutto = $netto*((100+$vat)/100);
+		$extra = $value->extra;
+		if(Input::filled("advance")) $extra  = $brutto - $extra;
+
+
+	}
+
+?>
+<div class="rows">
+<div  style="text-align:center" class="order"></div>
+<div><button  type="button" value="" class="btnadd btn-secondary btn-xs oc-icon-plus-circle" onclick="modalProduct(this)" style="padding-right:0px;margin-top:0px;padding-bottom:1px"/> </div>
+<div  style="text-align:left;"><span class="desk"><?= e(trans("eprog.manager::lang.product_name")) ?></span><input type="text" size="48" name="Values[edit_product][]" value="<?= $product ?>" maxlength="255" class="product req" style="text-align:left;"/></div>
+<div  style="text-align:left" class="show_pkwiu"><span class="desk">PKWiU</span><input type="text" size="6" name="Values[edit_pkwiu][]" value="<?= $pkwiu ?>" maxlength="255" style="text-align:left" /></div>
+<div  style="text-align:left" class="show_cn"><span class="desk">CN</span><input type="text" size="6" name="Values[edit_cn][]" value="<?= $cn ?>" maxlength="255" style="text-align:left"/></div>
+<div  style="text-align:left" class="show_gtu"><span class="desk">GTU</span><input type="text" size="6" name="Values[edit_gtu][]" value="<?= $gtu ?>" maxlength="255" style="text-align:left"/></div>
+<div  style="text-align:left" class="qty"><span class="desk"><?= e(trans("eprog.manager::lang.quantity")) ?></span><input type="text" size="5" class="ilosc sum req" name="Values[edit_quantity][]" value="<?= $quantity  ?>"  maxlength="10" style="text-align:left"/></div>
+<div><span class="desk"><?= e(trans("eprog.manager::lang.measure")) ?></span><input type="text" size="5" name=" Values[edit_measure][]" onClick="this.form.btn.disabled=false" value="<?= $measure  ?>" maxlength="255" class="req" style="text-align:left"/></div>
+<div class="net"><span class="desk"><?= e(trans("eprog.manager::lang.net_price")) ?> <span class="curr"><?= $currency ?></span></span><input type="text"  size="10" name="Values[edit_netto][]" value="<?= Util::currency($netto)  ?>" class="kwota req netto" /></div>
+<div class="vat"><span class="desk"><?= e(trans("eprog.manager::lang.vat")) ?></span>
+	<select name="Values[edit_vat][]"  class="select_vat"/>
+	<?php foreach($stawki_vat as $k => $v) : ?>
+	<option value="<?= $k?>" <?= $k == $label_vat ? "selected" : "" ?>><?= $v?></option>
+	<?php endforeach; ?>
+	</select>
+</div>
+<div class="gross"><span class="desk"><?= e(trans("eprog.manager::lang.gross_price")) ?> <span class="curr"><?= $currency ?></span></span><input type="text" size="10" name="Values[edit_brutto][]"  value="<?= Util::currency($netto + $netto*$vat/100)  ?>"  class="kwota req brutto"  /></div>
+<div><span class="desk"><?= e(trans("eprog.manager::lang.net_value")) ?> <span class="curr"><?= $currency ?></span></span><span  class="value_netto"></span></div>
+<div><span class="desk"><?= e(trans("eprog.manager::lang.vat_value")) ?> <span class="curr"><?= $currency ?></span></span><span  class="value_vat"></span></div>
+<div><span class="desk"><?= e(trans("eprog.manager::lang.gross_value")) ?> <span class="curr"><?= $currency ?></span></span><span  class="value_brutto"></span></div>
+<div class="extra"><span class="desk"><?= $extra_label ?> <span class="curr"><?= $currency ?></span></span><input type="text"  size="10" name="Values[edit_extra][]" value="<?= ($extra != "") ? Util::currency($extra) : ""  ?>" class="kwotazero ext" /></div>
+<div><div class="oc-icon-minus-circle delRow" style="color:var(--mcolor);font-size:18px;padding-left:15px;cursor:pointer;"></div></div>
+
+</div>
+<?php endforeach; ?>
+<div class="summmary">
+<div class="mob"></div>
+<div></div>
+<div class="mob show_pkwiu_sum"></div>
+<div class="mob show_cn_sum"></div>
+<div class="mob show_gtu_sum"></div>
+<div class="mob"></div>
+<div class="mob"></div>
+<div class="mob"></div>
+<div class="mob"></div>
+<div class="mob"></div>
+<div><?= e(trans("eprog.manager::lang.summary")) ?> <span class="curr"><?= $currency ?></span></div>
+<div class="sum_netto"></div>
+<div class="sum_vat"></div>
+<div class="sum_brutto"></div>
+<div class="extra"></div>
+<div class="mob"></div>
+</div>
+
+<div id="add" style="display:none">
+<div  style="text-align:center" class="order"></div>
+<div></div>
+<div  style="text-align:left"><span class="desk"><?= e(trans("eprog.manager::lang.product_name")) ?></span><input type="text" size="48" name="Values[edit_product][]" value="" maxlength="255" class="product req" style="text-align:left"/></div>
+<div  style="text-align:left" class="show_pkwiu"><span class="desk">PKWiU</span><input type="text" size="6" name="Values[edit_pkwiu][]" value="" maxlength="255" style="text-align:left"/></div>
+<div  style="text-align:left" class="show_cn"><span class="desk">CN</span><input type="text" size="6" name="Values[edit_cn][]" value=""  maxlength="255" style="text-align:left"/></div>
+<div  style="text-align:left" class="show_gtu"><span class="desk">GTU</span><input type="text" size="6" name="Values[edit_gtu][]" value=""  maxlength="255" style="text-align:left"/></div>
+<div  style="text-align:left" class="qty"><span class="desk"><?= e(trans("eprog.manager::lang.quantity")) ?></span><input type="text" size="5" class="ilosc sum req" name="Values[edit_quantity][]" value="1" maxlength="10" style="text-align:left"/></div>
+<div><span class="desk"><?= e(trans("eprog.manager::lang.measure")) ?></span><input type="text" size="5" name="Values[edit_measure][]" onClick="this.form.btn.disabled=false" value="szt."  maxlength="255" class="req" style="text-align:left"/></div>
+<div class="net"><span class="desk"><?= e(trans("eprog.manager::lang.net_price")) ?> <span class="curr"><?= $currency ?></span></span><input type="text" size="10" name="Values[edit_netto][]" value="" class="kwota req netto" /></div>
+<div class="vat"><span class="desk"><?= e(trans("eprog.manager::lang.vat")) ?></span>
+	<select name="Values[edit_vat][]" class="select_vat" />
+	<?php foreach($stawki_vat as $k => $v) : ?>
+	<option value="<?= $k?>"><?= $v?></option>
+	<?php endforeach; ?>
+	</select>
+</div>
+<div class="gross"><span class="desk"><?= e(trans("eprog.manager::lang.gross_price")) ?> <span class="curr"><?= $currency ?></span></span><input type="text" size="10" name="Values[edit_brutto][]"  value=""  class="kwota req brutto"  /></div>
+<div><span class="desk"><?= e(trans("eprog.manager::lang.net_value")) ?> <span class="curr"><?= $currency ?></span></span><span  class="value_netto"></span></div>
+<div><span class="desk"><?= e(trans("eprog.manager::lang.vat_value")) ?> <span class="curr"><?= $currency ?></span></span><span  class="value_vat"></span></div>
+<div><span class="desk"><?= e(trans("eprog.manager::lang.gross_value")) ?> <span class="curr"><?= $currency ?></span></span><span  class="value_brutto"></span></div>
+<div class="extra"><span class="desk"><?= $extra_label ?> <span class="curr"><?= $currency ?></span></span><input type="text" size="10" name="Values[edit_extra][]" value="" class="kwotazero ext" /></div>
+<div><div class="oc-icon-minus-circle delRow" style="color:var(--mcolor);font-size:18px;padding-left:15px;cursor:pointer;"></div></div>
+
+</div>
+
+<div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div  class="mob show_pkwiu_sum"></div><div class=" mob show_cn_sum"></div><div class="mob show_gtu_sum"></div><div></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob"></div><div class="mob extra"></div>
+<div><div class="oc-icon-plus-circle addRow" style="color:var(--mcolor);font-size:18px;padding-left:15px;cursor:pointer;"></div></div>
+</div>
+</div>
+<br>
+<div style="margin-left:-40px;padding-top:4px"></div>
+</div>
+
+
+
+<script>
+
+	var kor = <?= $this->kor;?>;	
+	var segment = '<?= Input::segment(5);?>';	
+
+	$(function() {   
+
+		sumKwota();
+		valueReorder();
+	
+		initFields();
+		initSelectVat();
+		initValidate();
+
+		if(kor > 0){
+			$(".delRow").hide();
+			$(".addRow").hide();
+			$(".btnadd").hide();
+		}
+		
+		addProduct = function(el,id,name,netto,vat, currency) {
+		
+
+			$('#value .rows:nth-child(' + el  +')').find('.product').val(name);	
+			$('#value .rows:nth-child(' + el  +')').find('.netto').val(number_format(netto.replace(",","."),2,","," "));	
+			$('#value .rows:nth-child(' + el  +')').find('.select_vat').val(vat);
+			$('#value .rows:nth-child(' + el  +')').find('.netto').keyup();	
+
+			$('#Form-field-Invoice-currency').val(currency).trigger('change');
+			$('.curr').text(currency);
+			if(currency != "PLN"){
+				$('#Form-field-Invoice-exchange').prop('readonly', false);
+				$('#Form-field-Invoice-exchange').val("");   
+			}
+			else{
+				$('#Form-field-Invoice-exchange').prop('readonly', true);
+				$('#Form-field-Invoice-exchange').val("1.0000");   
+			}
+
+
+		    $(".ui-dialog-titlebar-close").click();	
+			$("#dialog").dialog('close');		
+
+		}
+
+
+		$('.addRow').on('click', function (e) {
+		 
+		 	$("#value .summmary").before('<div class="rows">' + $("#add").clone().html() + '</div>');
+		 	valueReorder();
+		 	initSelectVat();
+		 	initValidate();
+
+		});
+
+		$(window).resize(function(){
+		    initFields();
+		});
+
+		if(segment == "create" && $('.rows').length < 1)
+		$('.addRow').click();
+
+		if(kor) {
+
+			if(segment == "create"){
+
+				initKorCreate();
+			}
+
+			l = 0;
+			if(segment == "update"){
+				$(".rows").each(function( index ) {
+					if(l%2 == 0)
+					$(this).addClass("kor");
+					l++;
+				});
+				initKor();
+				valueReorder(2);
+			}
+		
+		}
+
+		showExtra();
+		$('#Form-field-Invoice-type').on('select2:select', function (e) {
+
+		    showExtra();
+
+		});
+
+		$('#Form-field-Invoice-currency').on('select2:select', function(e) {
+		  		   
+		  	$('.curr').text($(this).val());
+
+		});
+
+ 		 	 	  	 		 	
+});
+
+
+
+function initFields(){
+
+		if($(window).outerWidth() > 1200){
+			$('.product').attr('size',47);
+		 	layout = 'table-cell';
+		 } else if($(window).outerWidth() <= 1200 && $(window).outerWidth() > 450){
+		 	$('.product').attr('size',50);
+		  	layout = 'block';
+		 } else{
+		 	$('.product').attr('size',29);
+		  	layout = 'block';
+		 }
+
+		if($("#pkwiu").is(':checked')){
+		 	$('.head_pkwiu').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+		 	$('.show_pkwiu').attr("style", "display: " + layout + " !important;text-align:left");
+		 	if($(window).outerWidth() > 1200)
+		 		$('.show_pkwiu_sum').attr("style", "display: " + layout + " !important;text-align:left");
+		 	else
+		 		$('.show_pkwiu_sum').attr("style", "display: none !important");
+		 	$('.show_pkwiu input').attr("disabled", false);
+		}
+		else{
+			$('.head_pkwiu').attr("style", "display: none !important");
+			$('.show_pkwiu').attr("style", "display: none !important");
+			$('.show_pkwiu_sum').attr("style", "display: none !important");
+			$('.show_pkwiu input').attr("disabled", true);
+		}
+
+		if($("#cn").is(':checked')){
+		 	$('.head_cn').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+		 	$('.show_cn').attr("style", "display: " + layout + " !important;text-align:left");
+		 	if($(window).outerWidth() > 1200)
+		 		$('.show_cn_sum').attr("style", "display: " + layout + " !important;text-align:left");
+		 	else
+		 		$('.show_cn_sum').attr("style", "display: none !important");
+		 	$('.show_cn input').attr("disabled", false);
+		}
+		else{
+			$('.head_cn').attr("style", "display: none !important");
+			$('.show_cn').attr("style", "display: none !important");
+			$('.show_cn_sum').attr("style", "display: none !important");
+			$('.show_cn input').attr("disabled", true);
+		}
+
+		if($("#gtu").is(':checked')){
+		 	$('.head_gtu').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+		 	$('.show_gtu').attr("style", "display: " + layout + " !important;text-align:left");
+		 	if($(window).outerWidth() > 1200)
+		 		$('.show_gtu_sum').attr("style", "display: " + layout + " !important;text-align:left");
+		 	else
+		 		$('.show_gtu_sum').attr("style", "display: none !important");
+		 	$('.show_gtu input').attr("disabled", false);
+
+		}
+		else{
+			$('.head_gtu').attr("style", "display: none !important");
+			$('.show_gtu').attr("style", "display: none !important");
+			$('.show_gtu_sum').attr("style", "display: none !important");
+			$('.show_gtu input').attr("disabled", true);
+		}
+
+
+		$("#pkwiu").click(function() {
+
+			if($(this).attr("readonly") == "readonly") return;
+
+			if($(window).outerWidth() > 1200) layout = 'table-cell'; else layout = 'block';
+
+			if($(this).is(':checked')){
+
+			 	$('.head_pkwiu').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+			 	$('.show_pkwiu').attr("style", "display: " + layout + " !important;text-align:left");
+			 	if($(window).outerWidth() > 1200) $('.show_pkwiu_sum').attr("style", "display: " + layout + " !important;text-align:left");
+			 	$('.show_pkwiu input').attr("disabled", false);
+			}
+			else{
+				$('.head_pkwiu').attr("style", "display: none !important");
+				$('.show_pkwiu').attr("style", "display: none !important");
+				$('.show_pkwiu_sum').attr("style", "display: none !important");
+				$('.show_pkwiu input').attr("disabled", true);
+			}
+
+			sessionFields();
+		});
+
+		$("#cn").click(function() {
+
+			if($(this).attr("readonly") == "readonly") return;
+
+			if($(window).outerWidth() > 1200) layout = 'table-cell'; else layout = 'block';
+
+			if($(this).is(':checked')){
+			 	$('.head_cn').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+			 	$('.show_cn').attr("style", "display: " + layout + " !important;text-align:left");
+			 	if($(window).outerWidth() > 1200) $('.show_cn_sum').attr("style", "display: " + layout + " !important;text-align:left");
+			 	$('.show_cn input').attr("disabled", false);
+			}
+			else{
+				$('.head_cn').attr("style", "display: none !important");
+				$('.show_cn').attr("style", "display: none !important");
+				$('.show_cn_sum').attr("style", "display: none !important");
+				$('.show_cn input').attr("disabled", true);
+			}
+
+			sessionFields();
+		});
+
+		$("#gtu").click(function() {
+
+			if($(this).attr("readonly") == "readonly") return;
+			
+			if($(window).outerWidth() > 1200) layout = 'table-cell'; else layout = 'block';
+
+			if($(this).is(':checked')){
+			 	$('.head_gtu').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+			 	$('.show_gtu').attr("style", "display: " + layout + " !important;text-align:left");
+			 	if($(window).outerWidth() > 1200) $('.show_gtu_sum').attr("style", "display: " + layout + " !important;text-align:left");
+			 	$('.show_gtu input').attr("disabled", false);
+			}
+			else{
+				$('.head_gtu').attr("style", "display: none !important");
+				$('.show_gtu').attr("style", "display: none !important");
+				$('.show_gtu_sum').attr("style", "display: none !important");
+				$('.show_gtu input').attr("disabled", true);
+			}
+
+			sessionFields();
+
+		});
+
+
+}
+
+
+function modalProduct(el){
+
+	modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/product?el=' + (parseInt($(el).parent().parent().find(".order").text()) + 1),'<?= e(trans('eprog.manager::lang.products')) ?>', 600, 420);
+
+}
+
+function sessionFields(){
+
+	$.ajax({
+	        type: "POST",
+	        data:"_token=<?= csrf_token() ?>&pkwiu=" + $("#pkwiu").is(':checked') + "&cn=" + $("#cn").is(':checked') + "&gtu=" + $("#gtu").is(':checked'),
+	        url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/fields',
+
+	        success: function(res) {
+	                   
+	        },
+	        error: function(xhr,status,error) {
+	             console.log(error);
+	        }
+	});
+
+}
+
+function initSelectVat(){
+
+		var vat_prev = "23%";
+		$(".select_vat").on('focus', function () {
+        	vat_prev = $(this).val();
+    	}).change(function() {
+			if($(this).val() == "marża"){
+				if($("#Form-field-Invoice-_marza").val() == ""){
+					$('a[href="#primarytab-eprogmanagerlangksefannotations"]').click();
+					$("#Form-field-Invoice-_marza").focus();
+					$.oc.flashMsg({text: '<?= trans('eprog.manager::lang.ksef.marza_msg1') ?>', 'class': 'error', 'interval': 2});
+					$(this).val(vat_prev);
+				}
+			
+			}
+		});
+}
+
+
+function initValidate(){
+
+
+		$('.netto').on('paste input', function (e) {
+			
+			if($(this).val() >  81300813008130.07){				
+				$(this).val(0);
+			}
+		});
+
+		$('.brutto').on('paste input', function (e) {
+
+			if($(this).val() > 99999999999999.99){				
+				$(this).val(0);
+			}
+		});
+
+		$('.kwota').on('paste input', function (e) {
+
+			inputCurrency(this, e);
+
+		});
+
+
+		$('.kwota').on('focusout', function (e) {
+		    
+			inputCurrencyOut(this, e);
+
+		});
+
+		$('.kwota').on('focusin', function (e) {
+		    
+			inputCurrencyIn(this, e);
+
+		});
+
+		$('.kwotazero').on('paste input', function (e) {
+
+			inputCurrencyZero(this, e);
+
+		});
+
+
+		$('.kwotazero').on('focusout', function (e) {
+		    
+			inputCurrencyZeroOut(this, e);
+
+		});
+
+		$('.kwotazero').on('focusin', function (e) {
+		    
+			inputCurrencyZeroIn(this, e);
+
+		});
+
+		$('.ilosc').on('paste input', function (e) {
+		
+		 	//var regex = /^[\d]+(|\.[\d]+)$/g;
+		    if(!is_numeric($(this).val()))
+		    $(this).val("");
+
+		});
+
+
+
+		$('.netto').on('keyup', function (e) {
+		 
+			net = $(this).val().replace(",",".").replace(/\s+/g, '');
+			vat = $(this).parent().parent().find(".vat select").val();
+			vat = vat.split("%")[0];vat = isNumber(vat) ? vat : 0;
+			gross = round(net*((100+Number(vat))/100),2);
+
+			if($(this).val().trim() != "")
+			$(this).parent().parent().find(".brutto").val(number_format(gross.toString(),2,","," "));
+
+			sumKwota();
+
+
+		});
+
+		$('.brutto').on('keyup', function (e) {
+		 
+		 	gross = $(this).val().replace(",",".").replace(/\s+/g, '');
+		 	vat = $(this).parent().parent().find(".vat select").val();
+		 	vat = vat.split("%")[0];vat = isNumber(vat) ? vat : 0;
+		 	net = round(gross/((100+Number(vat))/100),2);
+
+		 	if($(this).val().trim() != "")
+		 	$(this).parent().parent().find(".netto").val(number_format(net.toString(),2,","," "));
+
+		 	sumKwota();		 	
+
+		});
+
+		$('.vat select').on('change', function (e) {
+	
+			net = $(this).parent().parent().find(".netto").val().replace(",",".").replace(/\s+/g, '');
+			vat = $(this).val();
+			vat = vat.split("%")[0];vat = isNumber(vat) ? vat : 0;
+			gross = round(net*((100+Number(vat))/100),2);
+
+			$(this).parent().parent().find(".brutto").val(number_format(gross.toString(),2,","," "));
+
+			sumKwota();
+
+
+		});
+
+
+		$('.sum').on('keyup', function (e) {
+		 
+		 	sumKwota();
+
+		});
+
+		$('.ext').on('keyup', function (e) {
+		 
+		 	sumKwota();
+
+		});
+
+
+		$('input').on('focusin', function (e) {
+
+			$("#save").attr("disabled",false);
+			$("#ksefSend").attr("disabled",false);
+
+		});
+
+
+		$('.req').on('focusout', function (e) {
+
+			if($(this).val().trim() != "")
+			$(this).removeClass("required");
+
+		});
+
+
+		$('.delRow').on('click', function (e) {
+		 
+		 	if($('.rows').length > 1){
+			 	$(this).parent().parent().remove();
+			 	sumKwota();
+			 	valueReorder();
+			 	$("#save").attr("disabled",false);
+			 	$("#ksefSend").attr("disabled",false);
+		 	}
+
+		});
+
+}
+
+
+function is_numeric(str) {
+	  if (typeof str != "string") return false // we only process strings!  
+	  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+	         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
+
+
+function numDigitsAfterDecimal(x) {
+
+		var afterDecimalStr = x.toString().split('.')[1] || x.toString().split(',')[1] || ''
+		return afterDecimalStr.length
+
+}
+
+
+
+function sumKwota() {
+
+		sum_netto = 0;
+		sum_vat = 0;
+		sum_brutto = 0;
+		$("#value .rows").each(function( index ) {
+
+			  value_netto =  $(this).find(".qty input").val()*number_format($(this).find(".net input").val().replace(",",".").replace(/\s+/g, ''),2,".","");
+			  value_vat =  $(this).find(".vat select").val();
+			  value_vat = value_vat.split("%")[0];value_vat = isNumber(value_vat) ? value_vat : 0;
+			  //value_brutto = round(value_netto*((100+Number(value_vat))/100),2);
+			  value_brutto = parseFloat(number_format(value_netto*((100+Number(value_vat))/100),2,".",""));
+			  value_extra = 0;
+
+			  if($('#Form-field-Invoice-type').val() == 2 || $('#Form-field-Invoice-type').val() == 3 || $('#Form-field-Invoice-type').val() == 5 || $('#Form-field-Invoice-type').val() == 6)
+			  value_extra =  parseFloat(number_format($(this).find(".ext").val().replace(",",".").replace(/\s+/g, ''),2,".",""));
+	
+
+			  $(this).find(".value_netto").text(number_format(value_netto,2,","," "));
+			  $(this).find(".value_vat").text(number_format(value_brutto - value_netto,2,","," "));
+			  $(this).find(".value_brutto").text(number_format(value_brutto,2,","," "));
+
+	
+			  if($('#Form-field-Invoice-type').val() == 2 || $('#Form-field-Invoice-type').val() == 3 || $('#Form-field-Invoice-type').val() == 5 || $('#Form-field-Invoice-type').val() == 6) {
+				  if($(this).hasClass("kor"))
+				  	value_brutto  = value_extra;
+				  else
+				    value_brutto  = -value_extra;
+
+				  value_brutto = -value_brutto; 	
+				  value_netto  = parseFloat(number_format(value_brutto/((100+Number(value_vat))/100),2,".",""));
+			  }
+
+			  if($('#Form-field-Invoice-type').val() == 1){
+				  if($(this).hasClass("kor")) value_netto = -value_netto;
+				  if($(this).hasClass("kor")) value_vat = -value_brutto;
+				  if($(this).hasClass("kor")) value_brutto = -value_brutto;
+			  }
+
+			  sum_netto += value_netto;
+			  sum_vat += value_brutto - value_netto;
+			  sum_brutto += value_brutto;
+
+		});
+
+
+		$("#value").find(".sum_netto").text(number_format(sum_netto,2,","," "));
+		$("#value").find(".sum_vat").text(number_format(sum_vat,2,","," "));
+		$("#value").find(".sum_brutto").text(number_format(sum_brutto,2,","," "));
+
+}
+
+function valueValidate() {
+
+
+	var send = true;
+	$("#value .rows").each(function( index ) {
+
+			$(this).find(".req").each(function( index ) {
+
+				if($(this).val().trim() == "")
+					$(this).addClass("required");
+				else
+					$(this).removeClass("required");
+
+			});
+
+			gtu = $(this).find(".show_gtu input").val().trim();
+			if($('#gtu').is(':checked') && gtu.length > 0){
+				console.log(gtu + ' ' + isGtu(gtu));
+				if(!isGtu(gtu)) 
+					$(this).find(".show_gtu input").addClass("gtu_error");
+				else
+					$(this).find(".show_gtu input").removeClass("gtu_error");
+			}
+			else
+				$(this).find(".show_gtu input").removeClass("gtu_error");
+			
+
+			qty = $(this).find(".qty input").val().trim();
+
+			if(!is_numeric(qty) || qty < 0)
+				$(this).find(".qty input").addClass("qty_error");
+			else
+				$(this).find(".qty input").removeClass("qty_error");
+			if(qty > 2147483647)
+				$(this).find(".qty input").addClass("qty_error_max");
+			else
+				$(this).find(".qty input").removeClass("qty_error_max");
+
+			net = $(this).find(".net input").val().trim().replace(",",".").replace(/\s+/g, '');
+			if(!isCurrency(net))
+				$(this).find(".net input").addClass("curr_error");
+			else
+				$(this).find(".net input").removeClass("curr_error");
+
+			gross = $(this).find(".gross input").val().trim().replace(",",".").replace(/\s+/g, '');
+
+			if(!isCurrency(gross))
+				$(this).find(".gross input").addClass("curr_error");
+			else
+				$(this).find(".gross input").removeClass("curr_error");
+
+
+	});
+
+	
+	if($("#value").find('.required').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= trans('eprog.manager::lang.valid_required') ?>', 'class': 'error', 'interval': 2});
+	}
+	else if($("#value").find('.gtu_error').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_gtu')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if($("#value").find('.qty_error').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_qty')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if($("#value").find('.qty_error_max').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_qty_max')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if($("#value").find('.curr_error').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_currency')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if(number_format($(".sum_brutto").text().replace(",",".").replace(/\s+/g, ''),2,".","") > 99999999999999.99){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_amount')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if(!validateExtra()){
+		send = false;
+		if($('#Form-field-Invoice-type').val() == 2) $.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.ksef.advance_valid')) ?>', 'class': 'error', 'interval': 2});
+		if($('#Form-field-Invoice-type').val() == 3) $.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.ksef.settlement_valid')) ?>', 'class': 'error', 'interval': 2});
+	}		
+	else
+		send = true;
+
+	if(send) {
+		$("#save").attr("disabled",false);
+		$("#ksefSend").attr("disabled",false);
+	}
+	else{
+		$("#save").attr("disabled",true);
+		$("#ksefSend").attr("disabled",true);
+		$('a[href="#primarytab-eprogmanagerlangvalue"]').click();
+	}
+
+	extra = validateExtra();
+
+	return send && extra;
+}
+
+
+function valueReorder(type = 1) {
+
+	i = 1; j = 1;
+	$("#value .rows").each(function( index ) {
+
+		$(this).find(".order").text(j);
+		if(type == 1 || (type == 2 && i%2 == 0)) j++;
+	i++;
+	});
+
+}
+
+function showExtra(){
+
+    if($('#Form-field-Invoice-type').val() == 2 || $('#Form-field-Invoice-type').val() == 5) { 
+        $('.extra').show();
+        $('.extra_label').text('<?= trans('eprog.manager::lang.ksef.advance_amount') ?>');
+        $('.extra').find('input').addClass("ext");
+    }
+    else if($('#Form-field-Invoice-type').val() == 3 || $('#Form-field-Invoice-type').val() == 6) { 
+        $('.extra').show();
+        $('.extra_label').text('<?= trans('eprog.manager::lang.ksef.settlement_amount') ?>');
+        $('.extra').find('input').addClass("ext");
+    }
+    else{
+        $('.extra').hide();
+        $('.extra').find('input').removeClass("ext");
+    }
+
+}
+
+
+function validateExtra(){
+
+	ret = true; 	
+	extra = 0;
+	l = 0;
+    $(".ext").each(function(index) {
+
+    	val = parseFloat($(this).val().replace(",",".").replace(/\s+/g, ''));
+    	if(val > 0)	
+        extra += val;
+    	l++;	
+    });
+   
+   	if(l > 0){
+    		if(extra == 0)  
+    			ret = false; 
+    		else 
+    			ret = true;
+	}
+
+    return ret;
+
+}
+
+function initKorCreate(){
+
+	$(".delRow").hide();
+	$(".addRow").hide();
+	$(".btnadd").hide();
+
+	$(".addfield").each(function(index) {
+
+		$(this).attr("readonly", true);
+	    $(this).click(function(event) {
+	        event.preventDefault();
+	    });
+
+	});
+
+	$(".rows").each(function( index ) {
+		$(this).addClass("kor");
+	});
+
+	$(".kor").each(function(index) {
+
+	 	$(this).after('<div class="rows">' + $(this).clone().html() + '</div>');
+	 
+
+	});
+
+	initKor();
+
+}
+
+function initKor(){
+
+
+
+	$(".rows").each(function( index ) {
+
+		if($(this).hasClass("kor"))
+			$(this).append('<input type="hidden" name="Values[edit_kor][]" value="before">');
+		else
+			$(this).append('<input type="hidden" name="Values[edit_kor][]" value="after">');
+		
+	});
+
+
+	$(".kor").find("input").each(function(index) {
+
+	    $(this).attr("readonly", true);
+
+	    $(this).css("background-color","#eee !important");
+	    $(this).css("color","#999");
+	    $(this).css("cursor","not-allowed");
+
+
+	});
+
+	$(".kor").find("select").each(function(index) {
+
+	    $(this).attr("readonly", true);
+
+	    $(this).on('select2:opening', function (e) {
+	        if( $(this).attr('readonly') == 'readonly') { 
+	            e.preventDefault();
+	            $(this).select2('close'); 
+	            return false;
+	        }
+	    });
+
+	    $(this).on('mousedown', function(e) {
+	       e.preventDefault();
+	       this.blur();
+	       window.focus();
+	    });
+
+	    $(this).css("background-color","#eee !important");
+	    $(this).css("color","#999");
+	    $(this).css("cursor","not-allowed");
+
+
+	});
+
+	initSelectVat();
+	initValidate();
+	sumKwota();
+
+}
+
+</script>
+
+
+
+
+
+
+ 
+
+
+        

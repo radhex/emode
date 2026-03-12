@@ -1,0 +1,154 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Internal as ModelInternal;
+use Eprog\Manager\Models\SettingConfig;
+use Eprog\Manager\Controllers\Internal;
+
+$internal  = ModelInternal::find(Input::segment(6));
+$firm = User::where("firm_nip",$internal->nip)->first()->firm_name ?? '';
+if($internal->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+$period = date("m",strtotime($internal->create_at))."_".date("Y",strtotime($internal->create_at));
+
+
+?>
+
+
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+        <li><span  class="oc-icon-file-o"></span><a href="<?= Backend::url('eprog/manager/internal') ?>"><?= e(trans('eprog.manager::lang.internal')) ?></a></li>
+        <li>ID: <?= Input::segment(6) ?></li>
+        <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+	    <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_accounting")) : ?>
+                <button
+                    id="save"
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0;save:1"
+                    data-request-success="change=false;"
+                    data-request-update="'value' : '#value'"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+
+                    >
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/internal') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar" style="margin-right:50px"><?= e(trans('eprog.manager::lang.return')) ?></a>
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.internal_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+
+	     <?php endif ?>
+
+              <a href="<?= Backend::url('eprog/manager/accounting/create?internal_id=') ?><?= Input::segment(6) ?>" target="_blank"
+                  id="ksefCorrect" class="btn btn-primary oc-icon-calculator btn-toolbar"
+                  style="margin-right:10px" >
+                  <?= e(trans('eprog.manager::lang.accounting_set')) ?>
+              </a>
+             <button
+                 id="internalPdf"
+                 type="submit"
+                 data-request="onPdf"
+                 class="btn btn-primary oc-icon-download btn-toolbar">
+                 <?= e(trans('eprog.manager::lang.download')) ?> PDF
+             </button>
+         
+             <button
+                 type="button"
+                 class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+                 onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savetaxfile/internal/<?= Input::segment(6) ?>/<?= $period ?>','<?= e(trans('eprog.manager::lang.taxfile_confirm')) ?>', 450, 300)"
+                 style="margin-left:-5px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;"
+             ></button>
+
+               <span id="status"></span>
+            </div>
+        </div>
+
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/internal') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+
+@media (max-width: 450px){
+
+#Form-field-Internal-value-group {margin-left:-25px}
+
+}
+
+@media (min-width: 768px){
+  
+    #Form-field-Internal-disp-group {margin-top:26px}
+    #Form-field-Internal-place-group {width:13.7%}
+    #Form-field-Internal-create_at-group {width:10.5%}
+    #Form-field-Internal-nr-group {width:13.3%}
+    #Form-field-Internal-record-group {width:8.5%}
+
+    .hide {
+      display: none !important;
+    }
+
+    .show {
+      font-size:15px !important;
+      display: inline-block !important;
+      float: none !important;
+      z-index: 8 !important;
+      vertical-align: bottom !important;
+      position:relative !important;
+      margin-right:-20px !important;
+    }
+
+    .required {binternal:1px solid red !important}
+
+ 
+}
+
+</style>
+
+<script>
+
+    var change = false;
+
+
+    $(function() { 
+
+        $('#save').click(function(e){
+        
+              valueValidate();
+
+        });
+
+                
+
+    });
+
+
+
+</script>

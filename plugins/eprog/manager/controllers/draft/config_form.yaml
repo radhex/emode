@@ -1,0 +1,4 @@
+name: 'eprog.manager::lang.draft'
+form: $/eprog/manager/models/draft/fields.yaml
+modelClass: Eprog\Manager\Models\Draft
+defaultRedirect: eprog/manager/draft

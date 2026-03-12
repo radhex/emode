@@ -1,0 +1,41 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-comments"></span><a href="<?= Backend::url('eprog/manager/inmail/inbox') ?>"  ><?= e(trans('eprog.manager::lang.inmail')) ?> - <?= e(trans('eprog.manager::lang.mail')) ?></a> </li>
+        <li><?= e(trans('eprog.manager::lang.create')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="close:1,from_admin:1"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary  oc-icon-send">
+                    <?= e(trans('eprog.manager::lang.send')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/inmail/inbox') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a>
+
+            </div>
+        </div>
+    
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+
+
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/inmail') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+		 

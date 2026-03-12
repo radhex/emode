@@ -1,0 +1,1119 @@
+<?php 
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\Accountingvalue;
+use Eprog\Manager\Models\Vat;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+	$currency = Settings::get("currency") == null ? "PLN" : Settings::get("currency");
+	$values  = [];
+	$fields = ["pkwiu"=> false, "cn" => false, "gtu" => false];
+
+	if(Input::has("correct") && Input::get("correct") > 0){
+	 	$id = Input::get("correct");
+	 	$this->xml = null;
+	}
+
+	if(Input::filled("advance")){
+	 	$accounting = Accounting::where("ksefNumber",Input::get("advance"))->first();
+	 	if($accounting) $id = $accounting->id; 
+	 	$this->xml = null;
+	}
+
+	$approve_document = 0;
+	$this->kor = 0;
+	$accounting = Accounting::find($id);
+	if($accounting){
+		 $currency = $accounting->currency ?? $currency;
+		 $data_document = json_decode($accounting->data_document, true);
+		 $approve_document = $accounting->approved ? 1 : 0;
+		 $this->xml = $accounting->xml;
+		 if(in_array($accounting->type,[1,5,6]))
+		 $this->kor = 1;
+	}
+
+
+	if($this->xml) {
+
+		$xml = simplexml_load_string($this->xml, "SimpleXMLElement", LIBXML_NOCDATA);
+		$json = json_encode($xml);
+		$data = json_decode($json, true);
+
+	}
+
+	$stawki_vat = Util::getVat();
+
+	$label_vat = "";
+
+	if(isset($accounting->type) && ($accounting->type == 2 || $accounting->type == 3 || $accounting->type == 5 || $accounting->type == 6))
+		$ext = 1;
+	else	
+		$ext = 0;
+
+	$extra_label = "";
+	if(isset($accounting->type) && $accounting->type == 2)
+	$extra_label = e(trans("eprog.manager::lang.ksef.advance_amount"));
+	if(isset($accounting->type) && $accounting->type == 3)
+	$extra_label = e(trans("eprog.manager::lang.ksef.settlement_amount"));
+
+	$count = "netto";
+
+	$disc = 0;
+
+	if(Input::segment(5) == "create")
+	$data_document['lump'] = Settings::get("tax_lump") ?? ''; 
+
+	$lumps = "";
+	foreach(Util::getTaxLump() as $k => $v)
+	$lumps .= "<option value=\"".$k."\" ".(isset($data_document["lump"]) && $data_document["lump"] == $k ? "selected" : "").">".$v."</option>";
+
+	$vat_register = "";
+	$vat_register = "<option value=\"0\">".trans('eprog.manager::lang.select_dropdown')."</option>";
+	foreach(Vat::where("disp",1)->get() as $vat)
+	$vat_register .= "<option value=\"".$vat->id."\" ".(($accounting->vat_register ?? 1) == $vat->id ? "selected" : "")." class=\"".($vat->mode == 0 ? "sell":"buy")."\">".$vat->name."</option>";
+
+
+?>
+<style>
+
+.valuetable {display:table; ;}
+.valuetable > div {display:table-row;background:#fff;  }
+.valuetable > div > div {white-space: nowrap;border-top:1px solid #eee;display:table-cell; height:34px;vertical-align:middle; font-size:13px; padding-left:5px;text-align:right; padding-right:5px; padding-top:4px;padding-bottom:4px;}
+.valuetable .date {color:green;width:150px}
+.valuetable .desc {width:300px;}
+.valuetable > div.head {background:var(--ml2color);}
+.valuetable > div.head div{font-size:12px}
+.valuetable input {text-align:right; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+.valuetable select {text-align:left; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+//.sum_netto,.sum_vat,.sum_brutto {font-weight:bold}
+
+.evidence > div > div {border-top:0px  !important; text-align:right  !important}
+.evidence > div > div input{text-align:right  !important}
+
+
+.head_pkwiu {display:none !important}
+.show_pkwiu {display:none !important}
+.head_cn {display:none !important}
+.show_cn {display:none !important}
+.head_gtu {display:none !important}
+.show_gtu {display:none !important}
+.value_netto,.value_vat,.value_brutto {margin-left:5px;}
+.required, .gtu_error, .qty_error, .qty_error_max, .curr_error {border:1px solid red !important}
+.desk {display:none; background:var(--ml2color);padding:5px;padding-left:6px;padding-right:6px;font-size:12px;text-align:right}
+
+.describe  > div > div {;border-top:0px} 
+.margin > div > div {;border-top:0px} 
+
+@media (max-width: 1200px){
+	
+	.rwdesc1 {width:350px !important}
+	.rwdesc2 {width:250px !important}
+	evidence {float:left !important}
+	.valuetable > div {display:block;}
+	.valuetable > div > div {display:block;text-align:left;height:38px !important;border-top:0px  !important}
+	.valuetable input {text-align:left !important}
+	.valuetable input.product {}
+	.valuetable select {margin-left:-4px !important}
+	.mob {display:none !important}
+	.desk {display:inline-block;width:130px}
+	.order {font-size:16px !important;}]	
+
+}
+
+</style>
+<?php
+
+
+//dd($data_document);
+
+?>
+
+<br>
+<div class="valuetable evidence kpir" style="float:right">
+	<div><div>Kolumna KPiR <select id="ckpir" name="ckpir"><option value="kpir9" class="sale" <?= ($data_document["kpir"]["ckpir"] ?? '') == "kpir9" ? "selected" : "" ;?>><?= e(trans("eprog.manager::lang.kpir9")) ?></option><option value="kpir10" class="sale" <?= ($data_document["kpir"]["ckpir"] ?? '') == "kpir10" ? "selected" : "" ;?>><?= e(trans("eprog.manager::lang.kpir10")) ?></option><option value="kpir12" class="buy" <?= ($data_document["kpir"]["ckpir"] ?? '') == "kpir12" ? "selected" : "" ;?>><?= e(trans("eprog.manager::lang.kpir12")) ?></option><option value="kpir13" class="buy" <?= ($data_document["kpir"]["ckpir"] ?? '') == "kpir13" ? "selected" : "" ;?>><?= e(trans("eprog.manager::lang.kpir13")) ?></option><option value="kpir14" class="buy" <?= ($data_document["kpir"]["ckpir"] ?? '') == "kpir14" ? "selected" : "" ;?>><?= e(trans("eprog.manager::lang.kpir14")) ?></option><option value="kpir15" class="buy" <?= ($data_document["kpir"]["ckpir"] ?? '') == "kpir15" ? "selected" : "" ;?>><?= e(trans("eprog.manager::lang.kpir15")) ?></option></select></div></div>
+	<div class="lump"><div><?= e(trans("eprog.manager::lang.lump")) ?> <select  name="lump"><?=$lumps?></select></div></div>
+	<div class="sale"><div><?= e(trans("eprog.manager::lang.kpir9")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["kpir9"]  ?? 0),2,',',' ') ?? '' ?>" name="kpir[kpir9]" id="kpir9" class="kwotamod" style="text-align:left"></div></div>
+	<div class="sale"><div><?= e(trans("eprog.manager::lang.kpir10")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["kpir10"]  ?? 0),2,',',' ') ?? '' ?>" name="kpir[kpir10]" id="kpir10" class="kwotamod" style="text-align:left"></div></div>
+	<div class="buy"><div><?= e(trans("eprog.manager::lang.kpir12")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["kpir12"]  ?? 0),2,',',' ') ?? '' ?>" name="kpir[kpir12]" id="kpir12" class="kwotamod" style="text-align:left"></div></div>
+	<div class="buy"><div><?= e(trans("eprog.manager::lang.kpir13")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["kpir13"] ?? 0),2,',',' ') ?? '' ?>" name="kpir[kpir13]" id="kpir13" class="kwotamod" style="text-align:left"></div></div>
+	<div class="buy"><div><?= e(trans("eprog.manager::lang.kpir14")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["kpir14"] ?? 0) ?? 0,2,',',' ') ?? '' ?>" name="kpir[kpir14]" id="kpir14" class="kwotamod " style="text-align:left"></div></div>
+	<div class="buy"><div><?= e(trans("eprog.manager::lang.kpir15")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["kpir15"] ?? 0),2,',',' ') ?? '' ?>" name="kpir[kpir15]" id="kpir15" class="kwotamod " style="text-align:left"></div></div>
+	<div class="buy"><div><?= e(trans("eprog.manager::lang.kpir17")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["kpir17"]  ?? 0),2,',',' ') ?? '' ?>" name="kpir[kpir17]" class="kwotamod" style="text-align:left"></div></div>
+	<div class="buy"><div><?= e(trans("eprog.manager::lang.kpir18")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["kpir18"]  ?? 0),2,',',' ') ?? '' ?>" name="kpir[kpir18]" class="kwotamod" style="text-align:left"></div></div>
+	<div class="buy"><div><?= e(trans("eprog.manager::lang.kpir18a")) ?> <input  size="40" type="text" value="<?= $data_document["kpir"]["research_desc"]  ?? '' ?>" name="kpir[kpir18a]" class="rwdesc2" style="text-align:left"></div></div>
+	<div><div><?= e(trans("eprog.manager::lang.kpir19")) ?> <input  size="40" type="text" value="<?= $data_document["kpir"]["comments"]  ?? '' ?>" name="kpir[kpir19]" class="rwdesc2" style="text-align:left"></div></div>
+</div>
+<div class="valuetable evidence lump" style="float:right">
+	<div class="lump sale"><div><?= e(trans("eprog.manager::lang.lump")) ?> <select  name="lump"><?=$lumps?></select></div></div>
+	<div class="sale"><div><?= e(trans("eprog.manager::lang.ewpz9")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["ewpz9"] ?? 0),2,',',' ') ?? '' ?>" name="kpir[ewpz9]" id="ewpz9" class="kwotamod " style="text-align:left"></div></div>
+	<div class="buy"><div><?= e(trans("eprog.manager::lang.ewpz12")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["ewpz12"] ?? 0),2,',',' ') ?? '' ?>" name="kpir[ewpz12]" id="ewpz12" class="kwotamod " style="text-align:left"></div></div>
+	<div class="buy"><div><?= e(trans("eprog.manager::lang.ewpz13")) ?> <input  size="11" type="text" value="<?= number_format(floatval($data_document["kpir"]["ewpz13"] ?? 0),2,',',' ') ?? '' ?>" name="kpir[ewpz13]" id="ewpz13" class="kwotamod " style="text-align:left"></div></div>
+</div>
+<div>
+	<div class="valuetable describe">
+		<div><div><?= e(trans("eprog.manager::lang.describe_event")) ?></div><div><input  size="77" type="text" value="<?= $data_document["describe"] ?? ''?>" name="describe" class="rwdesc1" style="text-align:left" required></div></div>
+	</div>
+
+<div style="margin-left:-40px;padding-top:40px"></div>
+
+<div><div class="valuetable"><?= e(trans("eprog.manager::lang.vat_register")) ?>&nbsp;&nbsp;&nbsp;<select id="vat_register" name="vat_register"><?=$vat_register?></select> <button  type="button" class="btn btn-sm btn-primary oc-icon-file-text-o btn-toolbar" style="margin-left:14px;padding-left:14px;padding-right:7px" onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/vat','<?= e(trans('eprog.manager::lang.vat_register')) ?>', 768, 768)"></button></div></div>
+
+<div id="vat" class="valuetable" style="margin-top:20px;">
+	<div class="mob head"><div style="width:150px;text-align:left"><?= e(trans("eprog.manager::lang.vat")) ?></div><div style="width:150px;text-align:right"> <?= e(trans("eprog.manager::lang.net")) ?> PLN</div><div style="width:150px;text-align:right"> VAT PLN</div><div style="width:150px;text-align:right"> <?= e(trans("eprog.manager::lang.gross")) ?> PLN</div></div>
+	<div>
+	<div style="text-align:left"><?= Util::getVatRate("23",$accounting->vat_at ?? null)?>%</div>
+	<div><input type="text" size="15" name="vat_summary[net_23]" value="<?= number_format(floatval($data_document["vat_summary"]["net_23"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rnetto kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[vat_23]" value="<?= number_format(floatval($data_document["vat_summary"]["vat_23"]?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rvat kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[gross_23]" value="<?= number_format(floatval($data_document["vat_summary"]["gross_23"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rbrutto kwotamod" style="text-align:right"/></div>
+	</div>
+	<div>
+	<div style="text-align:left"><?= Util::getVatRate("8",$accounting->vat_at ?? null)?>%</div>
+	<div><input type="text" size="15" name="vat_summary[net_8]" value="<?= number_format(floatval($data_document["vat_summary"]["net_8"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rnetto kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[vat_8]" value="<?= number_format(floatval($data_document["vat_summary"]["vat_8"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rvat kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[gross_8]" value="<?= number_format(floatval($data_document["vat_summary"]["gross_8"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rbrutto kwotamod" style="text-align:right"/></div>
+	</div>
+	<div>
+	<div style="text-align:left"><?= Util::getVatRate("5",$accounting->vat_at ?? null)?>%</div>
+	<div><input type="text" size="15" name="vat_summary[net_5]" value="<?= number_format(floatval($data_document["vat_summary"]["net_5"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rnetto kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[vat_5]" value="<?= number_format(floatval($data_document["vat_summary"]["vat_5"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rvat kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[gross_5]" value="<?= number_format(floatval($data_document["vat_summary"]["gross_5"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rbrutto kwotamod" style="text-align:right"/></div>
+	</div>
+	<div>
+	<div style="text-align:left">0%</div>
+	<div><input type="text" size="15" name="vat_summary[net_0]" value="<?= number_format(floatval($data_document["vat_summary"]["net_0"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rnetto kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[vat_0]" value="<?= number_format(floatval($data_document["vat_summary"]["vat_0"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rvat kwotamod" style="text-align:right" readonly/></div>
+	<div><input type="text" size="15" name="vat_summary[gross_0]" value="<?= number_format(floatval($data_document["vat_summary"]["gross_0"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rbrutto kwotamod" style="text-align:right"/></div>
+	<div></div>
+	<div></div>
+	</div>
+	<div>
+	<div style="text-align:left">zw</div>
+	<div><input type="text" size="15" name="vat_summary[net_zw]" value="<?= number_format(floatval($data_document["vat_summary"]["net_zw"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rnetto kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[vat_zw]" value="<?= number_format(floatval($data_document["vat_summary"]["vat_zw"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rvat kwotamod" style="text-align:right" readonly/></div>
+	<div><input type="text" size="15" name="vat_summary[gross_zw]" value="<?= number_format(floatval($data_document["vat_summary"]["gross_zw"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="rbrutto kwotamod" style="text-align:right"/></div>
+	<div></div>
+	<div></div>
+	</div>
+	<div>
+	<div style="text-align:left"><span id="np"><?= e(trans("eprog.manager::lang.not_subject")) ?></span></div>
+	<div><input type="text" size="15" name="vat_summary[net_np]" value="<?= number_format(floatval($data_document["vat_summary"]["net_np"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="npnetto kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[vat_np]" value="<?= number_format(floatval($data_document["vat_summary"]["vat_np"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="npvat kwotamod" style="text-align:right"/></div>
+	<div><input type="text" size="15" name="vat_summary[gross_np]" value="<?= number_format(floatval($data_document["vat_summary"]["gross_np"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" class="npbrutto kwotamod" style="text-align:right"/></div>
+	</div>
+	<div>
+	<div style="text-align:left"><?= e(trans("eprog.manager::lang.summary")) ?></div>
+	<div><input type="text" size="15" name="vat_summary[net_sum]" value="<?= number_format(floatval($data_document["vat_summary"]["net_sum"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255"  style="text-align:right" readonly/></div>
+	<div><input type="text" size="15" name="vat_summary[vat_sum]" value="<?= number_format(floatval($data_document["vat_summary"]["vat_sum"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" style="text-align:right" readonly/></div>
+	<div><input type="text" size="15" name="vat_summary[gross_sum]" value="<?= number_format(floatval($data_document["vat_summary"]["gross_sum"] ?? 0),2,',',' ') ?? '' ?>"  maxlength="255" style="text-align:right" readonly/></div>
+	</div>
+</div>
+
+
+<br><br>
+
+
+</div>
+
+<script>
+
+
+	var approve = <?=  $approve_document ?>;
+	var kor = <?= $this->kor;?>;	
+	var xml = <?= $this->xml ? 1: 0;?>;	
+	var segment = '<?= Input::segment(5);?>';
+	var disc = <?= $disc;?>;	
+	var mode = <?= $accounting->mode ?? 0 ?>;
+	var previousId;	
+	var invoice_id = '<?= Input::get("invoice_id");?>';
+
+	$(function() {  
+		
+		columns(1);
+		initVat();
+		sumKwotaVat(1); 
+		if(invoice_id > 0) sumKwotaVat();
+		initValidate();
+		taxForm(1);
+
+		previousId = $("#ckpir").val();
+
+
+		if($('#Form-field-Accounting-mode').val() == 1){
+			$('#np').text("<?= e(trans("eprog.manager::lang.non_deducted")) ?>");
+			$('label[for="Form-field-Accounting-vat_at"]').text("<?= e(trans("eprog.manager::lang.income_at")) ?>");
+		}
+		else{
+			$('#np').text("<?= e(trans("eprog.manager::lang.not_subject")) ?>");
+			$('label[for="Form-field-Accounting-vat_at"]').text("<?= e(trans("eprog.manager::lang.make_at")) ?>");	
+		}
+
+		$('#Form-field-Accounting-mode').on('change', function (e) {
+		
+			if($(this).val() == 1){
+				$('#np').text("<?= e(trans("eprog.manager::lang.non_deducted")) ?>");
+				$('label[for="Form-field-Accounting-vat_at"]').text("<?= e(trans("eprog.manager::lang.income_at")) ?>");
+				$("#vat_register").val(2);
+			}
+			else{
+				$('#np').text("<?= e(trans("eprog.manager::lang.not_subject")) ?>");
+				$('label[for="Form-field-Accounting-vat_at"]').text("<?= e(trans("eprog.manager::lang.make_at")) ?>");
+				$("#vat_register").val(1);
+		
+			}
+
+			columns();
+			updateKpir();
+			updateEwpz();
+
+		});	 
+
+
+
+		$('#Form-field-Accounting-tax_form').on('change', function (e) {
+
+			taxForm();
+
+		});		
+
+		
+		$("#ckpir").on("change", function() {
+		
+			updateKpir();
+
+
+		});
+
+
+	});
+
+
+	function taxForm(init = 0) {
+
+		if($('#Form-field-Accounting-tax_form').val() == "lump"){
+			$('.lump').show();
+			$('.kpir').hide();	
+			columns(init);
+		}
+		else{
+			//$('.lump').find("select").val("");
+			$('.lump').hide();
+			$('.kpir').show();
+			columns(init);						
+		}
+
+	}
+
+	function updateKpir(init) {
+
+		if(init) return;
+
+	    var targetId = $("#ckpir").val();
+	    var valueToSet = $('input[name="vat_summary[net_sum]"]').val();
+	    if($('#Form-field-Accounting-mode').val() == 1) 
+	    var valueToSet = number_format(((parseFloat($('input[name="vat_summary[net_sum]"]').val().replace(/\s/g,'').replace(',','.')) || 0) + (parseFloat($('input[name="vat_summary[vat_np]"]').val().replace(/\s/g,'').replace(',','.')) || 0)),2,","," ")
+
+
+	    if (typeof previousId !== 'undefined' && previousId !== targetId)
+	        $("#" + previousId).val("0,00");
+
+	    if (targetId)
+	        $("#" + targetId).val(valueToSet || "0,00");
+
+	    previousId = targetId;
+
+	}
+
+	function updateEwpz(init) {
+
+		if(init) return;
+
+	    var targetId = $("#ckpir").val();
+	    var valueToSet = $('input[name="vat_summary[net_sum]"]').val();
+	    if($('#Form-field-Accounting-mode').val() == 1) 
+		var valueToSet = number_format(((parseFloat($('input[name="vat_summary[net_sum]"]').val().replace(/\s/g,'').replace(',','.')) || 0) + (parseFloat($('input[name="vat_summary[vat_np]"]').val().replace(/\s/g,'').replace(',','.')) || 0)),2,","," ")
+
+		
+	    if($('#Form-field-Accounting-mode').val() == 0)
+			$('#ewpz9').val(valueToSet);
+		else
+			$('#ewpz12').val(valueToSet);
+
+	
+	}
+
+
+	function columns(init = 0) {
+
+	    if($('#Form-field-Accounting-mode').val() == 1){
+	        $(".sale").prop('hidden', true);
+	        $(".buy").prop('hidden', false);
+	        $(".sale").hide();
+	        $(".buy").show();
+	        if(!init) $("#ckpir").val("kpir15");
+	    } else {
+	        $(".sale").prop('hidden', false);
+	        $(".buy").prop('hidden', true);
+	        $(".sale").show();
+	        $(".buy").hide();
+	        if(!init) $("#ckpir").val("kpir9");
+	    }
+	    
+	}
+
+function initFields(){
+
+		if($(window).outerWidth() > 1200){
+			$('.product').attr('size',47);
+		 	layout = 'table-cell';
+		 } else if($(window).outerWidth() <= 1200 && $(window).outerWidth() > 450){
+		 	$('.product').attr('size',50);
+		  	layout = 'block';
+		 } else{
+		 	$('.product').attr('size',29);
+		  	layout = 'block';
+		 }
+
+		if($("#pkwiu").is(':checked')){
+		 	$('.head_pkwiu').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+		 	$('.show_pkwiu').attr("style", "display: " + layout + " !important;text-align:left");
+		 	if($(window).outerWidth() > 1200)
+		 		$('.show_pkwiu_sum').attr("style", "display: " + layout + " !important;text-align:left");
+		 	else
+		 		$('.show_pkwiu_sum').attr("style", "display: none !important");
+		 	$('.show_pkwiu input').attr("disabled", false);
+		}
+		else{
+			$('.head_pkwiu').attr("style", "display: none !important");
+			$('.show_pkwiu').attr("style", "display: none !important");
+			$('.show_pkwiu_sum').attr("style", "display: none !important");
+			$('.show_pkwiu input').attr("disabled", true);
+		}
+
+		if($("#cn").is(':checked')){
+		 	$('.head_cn').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+		 	$('.show_cn').attr("style", "display: " + layout + " !important;text-align:left");
+		 	if($(window).outerWidth() > 1200)
+		 		$('.show_cn_sum').attr("style", "display: " + layout + " !important;text-align:left");
+		 	else
+		 		$('.show_cn_sum').attr("style", "display: none !important");
+		 	$('.show_cn input').attr("disabled", false);
+		}
+		else{
+			$('.head_cn').attr("style", "display: none !important");
+			$('.show_cn').attr("style", "display: none !important");
+			$('.show_cn_sum').attr("style", "display: none !important");
+			$('.show_cn input').attr("disabled", true);
+		}
+
+		if($("#gtu").is(':checked')){
+		 	$('.head_gtu').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+		 	$('.show_gtu').attr("style", "display: " + layout + " !important;text-align:left");
+		 	if($(window).outerWidth() > 1200)
+		 		$('.show_gtu_sum').attr("style", "display: " + layout + " !important;text-align:left");
+		 	else
+		 		$('.show_gtu_sum').attr("style", "display: none !important");
+		 	$('.show_gtu input').attr("disabled", false);
+
+		}
+		else{
+			$('.head_gtu').attr("style", "display: none !important");
+			$('.show_gtu').attr("style", "display: none !important");
+			$('.show_gtu_sum').attr("style", "display: none !important");
+			$('.show_gtu input').attr("disabled", true);
+		}
+
+
+		$("#pkwiu").click(function() {
+
+			if($(this).attr("readonly") == "readonly") return;
+
+			if($(window).outerWidth() > 1200) layout = 'table-cell'; else layout = 'block';
+
+			if($(this).is(':checked')){
+
+			 	$('.head_pkwiu').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+			 	$('.show_pkwiu').attr("style", "display: " + layout + " !important;text-align:left");
+			 	if($(window).outerWidth() > 1200) $('.show_pkwiu_sum').attr("style", "display: " + layout + " !important;text-align:left");
+			 	$('.show_pkwiu input').attr("disabled", false);
+			}
+			else{
+				$('.head_pkwiu').attr("style", "display: none !important");
+				$('.show_pkwiu').attr("style", "display: none !important");
+				$('.show_pkwiu_sum').attr("style", "display: none !important");
+				$('.show_pkwiu input').attr("disabled", true);
+			}
+
+			sessionFields();
+		});
+
+		$("#cn").click(function() {
+
+			if($(this).attr("readonly") == "readonly") return;
+
+			if($(window).outerWidth() > 1200) layout = 'table-cell'; else layout = 'block';
+
+			if($(this).is(':checked')){
+			 	$('.head_cn').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+			 	$('.show_cn').attr("style", "display: " + layout + " !important;text-align:left");
+			 	if($(window).outerWidth() > 1200) $('.show_cn_sum').attr("style", "display: " + layout + " !important;text-align:left");
+			 	$('.show_cn input').attr("disabled", false);
+			}
+			else{
+				$('.head_cn').attr("style", "display: none !important");
+				$('.show_cn').attr("style", "display: none !important");
+				$('.show_cn_sum').attr("style", "display: none !important");
+				$('.show_cn input').attr("disabled", true);
+			}
+
+			sessionFields();
+		});
+
+		$("#gtu").click(function() {
+
+			if($(this).attr("readonly") == "readonly") return;
+			
+			if($(window).outerWidth() > 1200) layout = 'table-cell'; else layout = 'block';
+
+			if($(this).is(':checked')){
+			 	$('.head_gtu').attr("style", "display: " + layout + " !important;width:80px;text-align:left");
+			 	$('.show_gtu').attr("style", "display: " + layout + " !important;text-align:left");
+			 	if($(window).outerWidth() > 1200) $('.show_gtu_sum').attr("style", "display: " + layout + " !important;text-align:left");
+			 	$('.show_gtu input').attr("disabled", false);
+			}
+			else{
+				$('.head_gtu').attr("style", "display: none !important");
+				$('.show_gtu').attr("style", "display: none !important");
+				$('.show_gtu_sum').attr("style", "display: none !important");
+				$('.show_gtu input').attr("disabled", true);
+			}
+
+			sessionFields();
+
+		});
+
+
+}
+
+
+function modalProduct(el){
+
+	modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/product?el=' + (parseInt($(el).parent().parent().find(".order").text()) + 1),'<?= e(trans('eprog.manager::lang.products')) ?>', 600, 420);
+
+}
+
+function sessionFields(){
+
+	$.ajax({
+	        type: "POST",
+	        data:"_token=<?= csrf_token() ?>&pkwiu=" + $("#pkwiu").is(':checked') + "&cn=" + $("#cn").is(':checked') + "&gtu=" + $("#gtu").is(':checked'),
+	        url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/fields',
+
+	        success: function(res) {
+	                   
+	        },
+	        error: function(xhr,status,error) {
+	             console.log(error);
+	        }
+	});
+
+}
+
+function initSelectVat(){
+
+		var vat_prev = "23%";
+		$(".select_vat").on('focus', function () {
+        	vat_prev = $(this).val();
+    	}).change(function() {
+			if($(this).val() == "marża"){
+				if($("#Form-field-Accounting-_marza").val() == ""){
+					$('a[href="#primarytab-eprogmanagerlangksefannotations"]').click();
+					$("#Form-field-Accounting-_marza").focus();
+					$.oc.flashMsg({text: '<?= trans('eprog.manager::lang.ksef.marza_msg1') ?>', 'class': 'error', 'interval': 2});
+					$(this).val(vat_prev);
+				}
+			
+			}
+		});
+}
+
+
+function initValidate(){
+
+
+		$('.kwotamod').on('paste input', function (e) {
+
+			inputCurrencyMod(this, e);
+
+		});
+
+
+		$('.kwotamod').on('focusout', function (e) {
+		    
+			inputCurrencyOut(this, e);
+
+		});
+
+		$('.kwotamod').on('focusin', function (e) {
+		    
+			inputCurrencyIn(this, e);
+
+		});
+
+
+}
+
+function initVat() {
+
+		$('.rnetto').on('keyup', function (e) {
+
+					net = $(this).val().replace(",",".").replace(/\s+/g, '');
+					vatprocent = $(this).parent().parent().text().split("%")[0];
+					if(vatprocent == "zw") vatprocent = 0;
+					gross = round(net*((100+Number(vatprocent))/100),2);
+					vat = gross - net;
+
+					if($(this).val().trim() != ""){
+						$(this).parent().parent().find(".rvat").val(number_format(vat.toString(),2,","," "));
+						$(this).parent().parent().find(".rbrutto").val(number_format(gross.toString(),2,","," "));
+					}
+	
+				sumKwotaVat();
+	
+
+		});
+
+		$('.rvat').on('keyup', function (e) {
+
+					net = parseFloat($(this).parent().parent().find('.rnetto').val().replace(",",".").replace(/\s+/g, ''));
+					vat = parseFloat($(this).val().replace(",",".").replace(/\s+/g, ''));
+					gross = round(net + vat,2);
+
+					if($(this).val().trim() != ""){
+						$(this).parent().parent().find(".rbrutto").val(number_format(gross.toString(),2,","," "));
+					}
+		
+				sumKwotaVat();
+	
+		});
+
+
+		$('.rbrutto').on('keyup', function (e) {
+
+					gross = $(this).val().replace(",",".").replace(/\s+/g, '');
+					vatprocent = $(this).parent().parent().text().split("%")[0];
+					if(vatprocent == "zw") vatprocent = 0;
+					net = round(gross/((100+Number(vatprocent))/100),2);
+					vat = gross - net;
+
+					if($(this).val().trim() != ""){
+						$(this).parent().parent().find(".rvat").val(number_format(vat.toString(),2,","," "));
+						$(this).parent().parent().find(".rnetto").val(number_format(net.toString(),2,","," "));
+					}
+
+
+				sumKwotaVat();
+	
+
+		});
+
+
+		$('.npnetto').on('keyup', function (e) {
+
+					net = parseFloat($(this).val().replace(",",".").replace(/\s+/g, ''));
+					vat = parseFloat($(this).parent().parent().find(".npvat").val().replace(",",".").replace(/\s+/g, ''));			
+					$(this).parent().parent().find(".npbrutto").val(number_format(net + vat,2,","," "));
+
+					sumKwotaVat();		
+		});
+
+
+		$('.npvat').on('keyup', function (e) {
+
+					vat = parseFloat($(this).val().replace(",",".").replace(/\s+/g, ''));
+					net = parseFloat($(this).parent().parent().find(".npnetto").val().replace(",",".").replace(/\s+/g, ''));			
+					$(this).parent().parent().find(".npbrutto").val(number_format(net + vat,2,","," "));
+
+					sumKwotaVat();		
+		});
+
+		$('.npbrutto').on('keyup', function (e) {
+
+					gross = parseFloat($(this).val().replace(",",".").replace(/\s+/g, ''));
+					vat = parseFloat($(this).parent().parent().find(".npvat").val().replace(",",".").replace(/\s+/g, ''));				
+					$(this).parent().parent().find(".npnetto").val(number_format(gross - vat,2,","," "));
+
+					sumKwotaVat();		
+		});
+
+
+
+		$('.sumvat').on('keyup', function (e) {
+
+			sumKwotaVat();
+		});
+
+}
+
+function is_numeric(str) {
+	  if (typeof str != "string") return false // we only process strings!  
+	  return !isNaN(str) && // use type coercion to parse the _entirety_ of the string (`parseFloat` alone does not do this)...
+	         !isNaN(parseFloat(str)) // ...and ensure strings of whitespace fail
+}
+
+
+function numDigitsAfterDecimal(x) {
+
+		var afterDecimalStr = x.toString().split('.')[1] || x.toString().split(',')[1] || ''
+		return afterDecimalStr.length
+
+}
+
+
+
+function sumKwota() {
+
+		sum_netto = 0;
+		sum_vat = 0;
+		sum_brutto = 0;
+		net_23 = 0; net_8 = 0; net_5 = 0; net_0 = 0; net_zw = 0; net_np = 0;
+		vat_23 = 0; vat_8 = 0; vat_5 = 0; vat_0 = 0; vat_zw = 0; vat_np = 0;
+		gross_23 = 0; gross_8 = 0; gross_5 = 0; gross_0 = 0; gross_zw = 0; gross_np = 0;
+
+
+		$("#value .rows").each(function( index ) {
+
+				count = $('input[name="count"]:checked').val();
+
+				value_discount =  parseFloat(number_format($(this).find(".disc").val().replace(",",".").replace(/\s+/g, ''),2,".",""));
+
+
+				if(count == "netto")
+				value_netto =  round($(this).find(".qty input").val()*number_format($(this).find(".net input").val().replace(",",".").replace(/\s+/g, ''),2,".",""),2) - value_discount;
+				else	
+				value_brutto =  round($(this).find(".qty input").val()*number_format($(this).find(".gross input").val().replace(",",".").replace(/\s+/g, ''),2,".",""),2)  - value_discount;
+
+				rate_vat =  $(this).find(".vat select").val();
+				rate_vat = rate_vat.split("%")[0];rate_vat = isNumber(rate_vat) ? rate_vat : 0;
+				rate_vat = parseInt(rate_vat);
+				
+				if(count == "netto")
+				value_vat = round(value_netto * rate_vat/100,2);
+				else
+				value_vat = round(value_brutto * rate_vat/(100 + rate_vat),2);
+
+				if(count == "netto")
+				value_brutto = parseFloat(number_format(value_netto*((100+Number(rate_vat))/100),2,".",""));
+				else	
+				value_netto = parseFloat(number_format(value_brutto/((100+Number(rate_vat))/100),2,".",""));
+
+				value_discount =  parseFloat(number_format($(this).find(".disc").val().replace(",",".").replace(/\s+/g, ''),2,".",""));
+
+				value_extra = 0;
+
+				if($('#Form-field-Accounting-type').val() == 2 || $('#Form-field-Accounting-type').val() == 3 || $('#Form-field-Accounting-type').val() == 5 || $('#Form-field-Accounting-type').val() == 6)
+				value_extra =  parseFloat(number_format($(this).find(".ext").val().replace(",",".").replace(/\s+/g, ''),2,".",""));
+
+
+
+				$(this).find(".value_netto").text(number_format(value_netto,2,","," "));
+				$(this).find(".value_vat").text(number_format(value_vat,2,","," "));
+				$(this).find(".value_brutto").text(number_format(value_brutto,2,","," "));
+
+
+				if($('#Form-field-Accounting-type').val() == 2 || $('#Form-field-Accounting-type').val() == 3 || $('#Form-field-Accounting-type').val() == 5 || $('#Form-field-Accounting-type').val() == 6) {
+				  if($(this).hasClass("kor"))
+				  	value_brutto  = value_extra;
+				  else{
+				    value_brutto  = -value_extra;
+				}
+
+	
+
+	            if(($('#Form-field-Accounting-type').val() == 5 || $('#Form-field-Accounting-type').val() == 6)  && $(this).hasClass("kor")){
+	             	value_brutto  -= value_extra;
+	             	$(this).find(".ext").val("0,00");
+	         	}
+
+				  value_brutto = -value_brutto; 	
+				  value_netto  = parseFloat(number_format(value_brutto/((100+Number(value_vat))/100),2,".",""));
+				}
+
+				if($('#Form-field-Accounting-type').val() == 1){
+				  if($(this).hasClass("kor")) value_netto = -value_netto;
+				  if($(this).hasClass("kor")) value_vat = -value_brutto;
+				  if($(this).hasClass("kor")) value_brutto = -value_brutto;
+				}
+
+
+				sum_netto += value_netto;
+				sum_vat += value_vat;
+				sum_brutto += value_brutto;
+
+
+				value_netto = value_netto*$('#Form-field-Accounting-exchange').val();
+				value_vat =  value_vat*$('#Form-field-Accounting-exchange').val();
+				value_brutto = value_brutto*$('#Form-field-Accounting-exchange').val();
+
+				rate = $(this).find(".vat select").val();
+
+				if(rate == "23"){
+					net_23 += value_netto; 
+					gross_23 += value_brutto; 
+					vat_23 += value_vat; 
+				}
+				if(rate == "8"){
+				  	net_8 += value_netto; 
+				  	gross_8 += value_brutto; 
+				  	vat_8 += value_vat; 
+				}
+				if(rate == "5"){
+				 	net_5 += value_netto; 
+				 	gross_5 += value_brutto; 
+				 	vat_5 += value_vat; 
+				}
+				if(rate == "0 KR" || rate == "0 WDT" || rate == "0 EX"){
+				    net_0 += value_netto;
+				    gross_0 += value_brutto; 
+				    vat_0 += value_vat;  
+				}
+				if(rate == "zw"){
+				    net_zw += value_netto; 
+				    gross_zw += value_brutto; 
+				    vat_zw += value_vat; 
+				}
+				if(rate == "np I" || rate == "np II" || rate == "oo"){
+				    net_np += value_netto;
+				    gross_np += value_brutto; 
+				    vat_np += value_vat; 
+				}
+
+
+		});
+
+		$("#value").find(".sum_netto").text(number_format(sum_netto,2,","," "));
+		$("#value").find(".sum_vat").text(number_format(sum_vat,2,","," "));
+		$("#value").find(".sum_brutto").text(number_format(sum_brutto,2,","," "));
+
+		if(!approve){
+
+			$('input[name="vat_summary[net_23]"]').val(number_format(net_23,2,","," "));
+			$('input[name="vat_summary[net_8]"]').val(number_format(net_8,2,","," "));
+			$('input[name="vat_summary[net_5]"]').val(number_format(net_5,2,","," "));
+			$('input[name="vat_summary[net_0]"]').val(number_format(net_0,2,","," "));
+			$('input[name="vat_summary[net_zw]"]').val(number_format(net_zw,2,","," "));
+			$('input[name="vat_summary[net_np]"]').val(number_format(net_np,2,","," "));
+
+			$('input[name="vat_summary[vat_23]"]').val(number_format(vat_23,2,","," "));
+			$('input[name="vat_summary[vat_8]"]').val(number_format(vat_8,2,","," "));
+			$('input[name="vat_summary[vat_5]"]').val(number_format(vat_5,2,","," "));
+			$('input[name="vat_summary[vat_0]"]').val(number_format(vat_0,2,","," "));
+			$('input[name="vat_summary[vat_zw]"]').val(number_format(vat_zw,2,","," "));
+			$('input[name="vat_summary[vat_np]"]').val(number_format(vat_np,2,","," "));
+
+			$('input[name="vat_summary[gross_23]"]').val(number_format(gross_23,2,","," "));
+			$('input[name="vat_summary[gross_8]"]').val(number_format(gross_8,2,","," "));
+			$('input[name="vat_summary[gross_5]"]').val(number_format(gross_5,2,","," "));
+			$('input[name="vat_summary[gross_0]"]').val(number_format(gross_0,2,","," "));
+			$('input[name="vat_summary[gross_zw]"]').val(number_format(gross_zw,2,","," "));
+			$('input[name="vat_summary[gross_np]"]').val(number_format(gross_np,2,","," "));
+			sumKwotaVat();
+		
+		}
+	
+}
+
+
+function sumKwotaVat(init) {
+
+
+	net_23 = round($('input[name="vat_summary[net_23]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	net_8 = round($('input[name="vat_summary[net_8]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	net_5 = round($('input[name="vat_summary[net_5]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	net_0 = round($('input[name="vat_summary[net_0]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	net_zw = round($('input[name="vat_summary[net_zw]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	net_np = round($('input[name="vat_summary[net_np]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	$('input[name="vat_summary[net_sum]"]').val(number_format((net_23+net_8+net_5+net_0+net_zw+net_np),2,","," "));
+
+
+	vat_23 = round($('input[name="vat_summary[vat_23]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	vat_8 = round($('input[name="vat_summary[vat_8]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	vat_5 = round($('input[name="vat_summary[vat_5]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	vat_0 = round($('input[name="vat_summary[vat_0]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	vat_zw = round($('input[name="vat_summary[vat_zw]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	vat_np = round($('input[name="vat_summary[vat_np]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	$('input[name="vat_summary[vat_sum]"]').val(number_format((vat_23+vat_8+vat_5+vat_0+vat_zw+vat_np),2,","," "));
+
+	gross_23 = round($('input[name="vat_summary[gross_23]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	gross_8 = round($('input[name="vat_summary[gross_8]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	gross_5 = round($('input[name="vat_summary[gross_5]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	gross_0 = round($('input[name="vat_summary[gross_0]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	gross_zw = round($('input[name="vat_summary[gross_zw]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	gross_np = round($('input[name="vat_summary[gross_np]"]').val().replace(",",".").replace(/\s+/g, ''),2);
+	$('input[name="vat_summary[gross_sum]"]').val(number_format((gross_23+gross_8+gross_5+gross_0+gross_zw+gross_np),2,","," "));
+
+
+	updateKpir(init);
+	updateEwpz(init);
+
+}
+
+
+function valueValidate() {
+
+
+	var send = true;
+	$("#value .rows").each(function( index ) {
+
+			$(this).find(".req").each(function( index ) {
+
+				if($(this).val().trim() == "")
+					$(this).addClass("required");
+				else
+					$(this).removeClass("required");
+
+			});
+
+			gtu = $(this).find(".show_gtu input").val().trim();
+			if($('#gtu').is(':checked') && gtu.length > 0){
+				console.log(gtu + ' ' + isGtu(gtu));
+				if(!isGtu(gtu)) 
+					$(this).find(".show_gtu input").addClass("gtu_error");
+				else
+					$(this).find(".show_gtu input").removeClass("gtu_error");
+			}
+			else
+				$(this).find(".show_gtu input").removeClass("gtu_error");
+			
+
+			qty = $(this).find(".qty input").val().trim();
+			if(!is_numeric(qty) || qty < 0)
+				$(this).find(".qty input").addClass("qty_error");
+			else
+				$(this).find(".qty input").removeClass("qty_error");
+
+			if(qty > 2147483647)
+				$(this).find(".qty input").addClass("qty_error_max");
+			else
+				$(this).find(".qty input").removeClass("qty_error_max");
+
+			net = $(this).find(".net input").val().trim().replace(",",".").replace(/\s+/g, '');
+			if(!isCurrency(net))
+				$(this).find(".net input").addClass("curr_error");
+			else
+				$(this).find(".net input").removeClass("curr_error");
+
+			gross = $(this).find(".gross input").val().trim().replace(",",".").replace(/\s+/g, '');
+
+			if(!isCurrency(gross))
+				$(this).find(".gross input").addClass("curr_error");
+			else
+				$(this).find(".gross input").removeClass("curr_error");
+
+
+	});
+
+	
+	if($("#value").find('.required').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= trans('eprog.manager::lang.valid_required') ?>', 'class': 'error', 'interval': 2});
+	}
+	else if($("#value").find('.gtu_error').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_gtu')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if($("#value").find('.qty_error').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_qty')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if($("#value").find('.qty_error_max').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_qty_max')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if($("#value").find('.curr_error').length > 0){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_currency')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if(number_format($(".sum_brutto").text().replace(",",".").replace(/\s+/g, ''),2,".","") > 99999999999999.99){
+		send = false;
+		$.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.valid_amount')) ?>', 'class': 'error', 'interval': 2});
+	}
+	else if(!validateExtra()){
+		send = false;
+		if($('#Form-field-Accounting-type').val() == 2) $.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.ksef.advance_valid')) ?>', 'class': 'error', 'interval': 2});
+		if($('#Form-field-Accounting-type').val() == 3) $.oc.flashMsg({text: '<?= e(trans('eprog.manager::lang.ksef.settlement_valid')) ?>', 'class': 'error', 'interval': 2});
+	}		
+	else
+		send = true;
+
+	if(send) {
+		$("#save").attr("disabled",false);
+		$("#ksefSend").attr("disabled",false);
+	}
+	else{
+		$("#save").attr("disabled",true);
+		$("#ksefSend").attr("disabled",true);
+		$('a[href="#primarytab-eprogmanagerlangvalue"]').click();
+	}
+
+	validateExtra();
+}
+
+
+function valueReorder(type = 1) {
+
+	i = 1; j = 1;
+	$("#value .rows").each(function( index ) {
+
+		$(this).find(".order").text(j);
+		if(type == 1 || (type == 2 && i%2 == 0)) j++;
+	i++;
+	});
+
+}
+
+function showExtra(){
+
+    if($('#Form-field-Accounting-type').val() == 2 || $('#Form-field-Accounting-type').val() == 5) { 
+        $('.extra').show();
+        $('.extra_label').text('<?= trans('eprog.manager::lang.ksef.advance_amount') ?>');
+        $('.extra').find('input').addClass("ext");
+    }
+    else if($('#Form-field-Accounting-type').val() == 3 || $('#Form-field-Accounting-type').val() == 6) { 
+        $('.extra').show();
+        $('.extra_label').text('<?= trans('eprog.manager::lang.ksef.settlement_amount') ?>');
+        $('.extra').find('input').addClass("ext");
+    }
+    else{
+        $('.extra').hide();
+        $('.extra').find('input').removeClass("ext");
+    }
+
+}
+
+
+function validateExtra(){
+
+	ret = true; 	
+	extra = 0;
+	l = 0;
+    $(".ext").each(function(index) {
+
+    	val = parseFloat($(this).val().replace(",",".").replace(/\s+/g, ''));
+    	if(val > 0)	
+        extra += val;
+    	l++;	
+    });
+   
+   	if(l > 0){
+    		if(extra == 0)  
+    			ret = false; 
+    		else 
+    			ret = true;
+	}
+
+    return ret;
+
+}
+
+function initKorCreate(){
+
+	$(".delRow").hide();
+	$(".addRow").hide();
+	$(".btnadd").hide();
+
+	$(".addfield").each(function(index) {
+
+		$(this).attr("readonly", true);
+	    $(this).click(function(event) {
+	        event.preventDefault();
+	    });
+
+	});
+
+	$(".rows").each(function( index ) {
+		$(this).addClass("kor");
+	});
+
+	$(".kor").each(function(index) {
+
+	 	$(this).after('<div class="rows">' + $(this).clone().html() + '</div>');
+	 
+
+	});
+
+	initKor();
+
+}
+
+function initKor(){
+
+
+
+	$(".rows").each(function( index ) {
+
+		if($(this).hasClass("kor"))
+			$(this).append('<input type="hidden" name="Values[edit_kor][]" value="before">');
+		else
+			$(this).append('<input type="hidden" name="Values[edit_kor][]" value="after">');
+		
+	});
+
+
+	$(".kor").find("input").each(function(index) {
+
+	    $(this).attr("readonly", true);
+
+	    $(this).css("background-color","#eee !important");
+	    $(this).css("color","#999");
+	    $(this).css("cursor","not-allowed");
+
+
+	});
+
+	$(".kor").find("select").each(function(index) {
+
+	    $(this).attr("readonly", true);
+
+	    $(this).on('select2:opening', function (e) {
+	        if( $(this).attr('readonly') == 'readonly') { 
+	            e.preventDefault();
+	            $(this).select2('close'); 
+	            return false;
+	        }
+	    });
+
+	    $(this).on('mousedown', function(e) {
+	       e.preventDefault();
+	       this.blur();
+	       window.focus();
+	    });
+
+	    $(this).css("background-color","#eee !important");
+	    $(this).css("color","#999");
+	    $(this).css("cursor","not-allowed");
+
+
+	});
+
+	initSelectVat();
+	initValidate();
+	sumKwota();
+
+}
+
+</script>
+
+
+
+
+
+
+ 
+
+
+        

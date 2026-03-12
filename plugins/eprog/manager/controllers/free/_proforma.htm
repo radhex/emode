@@ -1,0 +1,9 @@
+<?php
+
+use Eprog\Manager\Models\Invoice;
+
+$pro = Invoice::find($record->pro);
+
+?>
+
+<?= isset($pro->nr) ? $pro->nr: ''  ?>

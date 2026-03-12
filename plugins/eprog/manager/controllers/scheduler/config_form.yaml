@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.scheduler'
+form: $/eprog/manager/models/scheduler/fields.yaml
+modelClass: Eprog\Manager\Models\Scheduler
+defaultRedirect: eprog/manager/scheduler
+create:
+    redirect: 'eprog/manager/scheduler/update/:id'
+    redirectClose: eprog/manager/calendar
+update:
+    redirect: 'eprog/manager/scheduler/update/:id'
+    redirectClose: eprog/manager/calendar

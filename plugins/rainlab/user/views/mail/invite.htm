@@ -1,0 +1,36 @@
+subject = "Konto zostało utworzone dla Ciebie"
+==
+
+Witaj {{name}},
+
+Konto użytkownika zostało utworzone dla Ciebie. Użyj następującego loginu i hasła, aby się zalogować:
+
+Login: {{login}}
+
+Hasło: {{password}}
+
+*** Po zalogowaniu się należy jak najszybciej zmienić hasło.
+
+Panel Klienta:
+<a href="{{ url('account') }}"> {{ url('account') }} 
+
+==
+
+<p> Witaj {{name}}, </p>
+
+<p>
+Konto użytkownika zostało utworzone dla Ciebie.<br>
+Użyj następującego loginu i hasła, aby się zalogować:
+</p>
+
+<p>
+Login: {{login}} <br/>
+Hasło: {{password}}
+</p>
+
+<p> Po zalogowaniu się należy jak najszybciej zmienić hasło. </p>
+
+<p>
+     Panel Klienta: <br/>
+     <a href="{{ url('account') }}"> {{ url('account') }} </a>
+</p>

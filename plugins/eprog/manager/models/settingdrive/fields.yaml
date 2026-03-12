@@ -1,0 +1,9 @@
+tabs:
+    fields:
+        serwer:
+            tab: 'eprog.manager::lang.setting_drive'
+            span: full
+            type: partial
+            path: '$/eprog/manager/models/settingdrive/_drive.htm'
+
+

@@ -1,0 +1,20 @@
+<?php
+use Eprog\Manager\Models\Invoice;
+use Eprog\Manager\Models\Order;
+
+$order_id = null;
+if(Input::has("order")) $order_id = Input::get("order");
+
+if(Input::segment(5) == "update"){
+	$invoice = Invoice::find($this->params[0]);
+	if($invoice->order) $order_id = $invoice->order;
+}
+
+$order = Order::find($order_id);
+
+?>
+
+<?php if(isset($order) && $order->id) : ?> 
+<br>
+<?= e(trans('eprog.manager::lang.order_one'))  ?> <a href="/<?= config('cms.backendUri') ?>/eprog/manager/order/update/<?= $order->id ?>" target="_blank"><?= $order->nr ?></a>
+<?php endif; ?>

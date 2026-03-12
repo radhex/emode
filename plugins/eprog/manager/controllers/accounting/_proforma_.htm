@@ -1,0 +1,19 @@
+<?php
+use Eprog\Manager\Models\Invoice;
+
+$pro_id = null;
+if(Input::has("pro")) $pro_id = Input::get("pro");
+
+if(Input::segment(5) == "update"){
+	$invoice = Invoice::find($this->params[0]);
+	if($invoice->pro) $pro_id = $invoice->pro;
+}
+
+$pro = Invoice::find($pro_id);
+
+?>
+
+<?php if(isset($pro) && $pro->id) : ?> 
+<br>
+PRO Forma <a href="/<?= config('cms.backendUri') ?>/eprog/manager/invoice/update/<?= $pro->id ?>" target="_blank"><?= $pro->nr ?? '' ?></a>
+<?php endif; ?>

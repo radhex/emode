@@ -1,0 +1,36 @@
+fields:
+    year:
+        label: 'eprog.manager::lang.year'
+        oc.commentPosition: ''
+        span: left
+        type: dropdown
+        cssClass: col-sm-1
+    month:
+        label: 'eprog.manager::lang.month'
+        oc.commentPosition: ''
+        span: storm
+        type: dropdown
+        cssClass: col-sm-1
+    tax_form:
+        label: 'eprog.manager::lang.tax_form'
+        span: storm
+        type: dropdown
+        cssClass: col-sm-2
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true   
+        cssClass: col-sm-1
+tabs:
+    fields:
+        data:
+            label: ''
+            tab: 'eprog.manager::lang.advance_title'
+            span: left
+            type: partial
+            path: value
+            searchable: true
+            cssClass: col-sm-1

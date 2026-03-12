@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.zus'
+form: $/eprog/manager/models/zus/fields.yaml
+modelClass: Eprog\Manager\Models\Zus
+defaultRedirect: eprog/manager/zus
+create:
+    redirect: 'eprog/manager/zus/update/:id'
+    redirectClose: eprog/manager/zus
+update:
+    redirect: 'eprog/manager/zus/update/:id'
+    redirectClose: eprog/manager/zus

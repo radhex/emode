@@ -1,0 +1,13 @@
+list: $/eprog/manager/models/category/columns.yaml
+modelClass: Eprog\Manager\Models\Category
+title: 'eprog.manager::lang.category'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '20'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/category/update/:id'
+filter: config_filter.yaml

@@ -1,0 +1,26 @@
+scopes:
+    year:
+        label: eprog.manager::lang.year
+        type: group
+        modelClass: Eprog\Manager\Models\Taxfile
+        options: getYearOptions
+        conditions: year in (:filtered)
+    month:
+        label: eprog.manager::lang.month
+        type: group
+        modelClass: Eprog\Manager\Models\Taxfile
+        options: getMonthOptions
+        conditions: month in (:filtered)       
+
+
+
+           
+        
+
+
+
+
+
+
+
+

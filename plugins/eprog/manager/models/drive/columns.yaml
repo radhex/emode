@@ -1,0 +1,41 @@
+columns:
+    id:
+        label: ''
+        type: partial
+        path: id
+        invisible: true
+        sortable: false
+    thumb:
+        label: ''
+        type: partial
+        path: thumb
+        sortable: false
+        width: 30px;
+    name:
+        label: 'eprog.manager::lang.name'
+        type: partial
+        sortable: false
+        path: name        
+    size:
+        label: 'eprog.manager::lang.size'
+        type: partial
+        sortable: false
+        path: size
+    action:
+        label: 'eprog.manager::lang.action'
+        type: partial
+        sortable: false
+        path: action
+        cssClass: nowrap
+    created:
+        label: 'eprog.manager::lang.created'
+        type: partial
+        sortable: false
+        path: created
+    modified:
+        label: 'eprog.manager::lang.modified'
+        type: partial
+        sortable: false
+        path: modified
+
+

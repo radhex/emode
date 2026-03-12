@@ -1,0 +1,11 @@
+list: $/eprog/manager/models/attribute/columns.yaml
+modelClass: Eprog\Manager\Models\Attribute
+title: 'eprog.manager::lang.attributes'
+noRecordsMessage: 'backend::lang.list.no_records'
+showSetup: true
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/attribute/update/:id'

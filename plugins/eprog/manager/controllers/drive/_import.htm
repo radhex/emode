@@ -1,0 +1,20 @@
+
+<script  src="http://emode.pl/modules/backend/assets/js/vendor/jquery.min.js?v=1.2.3" importance="high"></script>
+
+$id = Input::get("id");
+
+<div><center><br>
+<?= e(trans("eprog.manager::lang.drive_import_to")) ?>
+<br><br><input type="radio" name="folder" value="1" checked> <?= e(trans("eprog.manager::lang.document"));
+&nbsp;&nbsp;&nbsp;<input type="radio" name="folder" value="2"> <?= e(trans("eprog.manager::lang.image"));
+&nbsp;&nbsp;&nbsp;<input type="radio" name="folder" value="3"> <?= e(trans("eprog.manager::lang.media"));
+<input type="hidden" name="_token" value="".csrf_token()."">
+<input type="hidden" name="action" value="done">
+//<div class="loadmodal loading-indicator-container" style="height:150px !important"><div class="loading-indicator  size-small indicator-center" style="background-color: transparent;height:150px !important"><span  style="margin-top:30px;height:150px !important"></span></div></div>
+<br><div id="load" class="loading-indicator-container"  style="margin-top:30px;">Trwa pobieranie...</div>
+<br><button class="btn btn-primary oc-icon-share"  style="margin-top:10px" data-request="onDriveImport" data-request-data="id:'".Input::get("id")."',folder:2"   data-request-success="parent.window.modal.dialog('close');parent.window.location.href='/<?= config('cms.backendUri') ?>/eprog/manager/file/update/1'" data-load-indicator="<?= (trans('eprog.manager::lang.processing')) ?>"> <?= e(trans("eprog.manager::lang.drive_import")) ?></button>
+</div>
+
+
+
+

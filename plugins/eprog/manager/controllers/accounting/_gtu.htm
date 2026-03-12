@@ -1,0 +1,48 @@
+<?php 
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\Accountingvalue;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+	if(isset($this->params[0])) $id = $this->params[0]; else $id = 0;
+
+	$accounting = Accounting::find($id);
+	if($accounting){
+		 $currency = $accounting->currency ?? $currency;
+		 $data_document = json_decode($accounting->data_document, true);
+		 $approve_document = $accounting->approved ? 1 : 0;
+		 $this->xml = $accounting->xml;
+		 if(in_array($accounting->type,[1,5,6]))
+		 $this->kor = 1;
+	}
+
+
+
+
+?>
+
+
+
+<div>
+<span class="sell">
+<input id="gtu1" type="checkbox" name="gtu[GTU_01]" value="1" <?php if($data_document["gtu"]["GTU_01"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu1">GTU_01</label><br>
+<input id="gtu2" type="checkbox" name="gtu[GTU_02]" value="1"<?php if($data_document["gtu"]["GTU_02"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu2">GTU_02</label><br>
+<input id="gtu3" type="checkbox" name="gtu[GTU_03]" value="1"<?php if($data_document["gtu"]["GTU_03"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu3">GTU_03</label><br>
+<input id="gtu4" type="checkbox" name="gtu[GTU_04]" value="1"<?php if($data_document["gtu"]["GTU_04"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu4">GTU_04</label><br>
+<input id="gtu5" type="checkbox" name="gtu[GTU_05]" value="1"<?php if($data_document["gtu"]["GTU_05"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu5">GTU_05</label><br>
+<input id="gtu6" type="checkbox" name="gtu[GTU_06]" value="1"<?php if($data_document["gtu"]["GTU_06"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu6">GTU_06</label><br>
+<input id="gtu7" type="checkbox" name="gtu[GTU_07]" value="1"<?php if($data_document["gtu"]["GTU_07"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu7">GTU_07</label><br>
+<input id="gtu8" type="checkbox" name="gtu[GTU_08]" value="1"<?php if($data_document["gtu"]["GTU_08"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu8">GTU_08</label><br>
+<input id="gtu9" type="checkbox" name="gtu[GTU_09]" value="1"<?php if($data_document["gtu"]["GTU_09"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu9">GTU_09</label><br>
+<input id="gtu10" type="checkbox" name="gtu[GTU_10]" value="1"<?php if($data_document["gtu"]["GTU_10"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu10">GTU_10</label><br>
+<input id="gtu11" type="checkbox" name="gtu[GTU_11]" value="1"<?php if($data_document["gtu"]["GTU_11"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu11">GTU_11</label><br>
+<input id="gtu12" type="checkbox" name="gtu[GTU_12]" value="1"<?php if($data_document["gtu"]["GTU_12"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu12">GTU_12</label><br>
+<input id="gtu13" type="checkbox" name="gtu[GTU_13]" value="1"<?php if($data_document["gtu"]["GTU_13"] ?? 0) : ?> checked <?php endif ?>>&nbsp;&nbsp;<label for="gtu13">GTU_13</label>
+</span>
+
+
+</div>

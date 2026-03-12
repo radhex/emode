@@ -1,0 +1,23 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+    name:
+        label: rainlab.user::lang.group.name
+        span: left
+        cssClass: col-sm-3
+
+    code:
+        label: rainlab.user::lang.group.code
+        comment: rainlab.user::lang.group.code_comment
+        span: left
+        preset: name
+        cssClass: col-sm-3
+
+    description:
+        label: rainlab.user::lang.group.description_field
+        type: textarea
+        size: tiny
+        span: left
+        cssClass: col-sm-3

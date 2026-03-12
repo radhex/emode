@@ -1,0 +1,28 @@
+scopes:
+    invoiceType:
+        label: eprog.manager::lang.type
+        type: group
+        modelClass: Eprog\Manager\Models\Ksef
+        options: getInvoiceType
+        conditions: invoiceType in (:filtered)
+    saleDate:
+        label: eprog.manager::lang.make_at
+        type: daterange
+        conditions: saleDate >= ':after' AND saleDate <= ':before'
+    permanentStorageDate:
+        label: eprog.manager::lang.ksef.ksefdate
+        type: daterange
+        conditions: permanentStorageDate >= ':after' AND permanentStorageDate <= ':before'
+
+
+
+           
+        
+
+
+
+
+
+
+
+

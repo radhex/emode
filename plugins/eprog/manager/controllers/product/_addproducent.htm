@@ -1,0 +1,12 @@
+<button type="button" id="producentadd" value="dodaj" class="btn btn-primary btn-sm oc-icon-plus-circle" style="height:32px;margin-top:23px;margin-left:-3px;padding-top:5px;padding-right:14px"><?= e(trans('eprog.manager::lang.create')) ?></button>
+<script>
+$(function() {   
+
+		$("#producentadd").click(function() {
+
+			modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/producent/create?type=addmodal','<?= e(trans('eprog.manager::lang.producent')) ?>', 700, 620, 'Product-producent_id');
+
+		});
+			 	  	 		 	
+});
+</script>

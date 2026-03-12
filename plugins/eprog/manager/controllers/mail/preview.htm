@@ -1,0 +1,56 @@
+<?php
+
+if(!isset($_SERVER['HTTP_REFERER'])) die();
+
+?>
+
+<?php if(preg_match("/inbox/i", $_SERVER['HTTP_REFERER'])) : ?>
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-comment-o"></span><a href="<?= Backend::url('eprog/manager/mail/inbox') ?>"><?= e(trans('eprog.manager::lang.user_inbox')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+   </li>
+    </ul>
+<?php Block::endPut() ?>
+<?php endif ?>
+
+<?php if(preg_match("/sent/i", $_SERVER['HTTP_REFERER'])) : ?>
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-long-arrow-right"></span><a href="<?= Backend::url('eprog/manager/mail/sent') ?>"><?= e(trans('eprog.manager::lang.user_sent')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+   </li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php endif ?>
+
+<?php use Eprog\Manager\Models\Mail; $mail = Mail::find(Input::segment(6));?>
+<?php if($mail && (BackendAuth::getUser()->id == $mail->admin_id || BackendAuth::getUser()->hasAccess('eprog.manager.manage_mail'))) : ?>
+
+<?php if (!$this->fatalError): ?>
+
+
+    <?php if($mail && !$mail->send && BackendAuth::getUser()->id == $mail->admin_id) : ?>
+      <a href="<?= Backend::url('eprog/manager/mail/create?reply=') ?><?= Input::segment(6) ?>" class="btn btn-primary oc-icon-reply btn-toolbar" style="margin-right:7px;margin-left:1px;margin-bottom:3px">
+          <?= e(trans('eprog.manager::lang.reply')) ?>
+      </a>
+    <?php endif ?>
+    <?php endif ?>
+
+    <span>
+      <a href="<?= $_SERVER['HTTP_REFERER'] ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar" style="margin-left:1px;margin-bottom:3px"><?= e(trans('eprog.manager::lang.return')) ?></a>
+    </span>
+
+    <div class="form-preview" style="margin-top:15px">
+        <?= $this->formRenderPreview() ?>
+    </div>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e($this->fatalError) ?></p>
+<?php endif ?>
+
+
+
+
+

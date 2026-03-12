@@ -1,0 +1,13 @@
+list: $/eprog/manager/models/mail/columns.yaml
+modelClass: Eprog\Manager\Models\Mail
+title: 'eprog.manager::lang.mail'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '20'
+showSetup: false
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:
+        prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/mail/preview/:id'
+filter: config_filter.yaml

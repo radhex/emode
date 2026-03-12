@@ -1,0 +1,64 @@
+fields:
+    date:
+        label: 'eprog.manager::lang.date'
+        span: storm
+        oc.commentPosition: ''
+        type: datepicker
+        default: now
+        cssClass: col-sm-2
+    files:
+        label: 'eprog.manager::lang.attachments'
+        span: left
+        oc.commentPosition: ''
+        mode: file
+        type: Patroklo\FormWidgets\FileUpload
+        cssClass: col-sm-4       
+    name:
+        label: 'eprog.manager::lang.title'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-5 
+    type:
+        label: ''
+        size: large
+        oc.commentPosition: ''
+        span: left
+        cssClass: col-sm-4
+        type: partial
+        path: type  
+tabs:
+    fields:
+        desc:
+            label: ''
+            tab: 'eprog.manager::lang.body'
+            size: large
+            oc.commentPosition: ''
+            span: left
+            type: richeditor
+            cssClass: col-sm-4 
+        send:
+            label: 'eprog.manager::lang.send_to'
+            tab: 'eprog.manager::lang.body'
+            size: large
+            oc.commentPosition: ''
+            span: storm
+            cssClass: col-sm-4
+            type: partial
+            path: send_   
+        list:
+            label: 'eprog.manager::lang.send_to_list_info'
+            tab: 'eprog.manager::lang.send_list'
+            size: large
+            oc.commentPosition: ''
+            span: storm
+            type: textarea
+            cssClass: col-sm-4
+        groups:
+            label: ''
+            tab: 'eprog.manager::lang.send_group'
+            span: storm
+            oc.commentPosition: ''
+            type: dropdown
+            cssClass: col-sm-2 

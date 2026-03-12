@@ -1,0 +1,48 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-calendar-plus-o"></span><a href="<?= Backend::url('eprog/manager/scheduler') ?>"><?= e(trans('eprog.manager::lang.scheduler')) ?></a></li> 
+        <li><span  class="oc-icon-calendar-check-o"></span><a href="<?= Backend::url('eprog/manager/scheduler') ?>"><?= e(trans('eprog.manager::lang.events')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.create')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.edit_scheduler")) : ?>
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-plus-circle">
+                    <?= e(trans('backend::lang.form.create')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/scheduler') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a>
+            </div>
+        </div>
+
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/scheduler') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Scheduler-name-group {width:50%}
+    #Form-field-Scheduler-user_id-group {width:25%}
+    #Form-field-Scheduler-admin_id-group {width:25%}
+    #Form-field-Scheduler-type_id-group {width:25%}
+
+}
+</style>

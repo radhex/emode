@@ -1,0 +1,14 @@
+scopes:
+    date:
+        label: eprog.manager::lang.date
+        type: daterange
+        conditions: date >= ':after' AND date <= ':before'
+        
+  
+
+
+
+
+
+
+

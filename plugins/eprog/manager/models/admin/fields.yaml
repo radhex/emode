@@ -1,0 +1,87 @@
+tabs:
+    fields:
+        server:
+            label: 'eprog.manager::lang.remote_server'
+            size: large
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: "col-sm-5 w300"
+        remote:
+            label: 'eprog.manager::lang.remote_addr'
+            size: large
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: "col-sm-1 w200"
+        subscription:
+            label: 'eprog.manager::lang.subscription'
+            span: storm
+            oc.commentPosition: ''
+            type: dropdown
+            cssClass: "col-sm-1 w200"
+        capacity:
+            label: 'eprog.manager::lang.capacity'
+            span: storm
+            oc.commentPosition: ''
+            type: text
+            default: 2000
+            cssClass: "col-sm-6 w100"
+        expires:
+            label: 'eprog.manager::lang.expires_at'
+            size: large
+            oc.commentPosition: ''
+            span: storm
+            format: Y-m-d
+            default: now
+            type: datepicker
+            cssClass: col-sm-2
+        disp:
+            label: 'eprog.manager::lang.public'
+            size: large
+            oc.commentPosition: ''
+            span: storm
+            type: switch
+            default: true   
+            cssClass: col-sm-1
+        user_id:
+            label: 'eprog.manager::lang.user'
+            span: left
+            oc.commentPosition: ''
+            type: dropdown
+            cssClass: "col-sm-6 w500"
+        key:
+            label: 'eprog.manager::lang.remote_key'
+            size: large
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            attributes:
+                maxlength: 14
+            cssClass:  "col-sm-1 w200"
+        rotation:
+            label: 'eprog.manager::lang.rotation_id'
+            size: large
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            default: v2
+            cssClass: "col-sm-1 w100"
+        desc:
+            tab: 'eprog.manager::lang.desc'
+            label: 'eprog.manager::lang.desc'
+            size: large
+            oc.commentPosition: ''
+            span: left
+            type: textarea
+            cssClass: "col-sm-4 w650"
+        mode:
+            label: 'eprog.manager::lang.emode_mode'
+            size: large
+            oc.commentPosition: ''
+            span: left
+            type: checkboxlist
+            cssClass: "col-sm-6 w500"
+
+
+

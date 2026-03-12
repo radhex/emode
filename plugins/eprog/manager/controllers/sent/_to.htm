@@ -1,0 +1,25 @@
+<?php
+use Eprog\Manager\Classes\Util;
+
+	$emails = explode(",",$record->to);
+	$l = 0;
+?>
+
+<?php foreach($emails as $email): ?>
+
+<?php
+
+	$name = trim(strip_tags(trim($email)));
+	if(preg_match("/@/i",$name))
+	$adress = $name;
+	else
+	$adress  = Util::getBetween($email, "<",">");
+
+	$l++;
+?>
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_inbox')) : ?>
+<a href="javascript:" style="color:var(--mcolor);" onmousedown="clickMail(this,'<?= $adress  ?>')" title="<?= $adress ?>"><?= $name ?></a><?php if($l != sizeof($emails)): ?>,<?php endif ?>
+<?php else : ?>
+<?= $name ?><?php if($l != sizeof($emails)): ?>,<?php endif ?>
+<?php endif ?>
+<?php endforeach ?>

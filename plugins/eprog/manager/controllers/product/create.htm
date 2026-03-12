@@ -1,0 +1,58 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-shopping-basket"></span><a href="<?= Backend::url('eprog/manager/product') ?>"><?= e(trans('eprog.manager::lang.assortment')) ?></a></li> 
+        <li><span  class="oc-icon-cube"></span><a href="<?= Backend::url('eprog/manager/product') ?>"><?= e(trans('eprog.manager::lang.products')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.create')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+	<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_product")) : ?>
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-plus-circle">
+                    <?= e(trans('backend::lang.form.create')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/product') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a
+            </div>
+        </div>
+	<?php endif ?>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/product') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Product-category_id-group {width: 30.2%}
+    #Form-field-Product-quantity-group {width: 10%}
+    #Form-field-Product-brutto-group {width: 12%}
+    #Form-field-Product-netto-group {width: 12%}
+    #Form-field-Product-vat-group {width: 12%}
+
+    #Form-field-Product-special_brutto-group {width: 12%}
+    #Form-field-Product-special_netto-group {width: 12%}
+    #Form-field-Product-special_vat-group {width: 12%}
+
+    #Form-field-Product-model-group {width:25%}
+    #Form-field-Product-producent_id-group {width:25%}
+
+    #Form-field-Product-vat_procent-group {width: 12%}
+    #Form-field-Product-currency-group {width: 12%}
+
+}
+</style>

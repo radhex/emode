@@ -1,0 +1,157 @@
+fields:
+    name:
+        label: 'eprog.manager::lang.name'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-5
+    ord:
+        label: 'eprog.manager::lang.sort'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        default: 0
+        cssClass: col-sm-1
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true	
+        cssClass: col-sm-1
+    category_id:
+        label: 'eprog.manager::lang.category'
+        span: left
+        oc.commentPosition: ''
+        type: dropdown
+        cssClass: col-sm-1
+    addcategory:
+        label: ' '
+        span: storm
+        oc.commentPosition: ''
+        type: partial
+        cssClass: col-sm-1
+    quantity:
+        label: 'eprog.manager::lang.quantity'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-1
+        default: 1
+tabs:
+    fields:
+        brutto:
+            label: 'eprog.manager::lang.gross_value'
+            tab: 'eprog.manager::lang.price'
+            size: large
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-2
+        netto:
+            label: 'eprog.manager::lang.net_value'
+            tab: 'eprog.manager::lang.price'
+            size: large
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-2
+        vat:
+            label: 'eprog.manager::lang.vat_value'
+            tab: 'eprog.manager::lang.price'
+            size:  large
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-2
+        vat_procent:
+            label: 'eprog.manager::lang.vat'
+            tab: 'eprog.manager::lang.price'
+            size:  large
+            oc.commentPosition: ''
+            span: left
+            default: 23
+            type: dropdown
+            cssClass: col-sm-1
+        currency:
+            label: 'eprog.manager::lang.currency'
+            tab: 'eprog.manager::lang.price'
+            size:  large
+            oc.commentPosition: ''
+            span: left
+            type: dropdown
+            default: PLN
+            cssClass: col-sm-1
+        desc:
+            label: 'eprog.manager::lang.desc'
+            tab: 'eprog.manager::lang.desc'
+            oc.commentPosition: ''
+            span: storm
+            type: richeditor
+            cssClass: col-sm-6
+        attribute:
+            label: 'eprog.manager::lang.attributes'
+            tab: 'eprog.manager::lang.attributes'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: attribute
+            cssClass: col-sm-12
+        model:
+            label: 'eprog.manager::lang.model'
+            tab: 'eprog.manager::lang.parameters'
+            size: large
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-6
+        producent_id:
+            label: 'eprog.manager::lang.producent'
+            tab: 'eprog.manager::lang.parameters'
+            size: large
+            oc.commentPosition: ''
+            span: left
+            type: dropdown
+            cssClass: col-sm-6
+        addproducent:
+            label: ' '
+            tab: 'eprog.manager::lang.parameters'
+            span: storm
+            oc.commentPosition: ''
+            type: partial
+            cssClass: col-sm-1
+        public_files:
+            label: 'eprog.manager::lang.public_files'
+            tab: 'eprog.manager::lang.files'
+            span: storm
+            oc.commentPosition: ''
+            mode: file
+            useCaption: true
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-3
+        private_files:
+            label: 'eprog.manager::lang.private_files'
+            tab: 'eprog.manager::lang.files'
+            span: storm
+            oc.commentPosition: ''
+            mode: file
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-3
+        image:
+            label: 'eprog.manager::lang.image'
+            tab: 'eprog.manager::lang.image'
+            type: Patroklo\FormWidgets\FileUpload
+            mode: image
+            imageHeight: 260
+            imageWidth: 260
+
+
+
+
+
+
+     

@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.advance_title'
+form: $/eprog/manager/models/advance/fields.yaml
+modelClass: Eprog\Manager\Models\Advance
+defaultRedirect: eprog/manager/advance
+create:
+    redirect: 'eprog/manager/advance/update/:id'
+    redirectClose: eprog/manager/advance
+update:
+    redirect: 'eprog/manager/advance/update/:id'
+    redirectClose: eprog/manager/advance

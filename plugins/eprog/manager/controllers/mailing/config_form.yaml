@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.mailing'
+form: $/eprog/manager/models/mailing/fields.yaml
+modelClass: Eprog\Manager\Models\Mailing
+defaultRedirect: eprog/manager/mailing
+create:
+    redirect: 'eprog/manager/mailing/update/:id'
+    redirectClose: eprog/manager/mailing
+update:
+    redirect: eprog/manager/mailing
+    redirectClose: eprog/manager/mailing

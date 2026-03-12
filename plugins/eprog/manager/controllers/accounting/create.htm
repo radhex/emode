@@ -1,0 +1,199 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\SettingConfig;
+
+$accounting = Accounting::find(Input::segment(6));
+$nip = Session::get("selected.nip") ?? '';
+$firm = User::where("firm_nip",$nip)->first()->firm_name ?? '';
+if($nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+?>
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-calculator"></span><?= e(trans('eprog.manager::lang.accounting')) ?></li>
+        <li><span  class="oc-icon-file-text-o"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.record')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.create')) ?></li>
+        <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+	<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_accounting")) : ?>
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+
+                <button
+                    id="save"
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-plus-circle">
+                    <?= e(trans('backend::lang.form.create')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/accounting') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a>
+
+
+ 
+
+            </div>
+        </div>
+	<?php endif ?>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/accounting') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+
+@media (max-width: 450px){
+
+    #Form-field-Accounting-value-group {margin-left:-25px}
+
+}
+
+
+@media (min-width: 768px){
+  
+    #Form-field-Accounting-year-group {width:10%}
+    #Form-field-Accounting-month-group {width:13%}
+    #Form-field-Accounting-off-group {margin-top:26px}
+    #Form-field-Accounting-mode-group {width:10.5%}
+    #Form-field-Accounting-type-group {width:10.5%}
+    #Form-field-Accounting-selltype-group {width:10.5%}
+    #Form-field-Accounting-currency-group {width:10.5%;}
+    #Form-field-Accounting-exchange-group {width:10.5%;}
+    #Form-field-Accounting-lump-group {width:6.5%;}
+    #Form-field-Accounting-place-group {width:13.7%}
+    #Form-field-Accounting-create_at-group {width:10.5%}
+    #Form-field-Accounting-vat_at-group {width:10.5%}
+    #Form-field-Accounting-lp-group {width:5%}
+    #Form-field-Accounting-prefix-group {width:5%}
+    #Form-field-Accounting-nr-group {width:13%}
+    #Form-field-Accounting-user_id-group {width:25%}
+    #Form-field-Accounting-client_name-group {width:25%}
+    #Form-field-Accounting-client_adres1-group {width:25%}
+    #Form-field-Accounting-client_adres2-group {width:25%}
+    #Form-field-Accounting-client_email-group {width:25%}
+    #Form-field-Accounting-client_phone-group {width:25%}
+    #Form-field-Accounting-tax_form-group {width:10.5%}
+
+
+
+
+
+    .hide {
+      display: none !important;
+    }
+
+    .show {
+      font-size:15px !important;
+      display: inline-block !important;
+      float: none !important;
+      z-index: 8 !important;
+      vertical-align: bottom !important;
+      position:relative !important;
+      margin-right:-20px !important;
+    }
+
+ 
+}
+
+</style>
+
+<script>
+    var kor = <?= $this->kor;?>;    
+    var segment = '<?= Input::segment(5);?>';   
+
+
+
+    $(function() { 
+
+        $('#save').click(function(e){
+        
+              valueValidate();
+
+        });
+
+
+        if($('#Form-field-Accounting-currency').val() == "PLN"){             
+            $('#Form-field-Accounting-exchange').prop('readonly', true);
+            $('#Form-field-Accounting-exchange').val("1.0000");          
+        }
+
+        $('#Form-field-Accounting-mode').on('select2:select', function(e) {
+          
+            if($(this).val() == "0"){
+                $('.sell').show();
+                $('.buy').hide();
+            }
+            else{
+               $('.sell').hide();
+               $('.buy').show();
+            }
+         
+        });
+
+
+        $('#Form-field-Accounting-selltype').on('select2:select', function(e) {
+
+            if($(this).val() == "1") $('#Form-field-Accounting-client_name').val("Sprzedaż detaliczna");
+
+        });
+
+
+    });
+
+
+
+    $('#Form-field-Accounting-currency').on('select2:select', function(e) {
+      
+        if($(this).val() == "PLN"){
+            $('#Form-field-Accounting-exchange').val("1.0000");
+            $('#Form-field-Accounting-exchange').prop('readonly', true);
+        }
+        else{
+            $('#Form-field-Accounting-exchange').val("");
+            $('#Form-field-Accounting-exchange').prop('readonly', false);
+        }
+     
+    });
+
+
+
+    $('#Form-field-Accounting-exchange').on('paste input', function (e) {
+            
+        inputCourse(this, e);
+        
+    });
+
+    $('#Form-field-Accounting-exchange').on('focusout', function (e) {
+            
+        inputCourseOut(this, e);
+        
+    });
+
+
+    $('#Form-field-Accounting-exchange').on('focusin', function (e) {
+            
+        inputCourseIn(this, e);
+        
+    });
+
+
+
+
+
+
+</script>

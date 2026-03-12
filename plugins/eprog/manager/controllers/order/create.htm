@@ -1,0 +1,528 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-file-text"></span><a href="<?= Backend::url('eprog/manager/order') ?>"><?= e(trans('eprog.manager::lang.order')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.create')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+	<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_order")) : ?>
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+
+                <button
+                    id="save"
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-plus-circle">
+                    <?= e(trans('backend::lang.form.create')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/order') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a>
+
+
+ 
+
+            </div>
+        </div>
+	<?php endif ?>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/order') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+
+@media (max-width: 450px){
+
+    #Form-field-Order-value-group {margin-left:-25px}
+
+}
+
+
+@media (min-width: 1200px){
+  
+    #Form-field-Order-disp-group {margin-top:26px}
+    #Form-field-Order-_ksef_number-group {float:right;width:18%;display:none}
+    #Form-field-Order-_settlement-group {width:11.7%}   
+    #Form-field-Order-_advance_nr-group {width:25%} 
+    #Form-field-Order-_advance-group {width:11.7%}
+    #Form-field-Order-currency-group {width:25%;}
+    #Form-field-Order-place-group {width:13.7%}
+    #Form-field-Order-create_at-group {width:10.5%}
+    #Form-field-Order-make_at-group {width:10.5%}
+    #Form-field-Order-nr-group {width:13.3%}
+    #Form-field-Order-type-group {width:13.3%}
+    #Form-field-Order-_kor_reason-group {width:24.2%}
+    #Form-field-Order-_kor_type-group {width:24.2%}
+    #Form-field-Order-_advance_nr-group {width:24.2%;display:none}
+    #Form-field-Order-user_id-group {width:25%}
+    #Form-field-Order-buyer_name-group {width:25%}
+    #Form-field-Order-buyer_adres1-group {width:25%}
+    #Form-field-Order-buyer_adres2-group {width:25%}
+    #Form-field-Order-buyer_type-group {width:9%}
+    #Form-field-Order-buyer_nip-group {width:16%}
+    #Form-field-Order-buyer_email-group {width:25%}
+    #Form-field-Order-buyer_phone-group {width:25%}
+    #Form-field-Order-_addbuyer-group {width:7%}
+    #Form-field-Order-_addbuyer_role-group {width:18%}
+    #Form-field-Order-_addbuyer_role_desc-group {width:25%}
+    #Form-field-Order-_addbuyer_name-group {width:25%}
+    #Form-field-Order-_addbuyer_adres1-group {width:25%}
+    #Form-field-Order-_addbuyer_adres2-group {width:25%}
+    #Form-field-Order-_addbuyer_street-group {width:25%}
+    #Form-field-Order-_addbuyer_type-group {width:9%}
+    #Form-field-Order-_addbuyer_nip-group {width:16%}
+    #Form-field-Order-_addbuyer_email-group {width:25%}
+    #Form-field-Order-seller_name-group {width:25%}
+    #Form-field-Order-seller_adres1-group {width:25%}
+    #Form-field-Order-seller_adres2-group {width:25%}
+    #Form-field-Order-seller_email-group {width:25%}
+    #Form-field-Order-seller_phone-group {width:25%}
+
+    #Form-field-Order-_pay_type-group {width:25%}
+    #Form-field-Order-_pay_other_desc-group {width:25%}
+    #Form-field-Order-_pay_info-group {width:16%}
+    #Form-field-Order-_pay_part-group {width:9%}
+    #Form-field-Order-_pay_termin_ilosc-group {width:9%}
+    #Form-field-Order-_pay_termin_jednostka-group {width:5%}
+    #Form-field-Order-_pay_termin_zdarzeniepoczatkowe-group {width:11%}
+    #Form-field-Order-_bank_nr-group {width:25%;}
+    #Form-field-Order-_bank-group {width:16%;}
+    #Form-field-Order-_swift-group {width:9%;}
+    #Form-field-Order-_pay_link-group {width:25%;}
+    #Form-field-Order-_skonto_cond-group {width:25%;}
+    #Form-field-Order-_skonto-group label::after {display:none}
+    #Form-field-Order-_skonto_cond-group label::after {display:none}
+    #Form-field-Order-_pay_date-group label::after {display:none}
+    #Form-field-Order-_pay_info-group label::after {display:none}
+    #Form-field-Order-_pay_part-group label::after {display:none}
+
+    #Form-field-Order-_marza-group {width:25%;margin-bottom:12px}
+    #Form-field-Order-_zwolnienie-group {width:25% !important;}
+    #Form-field-Order-_zw-group {width:25%;}
+    #Form-field-Order-_stopka-group {width:50%;}
+
+
+    #Form-field-Order-_zw-group label::after {display:none}
+    #Form-field-Order-_zw_desc-group label::after {display:none}
+
+    #Form-field-Order-_mk-group {margin-bottom:-12px}
+    #Form-field-Order-_sf-group {margin-bottom:-12px}
+    #Form-field-Order-_pp-group {margin-bottom:-12px;}
+    #Form-field-Order-_oo-group {margin-bottom:-12px;}
+    #Form-field-Order-_mpp-group {margin-bottom:-12px;}
+    #Form-field-Order-_ptu-group {margin-bottom:-12px}
+    #Form-field-Order-_tp-group {margin-bottom:-12px;}
+    #Form-field-Order-_fp-group {margin-bottom:-12px;}
+    #Form-field-Order-_za-group {margin-bottom:-12px}
+
+
+    #Form-field-Order-_umo_nr-group {width:25%;}
+    #Form-field-Order-_zam_nr-group {width:25%;}
+    #Form-field-Order-_wu-group {width:25%;}
+    #Form-field-Order-_wdt-group {width:25%;}
+
+    #Form-field-Order-_wu-group label::after {display:none}
+    #Form-field-Order-_ku-group label::after {display:none}
+
+    #Form-field-Order-_full_name-group {width:25%;}
+    #Form-field-Order-_regon-group {width:25%;}
+    #Form-field-Order-_add_key-group {width:25%;}
+    #Form-field-Order-_stopka-group {width:50%;}
+    #Form-field-Order-_uwagi-group {width:50%;}
+
+    #Form-field-Order-_deduct_amount-group {width:10%;}
+    #Form-field-Order-_deduct_reason-group {width:40%;}
+    #Form-field-Order-_charge_amount-group {width:10%;}
+    #Form-field-Order-_charge_reason-group {width:40%;}
+
+    #Form-field-Order-_add_key-group label::after {display:none}
+    #Form-field-Order-_add_value-group label::after {display:none}
+
+
+
+    .hide {
+      display: none !important;
+    }
+
+    .show {
+      font-size:15px !important;
+      display: inline-block !important;
+      float: none !important;
+      z-index: 8 !important;
+      vertical-align: bottom !important;
+      position:relative !important;
+      margin-right:-20px !important;
+    }
+
+ 
+}
+
+</style>
+
+<script>
+    var kor = <?= $this->kor;?>;    
+    var segment = '<?= Input::segment(5);?>';   
+
+
+
+    $(function() { 
+
+        $('#save').click(function(e){
+        
+              valueValidate();
+
+        });
+
+
+        $('#ksefSend').click(function(e){
+       
+              valueValidate();
+
+        });
+
+        if($('#Form-field-Order-type').val() == 3)
+            $('#Form-field-Order-_advance_nr-group').show();
+        else
+            $('#Form-field-Order-_advance_nr-group').hide();
+
+        $('#Form-field-Order-_addbuyer_type').val(3).trigger('change');
+
+        if($('#Form-field-Order-_addbuyer_role').val() != "10"){             
+            $('#Form-field-Order-_addbuyer_role_desc').prop('readonly', true);        
+        }
+
+        if($('#Form-field-Order-_addbuyer_type').val() == "3"){             
+            $('#Form-field-Order-_addbuyer_nip').prop('readonly', true);        
+        }
+
+        if($('#Form-field-Order-buyer_type').val() == "3"){             
+            $('#Form-field-Order-buyer_nip').prop('readonly', true);   
+            $('#Form-field-Order-buyer_nip').val("");     
+        }
+
+
+        if($('#Form-field-Order-currency').val() == "PLN"){             
+            $('#Form-field-Order-exchange').prop('readonly', true);
+            $('#Form-field-Order-exchange').val("1.0000");          
+        }
+
+        if($('#Form-field-Order-_wu').val() == "PLN"){             
+            $('#Form-field-Order-_ku').prop('readonly', true);
+            $('#Form-field-Order-_ku').val("1.0000");          
+        }
+
+        $('#Form-field-Order-_bank_nr').attr('maxlength','32');
+        $('#Form-field-Order-_pay_part').prop('readonly', true);
+
+        $('#Form-field-Order-_pay_part').val(number_format($('#Form-field-Order-_pay_part').val().replace(",",".").replace(/\s+/g, ''),2,","," "));
+
+
+        $('#DatePicker-formPayDate-date-_pay_date').prop('disabled', true);
+
+        if($('#Form-field-Order-_pay_info').val() != "")
+            $('#DatePicker-formPayDate-date-_pay_date').prop('disabled', false);
+
+        if($('#Form-field-Order-_pay_info').val() == 1)
+            $('#Form-field-Order-_pay_part').prop('readonly', false);
+                
+/*
+        if(segment == "create") {
+            $('#Form-field-Order-type option[value="1"]').prop('disabled', true);
+            $('#Form-field-Order-type option[value="3"]').prop('disabled', true);
+            $('#Form-field-Order-type option[value="5"]').prop('disabled', true);
+            $('#Form-field-Order-type option[value="6"]').prop('disabled', true);
+
+            if(kor){
+
+                $('#Form-field-Order-type option[value="0"]').prop('disabled', true);
+                $('#Form-field-Order-type option[value="2"]').prop('disabled', true);
+                $('#Form-field-Order-type option[value="3"]').prop('disabled', true);
+                $('#Form-field-Order-type option[value="4"]').prop('disabled', true);
+                $('#Form-field-Order-type option[value="5"]').prop('disabled', true);
+                $('#Form-field-Order-type option[value="6"]').prop('disabled', true);
+
+            }
+        }
+*/
+
+    });
+
+
+    $('#Form-field-Order-_addbuyer_type').on('select2:opening', function (e) {
+        if( $(this).attr('readonly') == 'readonly') { 
+            e.preventDefault();
+            $(this).select2('close'); 
+            return false;
+        }
+    });
+
+    $('#addbuyer').click(function(){
+
+       if(!$(this).is(':checked')){
+           $('#Form-field-Order-_addbuyer_type').val(3).trigger('change');
+        }
+    
+    }); 
+    
+    marza_prev = 0;
+    $('#Form-field-Order-_marza-group').click(function(){
+       
+        marza_prev = $(this).find("select").val();
+
+    }); 
+
+        
+    $('#Form-field-Order-type').on('select2:select', function(e) {
+
+            if($(this).val() == 3)
+                $('#Form-field-Order-_advance_nr-group').show();
+            else
+                $('#Form-field-Order-_advance_nr-group').hide();
+
+            $.ajax({
+                    type: "POST",
+                    data:"_token=<?= csrf_token() ?>",
+                    url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/order_nr/' + $(this).val(),
+
+                    success: function(res) {
+
+                        $('#Form-field-Order-nr').val(res);
+                               
+                    },
+                    error: function(xhr,status,error) {
+                         console.log(error);
+                    }
+
+            });
+            
+    });
+
+    $('#Form-field-Order-_marza').on('select2:select', function(e) {
+      
+            marza = false;
+            $(".vat").each(function(index) {
+
+                if($(this).text() == "marża") marza = true;
+            
+            });
+            if($(this).val() == "" && marza){
+
+                $.oc.flashMsg({text: '<?= trans('eprog.manager::lang.ksef.marza_msg2') ?>', 'class': 'error', 'interval': 2});
+                $(this).val(marza_prev).trigger('change');
+     
+            }
+
+    });
+
+    $('#Form-field-Order-buyer_type').on('select2:select', function(e) {
+      
+        if($(this).val() == "3"){
+            $('#Form-field-Order-buyer_nip').val("");  
+            $('#Form-field-Order-buyer_nip').prop('readonly', true);        
+        }
+        else{
+            $('#Form-field-Order-buyer_nip').prop('readonly', false);  
+        }
+     
+    });
+
+
+    $('#Form-field-Order-_addbuyer_type').on('select2:select', function(e) {
+      
+        if($(this).val() == "3"){
+            $('#Form-field-Order-_addbuyer_nip').val("");  
+            $('#Form-field-Order-_addbuyer_nip').prop('readonly', true);        
+        }
+        else{
+            $('#Form-field-Order-_addbuyer_nip').prop('readonly', false);  
+        }
+     
+    });
+
+
+    $('#Form-field-Order-_addbuyer_role').on('select2:select', function(e) {
+      
+        if($(this).val() == "10"){
+            $('#Form-field-Order-_addbuyer_role_desc').prop('readonly', false);        
+        }
+        else{
+            $('#Form-field-Order-_addbuyer_role_desc').val(""); 
+            $('#Form-field-Order-_addbuyer_role_desc').prop('readonly', true);   
+        }
+     
+    });
+
+
+    $('#Form-field-Order-currency').on('select2:select', function(e) {
+      
+        if($(this).val() == "PLN"){
+            $('#Form-field-Order-exchange').val("1.0000");
+            $('#Form-field-Order-exchange').prop('readonly', true);
+        }
+        else{
+            $('#Form-field-Order-exchange').val("");
+            $('#Form-field-Order-exchange').prop('readonly', false);
+        }
+     
+    });
+
+    $('#Form-field-Order-_wu').on('select2:select', function(e) {
+      
+        if($(this).val() == "PLN"){
+            $('#Form-field-Order-_ku').val("1.0000");
+            $('#Form-field-Order-_ku').prop('readonly', true);
+        }
+        else{
+            $('#Form-field-Order-_ku').val("");
+            $('#Form-field-Order-_ku').prop('readonly', false);
+        }
+     
+    });
+
+
+    $('#Form-field-Order-_pay_info').on('select2:select', function(e) {
+      
+        if($(this).val() == 1)
+            $('#Form-field-Order-_pay_part').prop('readonly', false);
+        else{
+            $('#Form-field-Order-_pay_part').val("0,00");
+            $('#Form-field-Order-_pay_part').prop('readonly', true);
+        }
+
+        if($(this).val() != "")
+            $('#DatePicker-formPayDate-date-_pay_date').prop('disabled', false);
+        else{
+            $('#DatePicker-formPayDate-date-_pay_date').val("").trigger('change');
+            $('#DatePicker-formPayDate-date-_pay_date').prop('disabled', true);
+        }
+     
+    });
+
+
+    $('#Form-field-Order-exchange').on('paste input', function (e) {
+            
+        inputCourse(this, e);
+        
+    });
+
+    $('#Form-field-Order-exchange').on('focusout', function (e) {
+            
+        inputCourseOut(this, e);
+        
+    });
+
+
+    $('#Form-field-Order-exchange').on('focusin', function (e) {
+            
+        inputCourseIn(this, e);
+        
+    });
+
+
+    $('#Form-field-Order-_ku').on('paste input', function (e) {
+            
+        inputCourse(this, e);
+        
+    });
+
+    $('#Form-field-Order-_ku').on('focusout', function (e) {
+            
+        inputCourseOut(this, e);
+        
+    });
+
+
+    $('#Form-field-Order-_ku').on('focusin', function (e) {
+            
+        inputCourseIn(this, e);
+        
+    });
+
+    $('#Form-field-Order-_pay_part').on('paste input', function (e) {
+
+        inputCurrency(this, e);
+
+    });
+
+    $('#Form-field-Order-_pay_part').on('focusout', function (e) {
+        
+        inputCurrencyOut(this, e);
+
+    });
+
+    $('#Form-field-Order-_pay_part').on('focusin', function (e) {
+        
+        inputCurrencyIn(this, e);
+
+    });
+
+    $('#Form-field-Order-_advance').on('paste input', function (e) {
+
+        inputCurrency(this, e);
+
+    });
+
+    $('#Form-field-Order-_advance').on('focusout', function (e) {
+        
+        inputCurrencyOut(this, e);
+
+    });
+
+    $('#Form-field-Order-_advance').on('focusin', function (e) {
+        
+        inputCurrencyIn(this, e);
+
+    });
+
+
+    $('#Form-field-Order-_bank_nr').on('paste input', function (e) {
+            
+            $(this).val($(this).val().replace(/\s/g, "").replace(/[^0-9A-Z]/g,''));
+ 
+    });
+
+
+    $('#Form-field-Order-_swift').on('paste input', function (e) {
+            
+            $(this).val($(this).val().replace(/\s/g, "").replace(/[^0-9A-Z]/g,'').replace(/-/g,''));
+    
+    });
+
+
+
+    function onKsefSend(data){
+
+        $('#ksefSend').hide();
+        $('#ksefStatus').show();
+        $('#ksefStatus').attr('data-request-data','referenceNumber:\'' + data + '\'');
+        $.oc.flashMsg({text: 'Faktura została wysłana', 'class': 'success', 'interval': 4})
+        protectFromEdit();
+
+    }
+
+    function onKsefStatus(data){
+
+        $('#ksefStatus').hide();
+        $('#ksefXml').show();
+        $('#ksefPdf').show();
+        $('#ksefUpo').show();
+        $('#ksefXml').attr('data-request-data','ksefNumber:\'' + data.ksefNumber + '\'');
+        $('#ksefPdf').attr('data-request-data','ksefNumber:\'' + data.ksefNumber + '\'');
+        $('#ksefUpo').attr('data-request-data','ksefNumber:\'' + data.ksefNumber + '\',sessionNumber:\'' + data.sessionNumber + '\'');
+        $.oc.flashMsg({text: 'Faktura została przyjęta, możesz pobrać XML i PDF oraz UPO', 'class': 'success', 'interval': 4})
+
+    }
+
+
+</script>

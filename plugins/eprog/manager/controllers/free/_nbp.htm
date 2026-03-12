@@ -1,0 +1,30 @@
+<button type="button" id="nbp" value="dodaj" class="btn btn-secondary btn-sm oc-icon-money"  style="width:130px;margin-top:26px;margin-left:-3px"><?= e(trans('eprog.manager::lang.ksef.nbp')) ?></button>
+
+<script>
+$(function() {   
+
+		$("#nbp").click(function() {
+			if($('#Form-field-Free-currency').val() == "") return;
+
+			$.ajax({
+			        type: "POST",
+			        data:"_token=<?= csrf_token() ?>",
+			        url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/nbp/' + $('#Form-field-Free-currency').val(),
+
+			        success: function(res) {
+
+			        	if($('#Form-field-Free-currency').val() != "PLN")
+			     		$('#Form-field-Free-exchange').val(res); 
+			                   
+			        },
+			        error: function(xhr,status,error) {
+			             console.log(error);
+			        }
+
+			});
+			
+
+		});
+			 	  	 		 	
+});
+</script>

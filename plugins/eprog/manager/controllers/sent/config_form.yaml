@@ -1,0 +1,4 @@
+name: 'eprog.manager::lang.sent'
+form: $/eprog/manager/models/sent/fields.yaml
+modelClass: Eprog\Manager\Models\Sent
+defaultRedirect: eprog/manager/sent

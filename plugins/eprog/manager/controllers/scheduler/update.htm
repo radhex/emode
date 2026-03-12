@@ -1,0 +1,86 @@
+<?php 
+
+use Eprog\Manager\Models\Scheduler;
+$scheduler = Scheduler::find(Input::segment(6));
+
+$period = "";
+if($scheduler) $period = date("m",strtotime($scheduler->created_at))."_".date("Y",strtotime($scheduler->created_at));
+
+?>
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-calendar-plus-o"></span><a href="<?= Backend::url('eprog/manager/scheduler') ?>"><?= e(trans('eprog.manager::lang.scheduler')) ?></a></li> 
+        <li><span  class="oc-icon-calendar-check-o"></span><a href="<?= Backend::url('eprog/manager/scheduler') ?>"><?= e(trans('eprog.manager::lang.events')) ?></a></li> 
+        <li>ID: <?= Input::segment(6) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+
+<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.edit_scheduler")) : ?>
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/scheduler') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar" style="margin-right:50px"><?= e(trans('eprog.manager::lang.return')) ?></a>
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.scheduler_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+
+                <button
+                    id="onPdf"
+                    type="submit"
+                    data-request="onPdf"
+                    class="btn btn-primary oc-icon-download btn-toolbar" >
+                    <?= e(trans('eprog.manager::lang.download')) ?> PDF
+                </button>
+                <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_accounting")) : ?>
+                <button
+                    id="ksefPdfGenerate"
+                    type="button"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+                    onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savefile/scheduler/<?= Input::segment(6) ?>/<?= $period ?>/onPdfGenerate','<?= e(trans('eprog.manager::lang.file_confirm')) ?>', 450, 300)"
+                    style="margin-left:-5px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;"
+                ></button>
+                <?php endif ?>
+               
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/scheduler') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Scheduler-name-group {width:50%}
+    #Form-field-Scheduler-user_id-group {width:25%}
+    #Form-field-Scheduler-admin_id-group {width:25%}
+    #Form-field-Scheduler-type_id-group {width:25%}
+
+}
+</style>

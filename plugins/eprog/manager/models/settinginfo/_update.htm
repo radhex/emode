@@ -1,0 +1,142 @@
+<?php
+use Eprog\Manager\Models\SettingInfo;
+
+	if(Input::has("page")) $page = Input::get("page"); else $page = 1;
+
+	$version = "";
+	$file = "vendor/version.php";
+	if(file_exists($file)) 
+	$version = file_get_contents($file);
+
+
+
+
+	$valid1  = e(trans("eprog.manager::lang.edition"))." ";
+	foreach(Session::get("license.mode") ?? [] as $mode){
+		$valid1 .= "Em".$mode." ";
+	}
+
+	if(Session::has("license.subscription") && Session::get("license.subscription") > 1) {
+		$valid2 = " - ".strtolower(e(trans("eprog.manager::lang.valid_until")))." ".date("Y-m-d H:i", strtotime(Session::get("license.expires_at") ?? ""));
+	}
+
+	$valid2 = "";
+?>
+
+<script>
+	$(function() {  
+
+		$(document).on('ajaxSetup',  function(event, context) {
+		
+		    	$('.confirm').click(function() {
+        			$("#load").show();
+					$("body").css("pointer-events","none");
+    			});
+		});
+
+		$( document ).ajaxSuccess(function( event, request, settings ) {
+
+
+  			$("#load").hide();
+			$("body").css("pointer-events","auto");
+			param = getJsonFromUrl(settings);
+			if(settings.X_WINTER_ASSETS != undefined) updateVersion();
+			
+		});
+
+		$( document ).ajaxError(function( event, request, settings ) {
+
+  			$("#load").hide();
+			$("body").css("pointer-events","auto");
+			updateVersion();
+			
+		});
+
+
+ 		updateVersion();
+
+	});
+
+	function updateVersion() {
+
+		$.ajax({
+ 			type:  "GET", 
+			url:'/<?= config('cms.backendUri') ?>/eprog/manager/feed/version',
+			cache: false,
+			success: function(html){
+
+				$("#version").text(html);
+			
+			},
+			complete: function(comp){
+					
+			},
+			error: function(error){
+				console.log(error);
+					
+			}
+		});
+		
+	}
+
+	function getJsonFromUrl(url) {
+
+		var regex = /[?&]([^=#]+)=([^&#]*)/g,
+    		params = {},
+    		match;
+		while(match = regex.exec(url)) {
+    			params[match[1]] = match[2];
+		}
+
+		return params;
+	}
+
+</script>
+<style>
+.backupserwer {display:table; margin-top:30px;}
+.backupserwer > div {display:table-row;background:#fff;  }
+.backupserwer > div > div {border-top:1px solid #eee;display:table-cell; vertical-align:middle; font-size:12px; padding-left:5px;text-align:left; padding-right:5px; padding-top:5px;padding-bottom:5px;}
+.backupserwer .date {color:green;width:150px}
+.backupserwer .desc {width:300px;}
+.backupserwer > div.head {background:#eee}
+.backupserwer input {text-align:right; padding-right:2px;padding-left:2px;border:1px solid #ccc}
+
+@media screen and (max-width: 600px) {
+  
+	#backup-baton > div {width:60%}
+}
+
+</style>	<div id="test"></div>
+		<div id="backup-baton" style="display:table;min-width:300px;margin-top:-10px"><div style="display:table-cell;">
+		<div style="width:500px;font-size:18px;margin-bottom:20px">Emode - <?= strtolower(e(trans("eprog.manager::lang.version"))) ?> <span id="version"><?= $version ?></span>
+		<br><?= $valid1 ?? '' ?> <?= $valid2 ?? '' ?></div>
+		<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_info")) :?>
+		<?php if(Session::has("license.subscription") && Session::get("license.subscription") == 1) :?>
+		<div>
+   				<button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0,update:1,system:1"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+          	    	data-request-confirm ="<?= e(trans('eprog.manager::lang.update_system_confirm')) ?>"
+                    class="btn btn-primary oc-icon-refresh">
+                    <?= e(trans('eprog.manager::lang.update_system')) ?>
+                </button>
+
+        </div>
+        <?php endif ?>
+        <?php endif ?>
+		</div>
+
+		<div style="position:relative;top:91px;left:-260px">
+			<div class="loading-indicator-container" style="position:relative;"><div  id="load" class="loading-indicator  indicator-center" style="background-color: transparent;display:none"><span></span></div></div>
+		</div></div>
+
+
+<div id="serwer"><div>
+
+
+
+
+

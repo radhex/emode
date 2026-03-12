@@ -1,0 +1,4 @@
+name: 'eprog.manager::lang.trash'
+form: $/eprog/manager/models/trash/fields.yaml
+modelClass: Eprog\Manager\Models\Trash
+defaultRedirect: eprog/manager/trash

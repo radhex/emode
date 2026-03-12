@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.invoice_one'
+form: $/eprog/manager/models/invoice/fields.yaml
+modelClass: Eprog\Manager\Models\Invoice
+defaultRedirect: eprog/manager/invoice
+create:
+    redirect: 'eprog/manager/invoice/update/:id'
+    redirectClose: eprog/manager/invoice
+update:
+    redirect: eprog/manager/invoice
+    redirectClose: eprog/manager/invoice

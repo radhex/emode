@@ -1,0 +1,11 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span class="oc-icon-user"></span><a href="<?= Backend::url('rainlab/user/users') ?>"><?= e(trans('rainlab.user::lang.users.menu_label')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+<?= $this->listRender() ?>
+
+<?php if(Session::has('message')): ?>
+<script>window.open("/account", "_blank");</script>
+<?php endif ?>

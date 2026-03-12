@@ -1,0 +1,100 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Jpk;
+use Eprog\Manager\Models\SettingConfig;
+
+$nip = Session::get("selected.nip") ?? '';
+$firm = User::where("firm_nip",$nip)->first()->firm_name ?? '';
+if($nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+?>
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+        <li><span  class="oc-icon-file-code-o"></span><a href="<?= Backend::url('eprog/manager/jpk') ?>">JPK</a></li> 
+        <li><?= e(trans('eprog.manager::lang.create')) ?></li>
+        <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-plus-circle">
+                    <?= e(trans('backend::lang.form.create')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/jpk') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a>
+            </div>
+        </div>
+
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/jpk') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-Jpk-name-group {width: 30%}
+    #Form-field-Jpk-version-group {width: 10%}
+    #Form-field-Jpk-period-group {width: 8%}
+    #Form-field-Jpk-short-group {width: 25%}
+    #Form-field-Jpk-xml-group {width: 60%}
+    #Form-field-Jpk-xml{height: 70vh !important}
+    #Form-field-Jpk-correct-group {margin-top:26px}
+    #Form-field-Jpk-jpk_at-group {width: 11%}
+    #Form-field-Jpk-created_at-group {width: 11%}
+
+}
+</style>
+
+<script>
+
+
+
+    $(function() { 
+
+
+        $('#Form-field-Jpk-correct').on('change', function(e) {
+          
+                if($('#Form-field-Jpk-correct').is(':checked')){
+                    xml = $('#Form-field-Jpk-xml').val();
+                    xml = xml.replace(
+                        /(<CelZlozenia[^>]*>)[12](<\/CelZlozenia>)/,
+                        '$12$2'
+                    );
+                    $('#Form-field-Jpk-xml').val(xml);
+                }
+                else{
+                    xml = $('#Form-field-Jpk-xml').val();
+                    xml = xml.replace(
+                        /(<CelZlozenia[^>]*>)[12](<\/CelZlozenia>)/,
+                        '$11$2'
+                    );
+                    $('#Form-field-Jpk-xml').val(xml);
+                }
+        });
+
+   
+    });
+
+
+
+</script>

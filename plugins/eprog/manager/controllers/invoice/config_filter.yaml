@@ -1,0 +1,43 @@
+scopes:
+    user_id:
+        # Filter name
+        label: eprog.manager::lang.user
+        # Model Class name
+        modelClass: RainLab\User\Models\User
+        # Model attribute to display for the name
+        nameFrom: surname
+        # Filter scope
+        scope: filterByUser
+    type:
+        label: eprog.manager::lang.type
+        type: group
+        modelClass: Eprog\Manager\Models\Invoice
+        options: getTypeOption
+        conditions: type in (:filtered)
+    status:
+        label: Status
+        type: group
+        conditions: status_id in (:filtered)
+            
+    create_at:
+        label: eprog.manager::lang.create_at
+        type: daterange
+        conditions: create_at >= ':after' AND create_at <= ':before'
+
+    make_at:
+        label: eprog.manager::lang.make_at
+        type: daterange
+        conditions: make_at >= ':after' AND make_at <= ':before'
+
+
+
+           
+        
+
+
+
+
+
+
+
+

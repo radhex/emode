@@ -1,0 +1,23 @@
+# ===================================
+# Filter Scope Definitions
+# ===================================
+
+scopes:
+
+    parent:
+        # Filter name
+        label: eprog.manager::lang.parent
+        # Model Class name
+        modelClass: Eprog\Manager\Models\Category
+        # Model attribute to display for the name
+        nameFrom: name
+        # Filter scope
+        scope: filterByCategory
+
+
+
+
+
+
+
+

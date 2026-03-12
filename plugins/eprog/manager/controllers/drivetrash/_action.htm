@@ -1,0 +1,4 @@
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_drive')) : ?>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-undo" style="color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.restore')) ?>" onmousedown="actionDrive(this,'restore','<?= $record->gid ?>','<?= !preg_match("/folder/",$record->mimeType) ? e(trans('eprog.manager::lang.file_restore_confirm')) : e(trans('eprog.manager::lang.folder_restore_confirm')) ?>')"></a>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-trash" style="color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.drive_delete')) ?>" onmousedown="actionDrive(this,'delete','<?= $record->gid ?>','<?= !preg_match("/folder/",$record->mimeType) ? e(trans('eprog.manager::lang.file_delete_confirm')) : e(trans('eprog.manager::lang.folder_delete_confirm')) ?>')"></a>
+<?php endif ?>

@@ -1,0 +1,60 @@
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.access_inbox') && BackendAuth::getUser()->hasAccess('eprog.manager.manage_inbox')) : ?>
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><a class="oc-icon-envelope"  href="<?= Backend::url('eprog/manager/inbox') ?>"><?= e(trans('eprog.manager::lang.post')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.email_create')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout ']) ?>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.email_sent_confirm')) ?>"
+                    class="btn btn-primary oc-icon-paper-plane">
+                    <?= e(trans('eprog.manager::lang.email_sent')) ?>
+                </button>
+
+
+                <a href="javascript:" class="btn btn-default oc-icon-chevron-left" onclick="window.history.back()">
+                    <?= e(trans('eprog.manager::lang.return')) ?>
+                </a>
+            </div>
+        </div>
+
+
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+
+
+    <?= Form::close() ?>
+ 
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/mailing') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+#RichEditor-formBody-body {height:100% !important}
+.fr-wrapper {height:100% !important}
+</style>    
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    //#Form-field-Inboxcreate-to-group {width: 25%}
+    #Form-field-Inboxcreate-body-group {margin-top:10px;}
+
+}
+</style>

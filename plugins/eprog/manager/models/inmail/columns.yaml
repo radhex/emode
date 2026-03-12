@@ -1,0 +1,38 @@
+columns:
+    id:
+        label: ID
+        type: number
+        width: 50px
+    attach:
+        label: 'eprog.manager::lang.attachments_short'
+        type: partial
+        path: attach
+        width: 10px
+    name:
+        label: 'eprog.manager::lang.title'
+        type: partial
+        path: name
+        searchable: true
+    send:
+        label: 'eprog.manager::lang.outbox'
+        type: switch
+    sender_id:
+        label: 'eprog.manager::lang.from'
+        type: partial
+        path: receiver
+        sortable: true
+    receiver_id:
+        label: 'eprog.manager::lang.to'
+        type: partial
+        path: sender
+        sortable: true
+    desc:
+        label: 'eprog.manager::lang.body'
+        type: text
+        invisible: true
+        searchable: true
+    date:
+        label: 'eprog.manager::lang.date'
+        type: partial
+        path: date
+

@@ -1,0 +1,4 @@
+name: 'eprog.manager::lang.drive'
+form: $/eprog/manager/models/drive/fields.yaml
+modelClass: Eprog\Manager\Models\Drivecreate
+defaultRedirect: eprog/manager/drive

@@ -1,0 +1,18 @@
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_drive')) : ?>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-pencil" style="width:42px;color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.drive_rename')) ?>" onmousedown="actionDrive(this,'rename','<?= $record->gid ?>','','<?= $record->name ?>','<?= Input::get("folder") ?>','<?= Input::get("name") ?>')"></a>
+<?php if($record->mimeType != 'application/vnd.google-apps.folder'): ?>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-files-o" style="width:42px;color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.drive_copy')) ?>" onmousedown="actionDrive(this,'copy','<?= $record->gid ?>','','<?= $record->name ?>','<?= Input::get("folder") ?>','<?= Input::get("name") ?>')"></a>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-folder" style="width:42px;color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.drive_move')) ?>" onmousedown="actionDrive(this,'move','<?= $record->gid ?>','','<?= $record->name ?>','<?= Input::get("folder") ?>','<?= Input::get("name") ?>')"></a>
+<?php endif ?>
+<?php endif ?>
+<?php if($record->webContentLink != null): ?>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-download" style="width:42px;color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.download')) ?>" onmousedown="actionDrive(this,'download','<?= $record->gid ?>','<?= e(trans('eprog.manager::lang.download_confirm')) ?>')"></a>
+<?php if($record->mimeType != 'application/vnd.google-apps.drawing'): ?>
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_drive')) : ?>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-floppy-o" style="width:42px;color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.drive_import')) ?>" onmousedown="actionDrive(this,'import','<?= $record->gid ?>', null,null,null,'<?= e(trans('eprog.manager::lang.file_confirm')) ?>')"></a>
+<?php endif ?>
+<?php endif ?>
+<?php endif ?>
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_drive')) : ?>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-trash" style="width:42px !important;color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.to_trash')) ?>" onmousedown="actionDrive(this,'trash','<?= $record->gid ?>','<?= !preg_match("/folder/",$record->mimeType) ? e(trans('eprog.manager::lang.file_trash_confirm')) : e(trans('eprog.manager::lang.folder_trash_confirm')) ?>')"></a>
+<?php endif ?>

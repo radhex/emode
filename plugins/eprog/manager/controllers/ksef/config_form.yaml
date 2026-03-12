@@ -1,0 +1,4 @@
+name: 'eprog.manager::lang.ksef.title'
+form: $/eprog/manager/models/ksef/fields.yaml
+modelClass: Eprog\Manager\Models\Ksef
+defaultRedirect: eprog/manager/ksef

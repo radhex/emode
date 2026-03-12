@@ -1,0 +1,35 @@
+scopes:
+    mode:
+        label: eprog.manager::lang.mode
+        type: group
+        modelClass: Eprog\Manager\Models\Accounting
+        options: getModeOptions
+        conditions: mode in (:filtered)
+    vat_register:
+        label: eprog.manager::lang.vat_register
+        type: group
+        modelClass: Eprog\Manager\Models\Accounting
+        options: getRegisterOptions
+        conditions: vat_register in (:filtered)
+    user_id:
+        # Filter name
+        label: eprog.manager::lang.user
+        # Model Class name
+        modelClass: RainLab\User\Models\User
+        # Model attribute to display for the name
+        nameFrom: surname
+        # Filter scope
+        scope: filterByUser
+    create_at:
+       label: eprog.manager::lang.date
+       type: daterange
+       conditions: create_at >= ':after' AND create_at <= ':before' 
+
+
+
+
+
+
+
+
+

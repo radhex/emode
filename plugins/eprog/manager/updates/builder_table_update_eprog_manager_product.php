@@ -1,0 +1,23 @@
+<?php namespace Eprog\Manager\Updates;
+
+use Schema;
+use October\Rain\Database\Updates\Migration;
+
+class BuilderTableUpdateEprogManagerProduct extends Migration
+{
+    public function up()
+    {
+        Schema::table('eprog_manager_product', function($table)
+        {
+            $table->increments('id')->unsigned(false)->change();
+        });
+    }
+    
+    public function down()
+    {
+        Schema::table('eprog_manager_product', function($table)
+        {
+            $table->increments('id')->unsigned()->change();
+        });
+    }
+}

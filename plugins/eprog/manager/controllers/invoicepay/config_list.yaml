@@ -1,0 +1,12 @@
+list: $/eprog/manager/models/invoicepay/columns.yaml
+modelClass: Eprog\Manager\Models\Invoicepay
+title: 'eprog.manager::lang.invoice'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '5'
+showSetup: false
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:         
+      prompt: 'backend::lang.list.search_prompt'
+recordUrl: null

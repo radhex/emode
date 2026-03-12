@@ -1,0 +1,86 @@
+1.0.1:
+    - 'Initialize plugin.'
+1.0.2:
+    - 'Created table eprog_manager_project'
+    - builder_table_create_eprog_manager_project.php
+1.0.3:
+    - 'Created table eprog_manager_work'
+    - builder_table_create_eprog_manager_work.php
+1.0.4:
+    - 'Updated table eprog_manager_work'
+    - builder_table_update_eprog_manager_work.php
+1.0.5:
+    - 'Updated table eprog_manager_project'
+    - builder_table_update_eprog_manager_project.php
+1.0.6:
+    - 'Created table eprog_manager_status'
+    - builder_table_create_eprog_manager_status.php
+1.0.7:
+    - 'Created table eprog_manager_people'
+    - builder_table_create_eprog_manager_people.php
+1.0.8:
+    - 'Updated table eprog_manager_people'
+    - builder_table_update_eprog_manager_staff.php
+1.0.9:
+    - 'Updated table eprog_manager_staff'
+    - builder_table_update_eprog_manager_staff_2.php
+1.0.10:
+    - 'Created table eprog_manager_task'
+    - builder_table_create_eprog_manager_task.php
+1.0.11:
+    - 'Updated table eprog_manager_task'
+    - builder_table_update_eprog_manager_task.php
+1.0.12:
+    - 'Created table eprog_manager_mail'
+    - builder_table_create_eprog_manager_mail.php
+1.0.13:
+    - 'Updated table eprog_manager_mail'
+    - builder_table_update_eprog_manager_mail.php
+1.0.14:
+    - 'Updated table eprog_manager_mail'
+    - builder_table_update_eprog_manager_mail_2.php
+1.0.15:
+    - 'Created table eprog_manager_mailing'
+    - builder_table_create_eprog_manager_mailing.php
+1.0.16:
+    - 'Created table eprog_manager_inmail'
+    - builder_table_create_eprog_manager_inmail.php
+1.0.17:
+    - 'Created table eprog_manager_scheduler'
+    - builder_table_create_eprog_manager_scheduler.php
+1.0.18:
+    - 'Created table eprog_manager_category'
+    - builder_table_create_eprog_manager_category.php
+1.0.19:
+    - 'Created table eprog_manager_scheduler'
+    - builder_table_create_eprog_manager_scheduler_2.php
+1.0.20:
+    - 'Created table eprog_manager_category'
+    - builder_table_create_eprog_manager_category_2.php
+1.0.21:
+    - 'Created table eprog_manager_file'
+    - builder_table_create_eprog_manager_file.php
+1.0.22:
+    - 'Created table eprog_manager_order'
+    - builder_table_create_eprog_manager_order.php
+1.0.23:
+    - 'Updated table eprog_manager_order'
+    - builder_table_update_eprog_manager_order.php
+1.0.24:
+    - 'Updated table eprog_manager_order'
+    - builder_table_update_eprog_manager_order_2.php
+1.0.25:
+    - 'Created table eprog_manager_product'
+    - builder_table_create_eprog_manager_product.php
+1.0.26:
+    - 'Created table eprog_manager_product'
+    - builder_table_create_eprog_manager_product_2.php
+1.0.27:
+    - 'Updated table eprog_manager_product'
+    - builder_table_update_eprog_manager_product.php
+1.0.28:
+    - 'Updated table eprog_manager_product'
+    - builder_table_update_eprog_manager_product_2.php
+1.0.29:
+    - 'Updated table eprog_manager_product'
+    - builder_table_update_eprog_manager_product_3.php

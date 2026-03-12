@@ -1,0 +1,391 @@
+<?php
+
+use RainLab\User\Models\User;
+use Eprog\Manager\Models\SettingKsef;
+use Eprog\Manager\Models\SettingConfig;
+
+$users =  User::where("tax",1)->orderBy("firm_name")->get();
+
+$years = date("Y",time());
+$year = Session::has("selected.year") ? Session::get("selected.year") : date("Y",time());
+$month = Session::has("selected.month") ? Session::get("selected.month") : date("m",time());
+$nip = Session::has("selected.nip") ? Session::get("selected.nip") : SettingConfig::get("nip"); 
+
+if(!Session::has("selected.nip")) Session::put("selected.nip",$nip);
+if(!Session::has("selected.year")) Session::put("selected.year",$year);
+if(!Session::has("selected.month")) Session::put("selected.month",$month);
+
+$tax_form = User::where("firm_nip",$nip)->first()->tax_form ?? '';
+if($nip == SettingConfig::get("nip")) $tax_form = SettingConfig::get("tax_form");
+
+
+?>
+
+
+
+<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_accounting")) : ?>
+
+<div data-control="toolbar">
+
+    <div id="csnip" class="toolbar-item"  style="float:left;margin-top:1px;margin-bottom:5px">
+    <select id="nip" name="nip" class="form-control custom-select" style="width:200px;float:right !important" >
+        <optgroup>
+        <option value="<?= str_replace("-","", SettingConfig::get("nip")) ?>" <?= Session::has("selected.nip") && Session::get("selected.nip") == str_replace("-","", SettingConfig::get("nip")) ? "selected" : "" ?>><?= SettingConfig::get("firm") ?? trans("eprog.manager::lang.ksef.my") ?></option>
+        </optgroup>
+        <optgroup label="<?=  trans("eprog.manager::lang.clients") ?>">
+        <?php foreach($users as $user) : ?>
+        <option value="<?=  $user->firm_nip ?>" <?= Session::has("selected.nip") && Session::get("selected.nip") == $user->firm_nip ? "selected" : "" ?>><?= $user->firm_name ?? '' ?></option>
+        <?php endforeach  ?>
+        </optgroup>
+    </select> 
+    </div>   
+
+    <div  id="csyear"  class="toolbar-item cs" style="float:left;margin-top:1px;margin-left:-25px;margin-bottom:5px">
+    <select id="year" name="subject" class="form-control custom-select" style="width:80px;float:left !important;" >
+        <?php
+        for($i=0;$i<=10;$i++){
+            if($years-$i < 2022 && !in_array($_SERVER["HTTP_HOST"],["erp.emode.pl","crm.emode.pl","demo.emode.pl","prod.emode.pl"])) continue;
+            echo "<option value=\"".($years-$i)."\" ".(Session::has("selected.year") && Session::get("selected.year") == $years-$i ? "selected" : "" ).">".($years-$i)."</option>";
+        }
+        ?>
+    </select> 
+    </div>
+
+    <div  id="csmonth"  class="toolbar-item cs" style="float:left;margin-top:1px;margin-left:-25px;margin-bottom:5px">
+    <select id="month" name="subject" class="form-control custom-select" style="width:120px;float:left !important;" >
+        <option value="1" <?= Session::has("selected.month") && Session::get("selected.month") == 1  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.1") ?></option>
+        <option value="2" <?= Session::has("selected.month") && Session::get("selected.month") == 2  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.2") ?></option>
+        <option value="3" <?= Session::has("selected.month") && Session::get("selected.month") == 3  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.3") ?></option>
+        <option value="4" <?= Session::has("selected.month") && Session::get("selected.month") == 4  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.4") ?></option>
+        <option value="5" <?= Session::has("selected.month") && Session::get("selected.month") == 5  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.5") ?></option>
+        <option value="6" <?= Session::has("selected.month") && Session::get("selected.month") == 6  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.6") ?></option>
+        <option value="7" <?= Session::has("selected.month") && Session::get("selected.month") == 7  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.7") ?></option>
+        <option value="8" <?= Session::has("selected.month") && Session::get("selected.month") == 8  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.8") ?></option>
+        <option value="9" <?= Session::has("selected.month") && Session::get("selected.month") == 9  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.9") ?></option>
+        <option value="10" <?= Session::has("selected.month") && Session::get("selected.month") == 10  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.10") ?></option>
+        <option value="11" <?= Session::has("selected.month") && Session::get("selected.month") == 11  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.11") ?></option>
+        <option value="12" <?= Session::has("selected.month") && Session::get("selected.month") == 12  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.12") ?></option>
+    </select> 
+    </div>
+
+
+
+   <a id="create" href="<?= Backend::url('eprog/manager/accounting/create') ?>" class="btn btn-primary oc-icon-plus-circle btn-toolbar" style="margin-left:-25px"><?= trans("eprog.manager::lang.create") ?></a>
+
+   <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_accounting')) : ?>
+   <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions" style="margin-top:-3px;">
+       <button
+           data-primary-button
+           type="button"
+           class="btn btn-default"
+           data-request="onBulkAction"
+           data-trigger-action="enable"
+           data-trigger=".control-list input[type=checkbox]"
+           data-trigger-condition="checked"
+           data-request-success=""
+           data-stripe-load-indicator>
+           <?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>
+       </button>
+       <button
+           type="button"
+           class="btn btn-default dropdown-toggle"
+           data-trigger-action="enable"
+           data-trigger=".control-list input[type=checkbox]"
+           data-trigger-condition="checked"
+           data-toggle="dropdown">
+           <span class="caret"></span>
+       </button>
+       <ul class="dropdown-menu" data-dropdown-title="<?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>">
+           <li>
+               <a href="javascript:;" class="oc-icon-check" data-action="approve" data-confirm="<?= e(trans('eprog.manager::lang.approve_confirm')) ?>">
+                   <?= e(trans('eprog.manager::lang.approve_set')) ?>
+               </a>
+           </li>
+           <li>
+               <a href="javascript:;" class="oc-icon-undo" data-action="undo" data-confirm="<?= e(trans('eprog.manager::lang.approve_undoconfirm')) ?>">
+                   <?= e(trans('eprog.manager::lang.approve_undo')) ?>
+               </a>
+           </li>
+           <li>
+               <a href="javascript:;" class="oc-icon-trash-o" data-action="delete" data-confirm="<?= e(trans('backend::lang.list.delete_selected_confirm')) ?>">
+                   <?= e(trans('eprog.manager::lang.del')) ?>
+               </a>
+           </li>
+       </ul>
+   </div>
+   <?php endif ?>
+
+   <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_xml")) :?>
+   
+   <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_importxml")) :?>
+   <button
+   class="btn btn-primary oc-icon-file-code-o btn-toolbar"
+   onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/import/accounting','<?= e(trans('eprog.manager::lang.import_xml')) ?>', 600, 420)"
+   style="float:right"
+   >
+   <?= e(trans('eprog.manager::lang.import_xml')) ?>
+   </button>
+   <?php endif; ?>
+
+   <button
+   id="export"
+   class="btn btn-primary oc-icon-file-code-o btn-toolbar"
+   data-request="onExport"
+   data-request-confirm="<?= e(trans('eprog.manager::lang.export_xml_all_confirm')) ?>"
+   data-trigger-action="enable"
+   style="float:right"
+   >
+   <?= e(trans('eprog.manager::lang.export_xml')) ?>
+   </button>
+   <?php endif ?>
+
+   <button
+   class="btn btn-primary oc-icon-files-o btn-toolbar"
+   onclick= "files()"
+   style="float:right"
+   >
+   <?= e(trans('eprog.manager::lang.files')) ?>
+   </button>
+
+   <button
+   data-request="onJpk"
+   class="btn btn-primary oc-icon-plus btn-toolbar"
+   data-request-confirm="<?= e(trans('eprog.manager::lang.jpk_confirm')) ?>"
+   data-load-indicator="<?= e(trans('eprog.manager::lang.sending')) ?>"
+   style="float:right;margin-right:25px;padding-left:17px !important;padding-right:10px!important;position:relative;z-Index:121"
+   >
+   </button>
+
+   <div  class="toolbar-item cs" style="float:right;margin-top:1px;margin-right:-25px;;margin-bottom:5px;position:relative;z-Index:120">
+   <select id="jpk" name="subject" class="form-control custom-select" style="width:120px;float:left !important;" >
+       <option value="jpkv7m">JPK_V7M</option>
+   </select> 
+   </div>
+
+   <button
+       type="button"
+       class="btn btn-primary oc-icon-floppy-o btn-toolbar"
+       onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savetaxfile/accounting/' + document.getElementById('doc').value + '/' + $('#month').val() + '_' + $('#year').val() + '/onprepareDoc', '<?= e(trans('eprog.manager::lang.taxfile_confirm')) ?>', 450, 300)"
+       style="float:right;margin-left:0px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;"
+   ></button>
+
+   <button
+   data-request="onDoc"
+   class="btn btn-primary oc-icon-download btn-toolbar"
+   data-request-confirm="<?= e(trans('eprog.manager::lang.doc_confirm')) ?>"
+   data-request-data="savefile:0"
+   data-load-indicator="<?= e(trans('eprog.manager::lang.sending')) ?>"
+   style="float:right;margin-right:5px;padding-left:17px !important;padding-right:10px!important;position:relative;z-Index:121"
+   ></button>
+
+
+   <div  class="toolbar-item cs" style="float:right;margin-top:1px;margin-right:-5px">
+   <select id="doc" name="subject" class="form-control custom-select" style="width:200px;float:left !important;" >
+       <?php if($tax_form == "scale" || $tax_form == "line") :?>
+       <option value="kpir"><?= e(trans('eprog.manager::lang.kpir')) ?></option>
+       <option value="skpir"><?= e(trans('eprog.manager::lang.skpir')) ?></option>
+       <?php endif; ?>
+       <?php if($tax_form == "lump") :?>
+       <option value="ewp"><?= e(trans('eprog.manager::lang.ewp')) ?></option>
+       <option value="ewpz"><?= e(trans('eprog.manager::lang.ewpz')) ?></option>
+       <option value="lump"><?= e(trans('eprog.manager::lang.slump')) ?></option>
+       <?php endif; ?>
+       <option value="vat"><?= e(trans('eprog.manager::lang.rvat')) ?></option>
+   </select> 
+   </div>
+
+
+
+ 
+
+
+</div>
+
+<?php endif ?>
+
+<style>
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {    
+    padding-top: 2px !important;    
+}
+
+
+.loading-indicator-container.size-input-text { margin-top: -7px !important; }
+
+@media (max-width: 450px){
+
+#csyear {margin-left:0px !important;}
+#csmonth {margin-left:0px !important;}
+
+.loading-indicator-container.size-input-text {margin-top: -33px !important;}
+
+}
+
+
+</style>
+
+<script>
+
+    var change = false;
+    var furl = '/<?= config('cms.backendUri') ?>/eprog/manager/taxfile/create';
+
+    $(document).on('ajaxSetup', function(event, context) {
+
+        if (context.handler === 'onJpk') {
+     
+            context.options.data = context.options.data || {};
+            context.options.data.year = $('#year').val();
+            context.options.data.month = $('#month').val();
+            context.options.data.nip = $('#nip').val();
+            context.options.data.jpk = $('#jpk').val();
+
+        }
+
+        if (context.handler === 'onDoc') {
+        
+            context.options.data.doc = $('#doc').val();
+
+        }
+
+
+        if (context.handler === 'onExport' && context.options.confirm) {
+
+            let selectedIds = [];
+
+            $('.control-list tbody input[type="checkbox"]:checked').each(function () {
+                selectedIds.push($(this).val());
+            });
+
+            if(selectedIds.length > 0){
+                context.options.confirm = '<?= e(trans('eprog.manager::lang.export_xml_checked_confirm')) ?>';
+                context.options.data.checked = selectedIds;               
+            }
+
+            context.options.data.year = $('#year').val();
+            context.options.data.month = $('#month').val();
+            context.options.data.nip = $('#nip').val();
+        }
+
+
+    });
+
+
+
+
+    $(function() { 
+
+        setyear(0);
+        setmonth(0);
+        setnip(0);
+        taxfile();
+
+        $('#year').on('select2:select', function(e) {
+
+            setyear();
+   
+        });
+
+        $('#month').on('select2:select', function(e) {
+            
+            setmonth();
+  
+        });
+
+        $('#nip').on('select2:select', function(e) {
+
+            setnip();
+
+        });
+
+
+
+    });
+
+    function setyear(redirect = 1){
+
+        $.ajax({
+                type: "POST",
+                data:"_token=<?= csrf_token() ?>",
+                url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/selected/year/' + $('#year').val(),
+
+                success: function(res) {   
+                if(redirect) window.location.href = window.location.href;                              
+                },
+                error: function(xhr,status,error) {
+                     console.log(error);
+                }
+        });
+
+    }
+
+
+    function setmonth(redirect = 1){
+
+        $.ajax({
+                type: "POST",
+                data:"_token=<?= csrf_token() ?>",
+                url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/selected/month/' + $('#month').val(),
+
+                success: function(res) {   
+                if(redirect) window.location.href = window.location.href;                              
+                },
+                error: function(xhr,status,error) {
+                     console.log(error);
+                }
+        });
+
+    }
+
+
+    function setnip(redirect = 1){
+
+        $.ajax({
+                type: "POST",
+                data:"_token=<?= csrf_token() ?>",
+                url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/selected/nip/' + $('#nip').val(),
+
+                success: function(res) {   
+                if(redirect) window.location.href = window.location.href;                              
+                },
+                error: function(xhr,status,error) {
+                     console.log(error);
+                }
+        });
+
+    }
+
+
+    function taxfile(){
+
+        $.ajax({
+                type: "POST",
+                data:"_token=<?= csrf_token() ?>",
+                url: '/<?= config('cms.backendUri') ?>/eprog/manager/feed/taxfile/' + $('#year').val() + '/' + $('#month').val(),
+
+                success: function(res) {  
+                          data = JSON.parse(res);
+                  
+                          if(data.id > 0)
+                            furl = '/<?= config('cms.backendUri') ?>/eprog/manager/taxfile/update/' + data.id;
+                          else
+                            furl = '/<?= config('cms.backendUri') ?>/eprog/manager/taxfile/create/'
+                                                      
+                },
+                error: function(xhr,status,error) {
+                    
+                }
+        });
+
+    }
+
+
+    function files(){
+
+        modal_url(furl,'<?= e(trans('eprog.manager::lang.files')) ?>', 768, 768, "taxfile");
+
+    }
+
+
+</script>
+
+

@@ -1,0 +1,12 @@
+list: $/eprog/manager/models/archive/columns.yaml
+modelClass: Eprog\Manager\Models\Archive
+title: 'eprog.manager::lang.archive'
+noRecordsMessage: 'backend::lang.list.no_records'
+recordsPerPage: '1000'
+showSetup: false
+showCheckboxes: true
+toolbar:
+    buttons: list_toolbar
+    search:         
+      prompt: 'backend::lang.list.search_prompt'
+recordUrl: 'eprog/manager/archive/preview/:id/:currentPage'

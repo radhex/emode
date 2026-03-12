@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.unit'
+form: $/eprog/manager/models/unit/fields.yaml
+modelClass: Eprog\Manager\Models\Unit
+defaultRedirect: eprog/manager/unit
+create:
+    redirect: 'eprog/manager/unit/update/:id'
+    redirectClose: eprog/manager/unit
+update:
+    redirect: eprog/manager/unit
+    redirectClose: eprog/manager/unit

@@ -1,0 +1,5 @@
+name: 'eprog.manager::lang.invoice_one'
+form: $/eprog/manager/models/free/fields.yaml
+modelClass: Eprog\Manager\Models\Free
+defaultRedirect: eprog/manager/free/create
+

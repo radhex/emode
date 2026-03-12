@@ -1,0 +1,105 @@
+fields:
+    surname:
+        label: 'eprog.manager::lang.lastname'
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-1
+    name:
+        label: 'eprog.manager::lang.firstname'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-1
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true	
+        cssClass: col-sm-1
+tabs:
+    fields:
+        email:
+            label: 'rainlab.user::lang.user.email'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            tab: 'rainlab.user::lang.user.account'
+            cssClass: col-sm-3
+        pesel:
+            label: 'PESEL'
+            tab: 'rainlab.user::lang.user.account'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        phone:
+            label: 'rainlab.user::lang.add.phone'
+            tab: 'rainlab.user::lang.user.account'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            cssClass: col-sm-3
+        birthday:
+            label: 'eprog.manager::lang.birthday'
+            tab: 'rainlab.user::lang.user.account'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        city:
+            label: 'rainlab.user::lang.add.city'
+            tab: 'rainlab.user::lang.add.address'
+            oc.commentPosition: ''
+            span: auto
+            cssClass: col-sm-2
+            type: text
+        code:
+            label: 'rainlab.user::lang.add.code'
+            tab: 'rainlab.user::lang.add.address'
+            oc.commentPosition: ''
+            span: storm
+            cssClass: col-sm-3
+            type: text
+        country:
+            label: 'rainlab.user::lang.add.country'
+            tab: 'rainlab.user::lang.add.address'
+            oc.commentPosition: ''
+            span: storm
+            type: dropdown
+            emptyOption: 'eprog.manager::lang.select_dropdown'
+            cssClass: col-sm-3
+        street:
+            label: 'rainlab.user::lang.add.street'
+            tab: 'rainlab.user::lang.add.address'
+            span: auto
+            cssClass: col-sm-2
+            type: text
+        number:
+            label: 'rainlab.user::lang.add.number'
+            tab: 'rainlab.user::lang.add.address'
+            oc.commentPosition: ''
+            span: storm
+            type: text
+            cssClass: col-sm-3
+        desc:
+            label: ''
+            tab: 'eprog.manager::lang.desc'
+            span: left
+            type: richeditor
+            searchable: true
+            cssClass: col-sm-1
+        files:
+            label: 'eprog.manager::lang.files'
+            tab: 'eprog.manager::lang.files'
+            span: storm
+            oc.commentPosition: ''
+            mode: file
+            useCaption: true
+            thumbOptions:
+                mode: crop
+                extension: auto
+            type: Patroklo\FormWidgets\FileUpload
+            cssClass: col-sm-3

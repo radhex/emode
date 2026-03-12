@@ -1,0 +1,159 @@
+<?php 
+
+use Rainlab\User\Models\User;
+use Eprog\Manager\Models\Zus;
+use Eprog\Manager\Models\SettingConfig;
+
+$zus = Zus::find(Input::segment(6));
+$firm = User::where("firm_nip",$zus->nip)->first()->firm_name ?? '';
+if($zus->nip == SettingConfig::get("nip")) $firm = SettingConfig::get("firm");
+
+?>
+
+
+<?php Block::put('breadcrumb') ?>
+    <ul>
+       <li><span  class="oc-icon-calculator"></span><a href="<?= Backend::url('eprog/manager/accounting') ?>"><?= e(trans('eprog.manager::lang.accounting')) ?></a></li>
+       <li><span  class="oc-icon-pie-chart"></span><a href="<?= Backend::url('eprog/manager/zus') ?>"><?= e(trans('eprog.manager::lang.zus')) ?></a></li> 
+       <li>ID: <?= Input::segment(6) ?></li>
+       <li><?= $firm  ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-request-data="redirect:0"
+                    data-request-update="'value' : '#value'"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+                    class="btn btn-primary oc-icon-floppy-o btn-toolbar">
+                    <?= e(trans('backend::lang.form.save')) ?>
+                </button>
+                <a href="<?= Backend::url('eprog/manager/zus') ?>" class="btn btn-default oc-icon-arrow-left btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a>
+
+                <button
+                    id="payrollPdf"
+                    type="submit"
+                    data-request="onPdf"
+                    class="btn btn-primary oc-icon-file-pdf-o btn-toolbar">
+                    <?= e(trans('eprog.manager::lang.download')) ?> PDF
+                </button>
+
+                <button
+                    type="button"
+                    class="btn btn-primary oc-icon-trash-o pull-right btn-toolbar"
+                    data-request="onDelete"
+                    data-load-indicator="<?= e(trans('backend::lang.form.deleting')) ?>"
+                    data-request-confirm="<?= e(trans('eprog.manager::lang.zus_delete_confirm')) ?>">
+                    <?= e(trans('backend::lang.form.delete')) ?>
+                </button>
+            </div>
+        </div>
+    <?= Form::close() ?>
+
+<?php else: ?>
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('eprog/manager/zus') ?>" class="btn btn-default btn-toolbar"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+<?php endif ?>
+
+<style>
+
+@media (max-width: 450px){
+
+#Form-field-Zus-value-group {margin-left:-25px}
+
+}
+
+@media (min-width: 768px){
+  
+    #Form-field-Zus-year-group {width:6%}
+    #Form-field-Zus-month-group {width:16%}
+    #Form-field-Zus-tax_form-group {width:13%}
+    #Form-field-Zus-social-group {width:14%}
+    #Form-field-Zus-health-group {width:14%}
+
+
+    .hide {
+      display: none !important;
+    }
+
+    .show {
+      font-size:15px !important;
+      display: inline-block !important;
+      float: none !important;
+      z-index: 8 !important;
+      vertical-align: bottom !important;
+      position:relative !important;
+      margin-right:-20px !important;
+    }
+
+    .required {baccounting:1px solid red !important}
+
+ 
+}
+
+</style>
+
+
+<script>
+
+
+
+
+    $(function() { 
+
+        $('#Form-field-Zus-health').on('paste input', function (e) {
+
+            inputCurrency(this, e);
+
+        });
+
+
+        $('#Form-field-Zus-health').on('focusout', function (e) {
+            
+            inputCurrencyOut(this, e);
+
+        });
+
+        $('#Form-field-Zus-health').on('focusin', function (e) {
+            
+            inputCurrencyIn(this, e);
+
+        });
+
+        $('#Form-field-Zus-social').on('paste input', function (e) {
+
+            inputCurrency(this, e);
+
+        });
+
+
+        $('#Form-field-Zus-social').on('focusout', function (e) {
+            
+            inputCurrencyOut(this, e);
+
+        });
+
+        $('#Form-field-Zus-social').on('focusin', function (e) {
+            
+            inputCurrencyIn(this, e);
+
+        });
+                
+
+    });
+
+
+
+</script>

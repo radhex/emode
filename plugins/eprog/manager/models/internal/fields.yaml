@@ -1,0 +1,52 @@
+fields:
+    nr:
+        label: 'eprog.manager::lang.nr'
+        oc.commentPosition: ''
+        span: left
+        type: text
+        attributes: tabindex:1
+        cssClass: col-sm-1
+    place:
+        label: 'eprog.manager::lang.place'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        attributes:
+            maxlength: '255'
+        cssClass: col-sm-3
+    create_at:
+        label: 'eprog.manager::lang.date'
+        oc.commentPosition: ''
+        span: storm
+        type: datepicker
+        mode: date
+        format: Y-m-d
+        default: now
+        cssClass: col-sm-2
+    disp:
+        label: 'eprog.manager::lang.public'
+        size: large
+        oc.commentPosition: ''
+        span: storm
+        type: switch
+        default: true
+        cssClass: col-sm-1
+tabs:
+    fields:
+        value:
+            label: ' '
+            tab: 'eprog.manager::lang.value'
+            oc.commentPosition: ''
+            span: full
+            type: partial
+            path: value
+            cssClass: col-sm-3
+        record:
+            label: 'eprog.manager::lang.internal_record'
+            tab: 'eprog.manager::lang.value'
+            oc.commentPosition: ''
+            span: left
+            type: text
+            attributes: tabindex:1
+            cssClass: col-sm-1
+      

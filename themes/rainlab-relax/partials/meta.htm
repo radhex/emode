@@ -1,0 +1,85 @@
+[viewBag]
+==
+<?php
+function onStart()
+{ 
+    $this['appname'] = config("app.name");
+}
+?>
+==
+<meta charset="utf-8">
+<title>{{ appname }}</title>
+
+<meta name="description" content="{{ this.page.meta_description }}">
+<meta name="title" content="{{ this.page.meta_title }}">
+<meta name="author" content="{{ appname }}">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="{{ 'assets/images/emode.png'|theme }}" />
+<meta name="generator" content="{{ appname }}" />
+
+
+
+
+
+
+{% styles %}
+
+{# Vendor #}
+<link href="{{ [
+    'assets/vendor/nivo/nivo-slider.css',
+    'assets/less/vendor.less',
+]|theme }}" rel="stylesheet" />
+
+<style>
+
+.myalert, .flash {padding-top: 10px;color: #bb2424}
+.green {color:green; }
+.mtable {display: table; width:100%;border-radius:7px;}
+.mtable > div {display: table-row; }
+.mtable > div > div {display: table-cell;padding: 6px 10px 6px 10px;vertical-align:middle;font-size:15px;}
+.mlist > div > div {border-bottom:1px solid #eee; }
+.mlist h4 {padding-left:7px;}
+.form-group-my {padding-bottom:15px;}
+.noread a{font-weight:bold}
+
+
+.mfield {border: 1px solid #eee;}
+.mfield > div > div {vertical-align:top;font-size:14px;}
+.lhead { color:#777; background:#f7f7f7;}
+.fhead {color:#aaa; width:150px; margin-right:20px; background:#f5f5f5; solid #ccc;border-bottom: 1px solid #ccc;vertical-align:top;}
+//.fhead::after { content: " :";}
+.noborder {border:0px}
+
+ .container {border:1px solid #ddd; border-radius: 7px; background: #fff ;padding: 0 20px 20px 20px}
+ .info {color:#0181b9}
+
+#layout-content   {margin-top:10px; border:1px; solid red;}
+
+    
+ .tabs  { margin-left:0px}
+ .tabs  ul {width: 100%; float:right; padding-bottom:10px; margin-right:50px;}
+ .tabs  ul  li  {list-style: none;float:left;margin-left: 10px;margin-bottom:5px; padding-left:12px;padding-top: 3px;padding-right: 12px;padding-bottom:3px; background: #eee; border-radius: 4px;}
+ .tabs  ul  li.active  {background: #59a1d1;}
+ .tabs  ul  li a {float:left; text-decoration:none; font-size:14px;padding:5px;color:#444}
+ .tabs  ul  li.active a{ color:#fff}
+ .tabs  .ui-tabs-active  {background: #59a1d1;}
+ .tabs  .ui-tabs-active .ui-tabs-anchor  {color: #fff;}
+ .tabs .ui-tabs-nav .ui-state-focus a {outline: none;}  
+
+.userfile {width:500px}
+.respo {margin:0 auto; width:500px; padding:20px;}
+.loginrespo {margin:0 auto; width:300px;  padding:20px;}
+//.restitle{width:400px}
+             
+.new-mail {display:none;vertical-align:middle;width: 26px;padding-top:12px;padding-right:0px;height: 26px;border-radius:14px;text-align: center;background-color: red;color:#fff;position: absolute;left: 2px;top:5px;}
+
+
+
+@media (max-width: 550px) { .respo, .loginrespo{ width:100%} .userfile {width:100%}}
+@media (max-width: 450px) {  .mtable > div > div.resdate{display:none};}
+
+.tabs  ul  li:hover{-webkit-filter: brightness(95%);}; 
+
+
+
+</style>

@@ -1,0 +1,8 @@
+<?php if($record->webContentLink != null): ?>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-download" style="color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.download')) ?>" onmousedown="actionDrive(this,'download','<?= $record->gid ?>','<?= e(trans('eprog.manager::lang.download_confirm')) ?>')"></a>
+<?php if($record->mimeType != 'application/vnd.google-apps.drawing'): ?>
+<?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_drive')) : ?>
+<a href="javascript:" class="btn-sm btn-primary  oc-icon-floppy-o" style="width:42px;color:#fff;padding-right:7px;margin-right:1px" title="<?= e(trans('eprog.manager::lang.drive_import')) ?>" onmousedown="actionDrive(this,'import','<?= $record->gid ?>', null,null,null,'<?= e(trans('eprog.manager::lang.file_confirm')) ?>')"></a>
+<?php endif ?>
+<?php endif ?>
+<?php endif ?>

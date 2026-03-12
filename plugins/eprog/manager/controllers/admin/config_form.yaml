@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.manage'
+form: $/eprog/manager/models/admin/fields.yaml
+modelClass: Eprog\Manager\Models\Admin
+defaultRedirect: eprog/manager/admin
+create:
+    redirect: 'eprog/manager/admin/update/:id'
+    redirectClose: eprog/manager/admin
+update:
+    redirect: eprog/manager/admin
+    redirectClose: eprog/manager/admin

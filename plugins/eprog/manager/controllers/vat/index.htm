@@ -1,0 +1,9 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-file-text-o"></span><a href="<?= Backend::url('eprog/manager/vat') ?>"><?= e(trans('eprog.manager::lang.vat_register')) ?></a></li> 
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+
+<?= $this->listRender() ?>

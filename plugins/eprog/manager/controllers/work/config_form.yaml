@@ -1,0 +1,10 @@
+name: 'eprog.manager::lang.work_one'
+modelClass: Eprog\Manager\Models\Work
+form: $/eprog/manager/models/work/fields.yaml
+defaultRedirect: eprog/manager/work
+create:
+    redirect: 'eprog/manager/work/update/:id'
+    redirectClose: eprog/manager/work
+update:
+    redirect: eprog/manager/work
+    redirectClose: eprog/manager/work

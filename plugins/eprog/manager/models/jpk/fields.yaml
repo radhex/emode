@@ -1,0 +1,46 @@
+fields:
+    name:
+        label: 'eprog.manager::lang.name'
+        span: left
+        type: text
+        cssClass: col-sm-5
+    version:
+        label: 'eprog.manager::lang.version'
+        span: storm
+        type: text
+        cssClass: col-sm-5
+    period:
+        label: 'eprog.manager::lang.period'
+        span: storm
+        type: text
+        cssClass: col-sm-5
+    created_at:
+        label: 'eprog.manager::lang.date'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-2
+    jpk_at:
+        label: 'eprog.manager::lang.sent'
+        oc.commentPosition: ''
+        span: storm
+        type: text
+        cssClass: col-sm-1
+tabs:
+    fields:
+        xml:
+            label: ''
+            tab: 'Xml'
+            size: large
+            oc.commentPosition: ''
+            span: left
+            type: textarea
+            cssClass: col-sm-5
+        other:
+            label: ''
+            tab: 'eprog.manager::lang.other'
+            oc.commentPosition: ''
+            span: storm
+            type: partial
+            path: other
+            cssClass: col-sm-8

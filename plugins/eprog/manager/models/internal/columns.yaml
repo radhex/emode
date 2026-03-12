@@ -1,0 +1,32 @@
+columns:
+    nr:
+        label: 'eprog.manager::lang.nr'
+        type: text
+        searchable: true
+        width: 70%
+    amount:
+        label: 'eprog.manager::lang.unit_price'
+        type: partial
+        path: amount
+        searchable: true
+        align: right
+    place:
+        label: 'eprog.manager::lang.place'
+        type: text
+        invisible: true
+        searchable: true
+    create_at:
+        label: 'eprog.manager::lang.date'
+        type: partial
+        path: createat
+        searchable: true
+    admin_id:
+        label: 'eprog.manager::lang.admin'
+        relation: admin
+        invisible: true
+        select: login
+    disp:
+        label: 'eprog.manager::lang.public'
+        type: partial
+        searchable: false
+

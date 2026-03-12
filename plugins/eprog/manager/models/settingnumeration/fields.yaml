@@ -1,0 +1,145 @@
+tabs:
+    fields:
+        invoice_type:
+            tab: 'eprog.manager::lang.invoice'
+            label: 'eprog.manager::lang.ksef.order_type'
+            span: storm
+            type: radio
+            options:
+                month: 'eprog.manager::lang.ksef.month_type'
+                year: 'eprog.manager::lang.ksef.year_type'
+            cssClass: col-sm-1
+            containerAttributes:
+                style: "width:180px"
+        invoice_prefix:
+            tab: 'eprog.manager::lang.invoice'
+            label: 'eprog.manager::lang.ksef.prefix'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        invoice_separator:
+            tab: 'eprog.manager::lang.invoice'
+            label: 'eprog.manager::lang.ksef.separator'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        invoice_sufix:
+            tab: 'eprog.manager::lang.invoice'
+            label: 'eprog.manager::lang.ksef.sufix'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        invoice_block_number:
+            tab: 'eprog.manager::lang.invoice'
+            label: 'eprog.manager::lang.block_number'
+            span: storm
+            type: switch
+            cssClass: col-sm-2
+        order_type:
+            tab: 'eprog.manager::lang.order'
+            label: 'eprog.manager::lang.ksef.order_type'
+            span: storm
+            type: radio
+            options:
+                month: 'eprog.manager::lang.ksef.month_type'
+                year: 'eprog.manager::lang.ksef.year_type'
+            cssClass: col-sm-1
+            containerAttributes:
+                style: "width:180px"
+        order_prefix:
+            tab: 'eprog.manager::lang.order'
+            label: 'eprog.manager::lang.ksef.prefix'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        order_separator:
+            tab: 'eprog.manager::lang.order'
+            label: 'eprog.manager::lang.ksef.separator'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        order_sufix:
+            tab: 'eprog.manager::lang.order'
+            label: 'eprog.manager::lang.ksef.sufix'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        order_block_number:
+            tab: 'eprog.manager::lang.order'
+            label: 'eprog.manager::lang.block_number'
+            span: storm
+            type: switch
+            cssClass: col-sm-2
+        internal_type:
+            tab: 'eprog.manager::lang.internal'
+            label: 'eprog.manager::lang.ksef.order_type'
+            span: storm
+            type: radio
+            options:
+                month: 'eprog.manager::lang.ksef.month_type'
+                year: 'eprog.manager::lang.ksef.year_type'
+            cssClass: col-sm-1
+            containerAttributes:
+                style: "width:180px"
+        internal_prefix:
+            tab: 'eprog.manager::lang.internal'
+            label: 'eprog.manager::lang.ksef.prefix'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        internal_separator:
+            tab: 'eprog.manager::lang.internal'
+            label: 'eprog.manager::lang.ksef.separator'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        internal_sufix:
+            tab: 'eprog.manager::lang.internal'
+            label: 'eprog.manager::lang.ksef.sufix'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        internal_block_number:
+            tab: 'eprog.manager::lang.internal'
+            label: 'eprog.manager::lang.block_number'
+            span: storm
+            type: switch
+            cssClass: col-sm-2
+        payroll_type:
+            tab: 'eprog.manager::lang.payroll'
+            label: 'eprog.manager::lang.ksef.order_type'
+            span: storm
+            type: radio
+            options:
+                month: 'eprog.manager::lang.ksef.month_type'
+                year: 'eprog.manager::lang.ksef.year_type'
+            cssClass: col-sm-1
+            containerAttributes:
+                style: "width:180px"
+        payroll_prefix:
+            tab: 'eprog.manager::lang.payroll'
+            label: 'eprog.manager::lang.ksef.prefix'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        payroll_separator:
+            tab: 'eprog.manager::lang.payroll'
+            label: 'eprog.manager::lang.ksef.separator'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        payroll_sufix:
+            tab: 'eprog.manager::lang.payroll'
+            label: 'eprog.manager::lang.ksef.sufix'
+            span: storm
+            type: text
+            cssClass: col-sm-1
+        payroll_block_number:
+            tab: 'eprog.manager::lang.payroll'
+            label: 'eprog.manager::lang.block_number'
+            span: storm
+            type: switch
+            cssClass: col-sm-2
+
+
+

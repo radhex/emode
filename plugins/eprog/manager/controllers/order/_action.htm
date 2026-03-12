@@ -1,0 +1,9 @@
+<?php
+
+use Eprog\Manager\Classes\Util
+
+
+?>
+<?php if(Util::mode("2")) : ?> 
+<a href="/<?= config('cms.backendUri') ?>/eprog/manager/invoice/create?order_id=<?= $record->id ?>" class="btn-sm btn-primary  oc-icon-file-text-o" style="color:#fff;padding-right:7px" title="<?= e(trans('eprog.manager::lang.invoice_create')) ?>"></a> 
+<?php endif; ?>

@@ -1,0 +1,12 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span  class="oc-icon-arrow-circle-o-right"></span><a href="<?= Backend::url('eprog/manager/mail/sent') ?>"><?= e(trans('eprog.manager::lang.mail')) ?> - <?= e(trans('eprog.manager::lang.user_sent')) ?></a></li>
+        <li><?= e(trans('eprog.manager::lang.list')) ?></li>
+	 </li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?= $this->listRender() ?>
+<script>
+	$('body').addClass("slim-container");
+</script>	

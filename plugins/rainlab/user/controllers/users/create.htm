@@ -1,0 +1,65 @@
+<?php Block::put('breadcrumb') ?>
+    <ul>
+        <li><span class="oc-icon-user"></span><a href="<?= Backend::url('rainlab/user/users') ?>"><?= e(trans('rainlab.user::lang.users.menu_label')) ?></a></li>
+        <li><?= e(trans($this->pageTitle)) ?></li>
+    </ul>
+<?php Block::endPut() ?>
+
+<?php if (!$this->fatalError): ?>
+
+    <?= Form::open(['class' => 'layout']) ?>
+
+        <div class="layout-row">
+            <?= $this->formRender() ?>
+        </div>
+
+        <div class="form-buttons">
+            <div class="loading-indicator-container">
+                <button
+                    type="submit"
+                    data-request="onSave"
+                    data-hotkey="ctrl+s, cmd+s"
+                    data-load-indicator="<?= e(trans('backend::lang.form.creating_name', ['name'=>$formRecordName])) ?>"
+                    class="btn btn-primary oc-icon-plus-circle">
+                    <?= e(trans('backend::lang.form.create')) ?>
+                </button>
+                <a href="<?= Backend::url('rainlab/user/users') ?>" class="btn btn-default oc-icon-arrow-left"><?= e(trans('eprog.manager::lang.return')) ?></a>
+            </div>
+        </div>
+
+    <?= Form::close() ?>
+    
+<?php else: ?>
+
+    <p class="flash-message static error"><?= e(trans($this->fatalError)) ?></p>
+    <p><a href="<?= Backend::url('rainlab/user/users') ?>" class="btn btn-default"><?= e(trans('eprog.manager::lang.return')) ?></a></p>
+  
+<?php endif ?>
+
+<style>
+@media (min-width: 768px){
+
+    #Form-field-User-surname-group {width: 25%}
+    #Form-field-User-phone-group {width: 25%}
+    #Form-field-User-email-group {width: 25%}
+    #Form-field-User-password-group {width: 25%}
+    #Form-field-User-timezone-group {width: 25%}
+    #Form-field-User-groups-group {width: 25%}
+    #Form-field-User-region-group {width: 25%}
+    #Form-field-User-city-group {width: 25%}
+    #Form-field-User-code-group {width:7%}
+    #Form-field-User-country-group {width:18%}
+    #Form-field-User-street-group {width: 25%}
+    #Form-field-User-username-group {width: 25%}
+    #Form-field-User-firm_name-group {width: 25%}
+    #Form-field-User-firm_region-group {width: 25%}
+    #Form-field-User-firm_city-group {width: 25%}
+    #Form-field-User-firm_code-group {width:7%}
+    #Form-field-User-firm_country-group {width:18%}
+    #Form-field-User-firm_street-group {width: 25%}
+    #Form-field-User-tax_office-group {width: 25%}
+    #Form-field-User-tax_form-group {width: 25%}
+
+    
+}
+</style>

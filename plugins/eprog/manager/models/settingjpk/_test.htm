@@ -1,0 +1,75 @@
+<?php
+
+    if(Input::has("page")) $page = Input::get("page"); else $page = 1;
+
+
+?>
+
+<script>
+    $(function() {  
+
+        $(document).on('ajaxSetup',  function(event, context) {
+        
+                $('.confirm').click(function() {
+                    $("#load").show();
+                    $("body").css("pointer-events","none");
+                });
+        });
+
+        $( document ).ajaxSuccess(function( event, request, settings ) {
+
+
+            $("#load").hide();
+            $("body").css("pointer-events","auto");
+            param = getJsonFromUrl(settings);
+            if(settings.X_WINTER_ASSETS != undefined) updateSerwer();
+            
+        });
+
+        $( document ).ajaxError(function( event, request, settings ) {
+
+            $("#load").hide();
+            $("body").css("pointer-events","auto");
+   
+            
+        });
+
+
+     
+
+    });
+
+
+</script>
+<style>
+.backupserwer {display:table; margin-top:30px;}
+.backupserwer > div {display:table-row;background:#fff;  }
+.backupserwer > div > div {border-top:1px solid #eee;display:table-cell; vertical-align:middle; font-size:12px; padding-left:5px;text-align:left; padding-right:5px; padding-top:5px;padding-bottom:5px;}
+.backupserwer .date {color:green;width:150px}
+.backupserwer .desc {width:300px;}
+.backupserwer > div.head {background:#eee}
+.backupserwer input {text-align:right; padding-right:2px;padding-left:2px;border:1px solid #ccc}
+
+@media screen and (max-width: 600px) {
+  
+    #backup-baton > div {width:60%}
+}
+
+</style>    <div id="test"></div>
+        <div id="backup-baton" style="display:table;margin-left:10px;margin-top:-10px"><div style="display:table-cell;">
+          <button
+              type="submit"
+              data-request="onSave"
+              data-request-data="redirect:0,update:1,test:1"   
+              data-request-confirm ="<?= e(trans('eprog.manager::lang.ksef.test_confirm')) ?>"
+              data-hotkey="ctrl+s, cmd+s"
+              data-load-indicator="<?= e(trans('backend::lang.form.saving')) ?>"
+              class="btn btn-primary oc-icon-database">
+              <?= e(trans('eprog.manager::lang.ksef.test_ksef')) ?>
+          </button>
+
+        </div>
+
+<div style="position:relative;top:16px;padding-left:30px">
+    <div class="loading-indicator-container" style="position:relative;"><div  id="load" class="loading-indicator  indicator-center" style="background-color: transparent;display:none"><span></span></div></div>
+</div></div>

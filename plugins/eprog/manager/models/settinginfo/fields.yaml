@@ -1,0 +1,9 @@
+tabs:
+    fields:
+
+        update:
+            tab: 'eprog.manager::lang.setting_info'
+            span: full
+            type: partial
+            path: '$/eprog/manager/models/settinginfo/_update.htm'
+

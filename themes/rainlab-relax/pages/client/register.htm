@@ -1,0 +1,102 @@
+title = "Register"
+url = "/register"
+layout = "default"
+is_hidden = 0
+
+[account]
+paramCode = "code"
+forceSecure = 0
+==
+<?php
+use Illuminate\Support\Facades\Config;
+
+function onInit()
+{ 
+    $this['register'] = Input::get("register");
+    $this['config_timezone']  = Config::get("app.timezone");
+    $this['captcha']  = Config::get("app.captcha.site");
+
+
+}
+?>
+==
+<div class="respo">
+        {% if post('register') %}
+            <div class="jumbotron">
+                <h2>{{ 'Dziękujemy za rejestrację'|_ }}</h2>
+                <p>{{ 'Twoja aplikacja została odebrana, otrzymasz od nas wiadomość e-mail po uzyskaniu zgody na logowanie.'|_ }}</p>
+                <p><a href="{{ 'home'|page }}">{{ 'Powrót do strony głównej'|_ }}</a>
+            </div>
+        {% else %}
+        <script src="http://demo.emode.pl/modules/backend/assets/js/vendor/jquery.min.js"></script>
+	<script>
+		$(function() {   
+
+			$(window).on('ajaxInvalidField', function(event, fieldElement, fieldName, errorMsg, isFirst) {
+		
+    				if(fieldName == "email") grecaptcha.reset();
+
+			});
+ 	  	 		 	
+		});
+	</script>
+	<script src='https://www.google.com/recaptcha/api.js'></script>
+        <div">
+                    <h3>{{ 'Rejestracja'|_ }}</h3>
+                    <p>{{ 'Aby dołączyć do grona użytkowników wypełnij poniższy formularz.'|_ }}</p>
+                    <form data-request="onRegister">
+                        <input type="hidden" name="redirect" value="{{ this.page.baseFileName|page }}?register=1" />                        
+                        <input type="hidden" name="timezone" value="{{ config_timezone }}" />
+
+                        <div class="form-group  is-required">
+                            <label for="accountEmail">{{ 'E-mail'|_ }}</label>
+                            <input name="email" type="text" class="form-control" id="accountEmail" placeholder="{{ 'Wprowadź e-mail'|_ }}">
+                        </div>
+                        
+                        <div class="form-group  is-required">
+                            <label for="accountPassword">{{ 'Hasło'|_ }}</label>
+                            <input name="password" type="password" class="form-control" id="accountPassword" placeholder="{{ 'Wprowadź hasło'|_ }}">
+                        </div>
+
+                        <div class="form-group  is-required">
+                            <label for="accountPasswordConf">{{ 'Powtórz hasło'|_ }}</label>
+                            <input name="password_confirmation" type="password" class="form-control" id="accountPasswordConf" placeholder="{{ 'Powtórz hasło'|_ }}">
+                        </div>
+
+                        <div><div>
+                        <!--
+                        <div class="form-group  is-required">
+                            <label for="accountLogin">{{ 'Nazwa użytkownika'|_ }}</label>
+                            <input name="username" type="text" class="form-control" id="accountUsername" placeholder="{{ 'Wprowadź nazwę'|_ }}">
+                        </div>
+                        -->
+                        <div class="form-group  is-required">
+                            <label for="accountSurname">{{ 'Nazwisko'|_ }}</label>
+                            <input name="surname" type="text" class="form-control" id="accountSurname" placeholder="{{ 'Wprowadź nazwisko'|_ }}">
+                        </div>                       
+                        <div class="form-group  is-required">
+                            <label for="accountName">{{ 'Imię'|_ }}</label>
+                            <input name="name" type="text" class="form-control" id="accountName" placeholder="{{ 'Wprowadź imię'|_ }}">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="accountPhone">{{ 'Telefon'|_ }}</label>
+                            <input name="phone" type="text" class="form-control" id="accountPhone" placeholder="{{ 'Wprowadź telefon'|_ }}">
+                        </div>
+                        <div class="form-group">
+                        	<div class="g-recaptcha" data-sitekey="{{ captcha }}"></div>
+
+                        </div>
+
+
+  
+                        <button type="submit" class="btn btn-default" >{{ 'Zarejestruj się'|_ }}</button>
+      
+                        <div><br><div>
+                        <div><br><div>
+                        <p><a href="{{ url('account') }}">« {{ 'Zaloguj się'|_ }}</a></p>
+                    </form>
+
+                </div>
+                {% endif %}
+</div>

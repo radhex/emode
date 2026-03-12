@@ -1,0 +1,99 @@
+<?php 
+use Eprog\Manager\Models\Accounting;
+use Eprog\Manager\Models\Accountingvalue;
+use Eprog\Manager\Models\Ksef;
+use Eprog\Manager\Classes\Util;
+use Backend\Facades\BackendAuth;
+use Eprog\Manager\Models\SettingConfig as Settings;
+use Carbon\Carbon;
+use Backend\Config;
+
+
+    if(isset($this->params[0])) $accounting = Accounting::find($this->params[0]);
+	if(isset($accounting->ksef_id)) $ksef = Ksef::find($accounting->ksef_id);
+
+?>
+<style>
+
+.valuetable {display:table; ;}
+.valuetable > div {display:table-row;background:#fff;  }
+.valuetable > div > div {white-space: nowrap;border-top:1px solid #eee;display:table-cell; height:34px;vertical-align:middle; font-size:13px; padding-left:5px;text-align:right; padding-right:5px; padding-top:4px;padding-bottom:4px;}
+.valuetable .date {color:green;width:150px}
+.valuetable .desc {width:300px;}
+.valuetable > div.head {background:var(--ml2color);}
+.valuetable > div.head div{font-size:12px}
+.valuetable input {text-align:right; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+.valuetable select {text-align:left; padding-right:4px;padding-left:4px;padding-top:4px;padding-bottom:4px;border:1px solid #d1d6d9;border-radius:3px;}
+//.sum_netto,.sum_vat,.sum_brutto {font-weight:bold}
+
+.head_pkwiu {display:none !important}
+.show_pkwiu {display:none !important}
+.head_cn {display:none !important}
+.show_cn {display:none !important}
+.head_gtu {display:none !important}
+.show_gtu {display:none !important}
+.value_netto,.value_vat,.value_brutto {margin-left:5px;}
+.required, .gtu_error, .qty_error, .qty_error_max, .curr_error {border:1px solid red !important}
+.desk {display:none; background:var(--ml2color);padding:5px;padding-left:6px;padding-right:6px;font-size:12px;text-align:right}
+
+.describe > div > div {;border-top:0px} 
+
+@media (max-width: 1200px){
+
+	.valuetable > div {display:block;}
+	.valuetable > div > div {display:block;text-align:left;height:38px !important}
+	.valuetable input {text-align:left !important}
+	.valuetable input.product {}
+	.valuetable select {margin-left:-4px !important}
+	.mob {display:none !important}
+	.desk {display:inline-block;width:130px}
+	.order {font-size:16px !important;}
+}
+
+</style>
+
+<br>
+<?php if (isset($ksef) && $ksef->xml): ?>
+<div style="float:left;width:100%">
+<span style=";margin-top:10px !important"><iframe id="invoice" style="border:0;overflow:hidden;width:100%;height:100%" width="100%" height="100%" scrolling="no" src="<?= Backend::url('eprog/manager/feed/ksef/'.$accounting->ksef_id) ?>" onLoad="bodyHeight(this)" ></iframe></span>
+</div>
+<?php endif; ?>
+
+<script>
+
+
+
+	$(function() {  
+		const target = document.querySelector('.control-tabs');
+
+		if (!target) return;
+
+		const observer = new MutationObserver(function (mutations) {
+		    mutations.forEach(function (mutation) {
+		        if (mutation.attributeName === 'class') {
+		            const $activeTab = $('.control-tabs .nav-tabs li.active a');
+
+		            if ($activeTab.length) {
+
+		            	bodyHeight(document.getElementById('invoice'));
+
+
+		            }
+		        }
+		    });
+		});
+
+		observer.observe(target, {
+		    subtree: true,
+		    attributes: true
+		});
+
+	
+ 		 	 	  	 		 	
+	});
+
+
+</script>
+
+
+        

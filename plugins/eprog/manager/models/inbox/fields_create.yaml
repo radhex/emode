@@ -1,0 +1,44 @@
+fields:
+    files:
+        label: 'eprog.manager::lang.attachments'
+        span: left
+        oc.commentPosition: ''
+        mode: file
+        type: Patroklo\FormWidgets\FileUpload
+        cssClass: col-sm-12
+    to:
+        label: 'eprog.manager::lang.to'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-6
+    cc:
+        label: 'CC'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-6
+    title:
+        label: 'eprog.manager::lang.title'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: text
+        cssClass: col-sm-6
+    body:
+        label: 'eprog.manager::lang.body'
+        size: large
+        oc.commentPosition: ''
+        span: left
+        type: richeditor
+        cssClass: col-sm-6
+        height: 100px
+
+
+
+
+
+
+ 
