@@ -15,7 +15,7 @@ columns:
     correct:
         label: 'eprog.manager::lang.ksef.kor'
         type: partial
-        searchable: true
+        searchable: false
     jpk_at:
         label: 'eprog.manager::lang.sent'
         type: partial

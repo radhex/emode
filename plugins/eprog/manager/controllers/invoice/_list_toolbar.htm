@@ -2,9 +2,11 @@
 
 <div data-control="toolbar">
 
+        <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
         <a href="<?= Backend::url('eprog/manager/invoice/create') ?>" class="btn btn-primary oc-icon-plus-circle btn-toolbar multisend"><?= trans("eprog.manager::lang.create") ?></a>
+        </div> 
 
-
+        <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
         <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions" style="margin-bottom:5px">
             <button
                 data-primary-button
@@ -31,7 +33,7 @@
 
             <ul class="dropdown-menu" data-dropdown-title="<?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>">
                 <li>
-                    <a href="javascript:;"  class="oc-icon-cloud-upload" data-action="sendmultiple" onclick="" data-confirm="<?= e(trans('eprog.manager::lang.ksef.sendmultiple_confirm')) ?>?">
+                    <a href="javascript:;"  class="oc-icon-cloud-upload" data-action="sendmultiple1" onclick="" data-confirm="<?= e(trans('eprog.manager::lang.ksef.sendmultiple_confirm')) ?>?">
                        <?= e(trans('eprog.manager::lang.ksef.sendmultiple')) ?>
                     </a>
                 </li>
@@ -54,52 +56,50 @@
             </ul>
 
         </div>
+        </div> 
 
         <div id="spinner-toolbar" class="spinner-toolbar" ></div>
 
-        <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_xml")) :?>
-
-        <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_importxml")) :?>
-        <button
-        class="btn btn-primary oc-icon-file-code-o btn-toolbar multisend"
-        onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/import/invoice','<?= e(trans('eprog.manager::lang.import_xml')) ?>', 600, 420)"
-        style="float:right"
-        >
-        <?= e(trans('eprog.manager::lang.import_xml')) ?>
-        </button>
-        <?php endif ?>
-
-
+        <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_xml")) :?>        
         <button
         id="export"
-        class="btn btn-primary oc-icon-file-code-o btn-toolbar"
+        class="btn btn-primary oc-icon-file-code-o btn-toolbar  toolbar-right"
         data-request="onExport"
         data-request-confirm="<?= e(trans('eprog.manager::lang.export_xml_all_confirm')) ?>"
         data-trigger-action="enable"
-        style="float:right;margin-right:10px"
+        style="margin-right:10px"
         >
         <?= e(trans('eprog.manager::lang.export_xml')) ?>
         </button>
 
-    <?php endif ?>
+        <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_importxml")) :?>
+        <button
+        class="btn btn-primary oc-icon-file-code-o btn-toolbar toolbar-right"
+        onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/import/invoice','<?= e(trans('eprog.manager::lang.import_xml')) ?>', 600, 420)"
+        >
+        <?= e(trans('eprog.manager::lang.import_xml')) ?>
+        </button>
+        <?php endif; ?>
+        <?php endif; ?>
 
 
 </div>
 
 <?php endif ?>
 
+<link rel="stylesheet" href="/plugins/eprog/manager/assets/css/toolbar.css">
 <style>
 
 
     .spinner-toolbar {
 
         display:inline-block;
-        margin-top:1px;
+        margin-top:5px;
         margin-right:10px;
         width: 24px;
         height: 24px;
-        border: 3px solid #ccc;
-        border-top-color: #3498db;
+        border: 3px solid #eee;
+        border-top-color: var(--mcolor);
         border-radius: 50%;
         animation: spin 1s linear infinite;
 

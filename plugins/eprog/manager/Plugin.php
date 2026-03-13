@@ -62,64 +62,64 @@ class Plugin extends PluginBase
     public function boot()
     {      
 
-        Event::listen('backend.menu.extendItems', function ($manager) {
+         Event::listen('backend.menu.extendItems', function ($manager) {
 
+             $user = BackendAuth::getUser();
 
-            $user = BackendAuth::getUser();
+             $blocked = [
+                 'project'   => \Eprog\Manager\Controllers\Project::class,
+                 'work'      => \Eprog\Manager\Controllers\Work::class,                
+                 'product'   => \Eprog\Manager\Controllers\Product::class,
+                 'category'  => \Eprog\Manager\Controllers\Category::class,
+                 'attribute' => \Eprog\Manager\Controllers\Attribute::class,
+                 'unit'      => \Eprog\Manager\Controllers\Unit::class,
+                 'producent' => \Eprog\Manager\Controllers\Producent::class,                                
+                 'order'     => \Eprog\Manager\Controllers\Order::class,
+                 'invoice'   => \Eprog\Manager\Controllers\Invoice::class,
+                 'ksef'   => \Eprog\Manager\Controllers\Invoice::class,
+                 'accounting'   => \Eprog\Manager\Controllers\Accounting::class,
+                 'jpk'   => \Eprog\Manager\Controllers\Jpk::class,
+                 'internal'   => \Eprog\Manager\Controllers\Internal::class,
+                 'fixed'   => \Eprog\Manager\Controllers\Fixed::class,
+                 'worker'   => \Eprog\Manager\Controllers\Worker::class,
+                 'payroll'   => \Eprog\Manager\Controllers\Payroll::class,
+                 'zus'   => \Eprog\Manager\Controllers\Zus::class,
+                 'advance'   => \Eprog\Manager\Controllers\Advance::class,
+                 'taxfile'   => \Eprog\Manager\Controllers\Taxfile::class,
+             ];
 
-            $blocked = [
-                'project'   => \Eprog\Manager\Controllers\Project::class,
-                'work'      => \Eprog\Manager\Controllers\Work::class,                
-                'product'   => \Eprog\Manager\Controllers\Product::class,
-                'category'  => \Eprog\Manager\Controllers\Category::class,
-                'attribute' => \Eprog\Manager\Controllers\Attribute::class,
-                'unit'      => \Eprog\Manager\Controllers\Unit::class,
-                'producent' => \Eprog\Manager\Controllers\Producent::class,                                
-                'order'     => \Eprog\Manager\Controllers\Order::class,
-                'invoice'   => \Eprog\Manager\Controllers\Invoice::class,
-                'ksef'   => \Eprog\Manager\Controllers\Invoice::class,
-                'accounting'   => \Eprog\Manager\Controllers\Accounting::class,
-                'jpk'   => \Eprog\Manager\Controllers\Jpk::class,
-                'internal'   => \Eprog\Manager\Controllers\Internal::class,
-                'fixed'   => \Eprog\Manager\Controllers\Fixed::class,
-                'worker'   => \Eprog\Manager\Controllers\Worker::class,
-                'payroll'   => \Eprog\Manager\Controllers\Payroll::class,
-                'zus'   => \Eprog\Manager\Controllers\Zus::class,
-                'advance'   => \Eprog\Manager\Controllers\Advance::class,
-                'taxfile'   => \Eprog\Manager\Controllers\Taxfile::class,
-            ];
+             if($_SERVER['SERVER_NAME'] != "crm.emode.pl") $blocked['admin'] = \Eprog\Manager\Controllers\Admin::class;
+             if(in_array($_SERVER['SERVER_NAME'],["crm.emode.pl","demo.emode.pl","prod.emode.pl"])){
+                 //$blocked['invoicepay'] = \Eprog\Manager\Controllers\Invoicepay::class;
+                 //$blocked['orderpay'] = \Eprog\Manager\Controllers\Orderpay::class;
+             }
 
-            if($_SERVER['SERVER_NAME'] != "crm.emode.pl") $blocked['admin'] = \Eprog\Manager\Controllers\Admin::class;
-            if(in_array($_SERVER['SERVER_NAME'],["crm.emode.pl","demo.emode.pl","prod.emode.pl"])){
-                //$blocked['invoicepay'] = \Eprog\Manager\Controllers\Invoicepay::class;
-                //$blocked['orderpay'] = \Eprog\Manager\Controllers\Orderpay::class;
-            }
+             //if (in_array("", [$m1, $m2, $m3, $m4, $m5])) $blocked = [];
+             if(Util::mode("2")) unset($blocked['ksef'], $blocked['invoice']);
+             if(Util::mode("3")) unset($blocked['accounting'], $blocked['jpk'], $blocked['internal'], $blocked['fixed'], $blocked['jpk'], $blocked['worker'], $blocked['payroll'], $blocked['zus'], $blocked['advance'], $blocked['taxfile']);
+             if(Util::mode("4")) unset($blocked['order'], $blocked['product'], $blocked['category'], $blocked['attribute'], $blocked['unit'], $blocked['producent']);
+             if(Util::mode("5")) unset($blocked['project'], $blocked['work']);
 
-            //if (in_array("", [$m1, $m2, $m3, $m4, $m5])) $blocked = [];
-            if(Util::mode("2")) unset($blocked['ksef'], $blocked['invoice']);
-            if(Util::mode("3")) unset($blocked['accounting'], $blocked['jpk'], $blocked['internal'], $blocked['fixed'], $blocked['jpk'], $blocked['worker'], $blocked['payroll'], $blocked['zus'], $blocked['advance'], $blocked['taxfile']);
-            if(Util::mode("4")) unset($blocked['order'], $blocked['product'], $blocked['category'], $blocked['attribute'], $blocked['unit'], $blocked['producent']);
-            if(Util::mode("5")) unset($blocked['project'], $blocked['work']);
+             foreach ($blocked as $code => $controllerClass) {
+                 BackendMenu::removeMainMenuItem('Eprog.Manager', $code);
+             }
 
-            foreach ($blocked as $code => $controllerClass) {
-                BackendMenu::removeMainMenuItem('Eprog.Manager', $code);
-            }
+             $blockedPaths = [];
+             foreach ($blocked as $code => $controllerClass) {
+                 $blockedPaths[] = 'backend/eprog/manager/' . strtolower($code);
+             }
 
-            $blockedPaths = [];
-            foreach ($blocked as $code => $controllerClass) {
-                $blockedPaths[] = 'backend/eprog/manager/' . strtolower($code);
-            }
+             $currentPath = trim(request()->path(), '/');
 
-            $currentPath = trim(request()->path(), '/');
+             foreach ($blockedPaths as $path) {
+                 if ($currentPath == $path) {
+                     abort(403, e(trans('update_system_access')));
+                 }
+             }
 
-            foreach ($blockedPaths as $path) {
-                if ($currentPath == $path) {
-                    abort(403, e(trans('update_system_access')));
-                }
-            }
+         });
 
-        });
-
+   
        // $currentUrl = trim(request()->path(), '/'); // np. backend/eprog/manager/calendar
 
         if(!Session::has("selected.nip"))
@@ -645,10 +645,15 @@ class Plugin extends PluginBase
                 'order' => 334,
                 'label' => 'eprog.manager::lang.manage_admin'
             ], 
-            'eprog.manager.edit_scheduler' => [
+            'eprog.manager.manage_scheduler' => [
                 'tab'   => 'eprog.manager::lang.access_title',
                 'order' => 335,
-                'label' => 'eprog.manager::lang.edit_scheduler'
+                'label' => 'eprog.manager::lang.manage_scheduler'
+            ],
+            'eprog.manager.access_pay' => [
+                'tab'   => 'eprog.manager::lang.access_title',
+                'order' => 335,
+                'label' => 'eprog.manager::lang.access_pay'
             ],
 
  

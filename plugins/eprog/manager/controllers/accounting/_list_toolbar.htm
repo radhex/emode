@@ -27,7 +27,7 @@ if($nip == SettingConfig::get("nip")) $tax_form = SettingConfig::get("tax_form")
 
 <div data-control="toolbar">
 
-    <div id="csnip" class="toolbar-item"  style="float:left;margin-top:1px;margin-bottom:5px">
+    <div id="csnip" class="toolbar-item toolbar-left" >
     <select id="nip" name="nip" class="form-control custom-select" style="width:200px;float:right !important" >
         <optgroup>
         <option value="<?= str_replace("-","", SettingConfig::get("nip")) ?>" <?= Session::has("selected.nip") && Session::get("selected.nip") == str_replace("-","", SettingConfig::get("nip")) ? "selected" : "" ?>><?= SettingConfig::get("firm") ?? trans("eprog.manager::lang.ksef.my") ?></option>
@@ -40,7 +40,7 @@ if($nip == SettingConfig::get("nip")) $tax_form = SettingConfig::get("tax_form")
     </select> 
     </div>   
 
-    <div  id="csyear"  class="toolbar-item cs" style="float:left;margin-top:1px;margin-left:-25px;margin-bottom:5px">
+    <div  id="csyear"  class="toolbar-item toolbar-left">
     <select id="year" name="subject" class="form-control custom-select" style="width:80px;float:left !important;" >
         <?php
         for($i=0;$i<=10;$i++){
@@ -51,7 +51,7 @@ if($nip == SettingConfig::get("nip")) $tax_form = SettingConfig::get("tax_form")
     </select> 
     </div>
 
-    <div  id="csmonth"  class="toolbar-item cs" style="float:left;margin-top:1px;margin-left:-25px;margin-bottom:5px">
+    <div  id="csmonth"  class="toolbar-item toolbar-left">
     <select id="month" name="subject" class="form-control custom-select" style="width:120px;float:left !important;" >
         <option value="1" <?= Session::has("selected.month") && Session::get("selected.month") == 1  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.1") ?></option>
         <option value="2" <?= Session::has("selected.month") && Session::get("selected.month") == 2  ? "selected" : "" ?>><?= trans("eprog.manager::lang.months.2") ?></option>
@@ -69,11 +69,13 @@ if($nip == SettingConfig::get("nip")) $tax_form = SettingConfig::get("tax_form")
     </div>
 
 
+   <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
+   <a id="create" href="<?= Backend::url('eprog/manager/accounting/create') ?>" class="btn btn-primary oc-icon-plus-circle btn-toolbar"><?= trans("eprog.manager::lang.create") ?></a>
+   </div>
 
-   <a id="create" href="<?= Backend::url('eprog/manager/accounting/create') ?>" class="btn btn-primary oc-icon-plus-circle btn-toolbar" style="margin-left:-25px"><?= trans("eprog.manager::lang.create") ?></a>
-
+   <div  class="toolbar-item toolbar-left">
    <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_accounting')) : ?>
-   <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions" style="margin-top:-3px;">
+   <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions" >
        <button
            data-primary-button
            type="button"
@@ -114,72 +116,9 @@ if($nip == SettingConfig::get("nip")) $tax_form = SettingConfig::get("tax_form")
        </ul>
    </div>
    <?php endif ?>
-
-   <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_xml")) :?>
-   
-   <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_importxml")) :?>
-   <button
-   class="btn btn-primary oc-icon-file-code-o btn-toolbar"
-   onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/import/accounting','<?= e(trans('eprog.manager::lang.import_xml')) ?>', 600, 420)"
-   style="float:right"
-   >
-   <?= e(trans('eprog.manager::lang.import_xml')) ?>
-   </button>
-   <?php endif; ?>
-
-   <button
-   id="export"
-   class="btn btn-primary oc-icon-file-code-o btn-toolbar"
-   data-request="onExport"
-   data-request-confirm="<?= e(trans('eprog.manager::lang.export_xml_all_confirm')) ?>"
-   data-trigger-action="enable"
-   style="float:right"
-   >
-   <?= e(trans('eprog.manager::lang.export_xml')) ?>
-   </button>
-   <?php endif ?>
-
-   <button
-   class="btn btn-primary oc-icon-files-o btn-toolbar"
-   onclick= "files()"
-   style="float:right"
-   >
-   <?= e(trans('eprog.manager::lang.files')) ?>
-   </button>
-
-   <button
-   data-request="onJpk"
-   class="btn btn-primary oc-icon-plus btn-toolbar"
-   data-request-confirm="<?= e(trans('eprog.manager::lang.jpk_confirm')) ?>"
-   data-load-indicator="<?= e(trans('eprog.manager::lang.sending')) ?>"
-   style="float:right;margin-right:25px;padding-left:17px !important;padding-right:10px!important;position:relative;z-Index:121"
-   >
-   </button>
-
-   <div  class="toolbar-item cs" style="float:right;margin-top:1px;margin-right:-25px;;margin-bottom:5px;position:relative;z-Index:120">
-   <select id="jpk" name="subject" class="form-control custom-select" style="width:120px;float:left !important;" >
-       <option value="jpkv7m">JPK_V7M</option>
-   </select> 
    </div>
 
-   <button
-       type="button"
-       class="btn btn-primary oc-icon-floppy-o btn-toolbar"
-       onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savetaxfile/accounting/' + document.getElementById('doc').value + '/' + $('#month').val() + '_' + $('#year').val() + '/onprepareDoc', '<?= e(trans('eprog.manager::lang.taxfile_confirm')) ?>', 450, 300)"
-       style="float:right;margin-left:0px;padding-left:17px !important;padding-right:10px!important;margin-right:20px;"
-   ></button>
-
-   <button
-   data-request="onDoc"
-   class="btn btn-primary oc-icon-download btn-toolbar"
-   data-request-confirm="<?= e(trans('eprog.manager::lang.doc_confirm')) ?>"
-   data-request-data="savefile:0"
-   data-load-indicator="<?= e(trans('eprog.manager::lang.sending')) ?>"
-   style="float:right;margin-right:5px;padding-left:17px !important;padding-right:10px!important;position:relative;z-Index:121"
-   ></button>
-
-
-   <div  class="toolbar-item cs" style="float:right;margin-top:1px;margin-right:-5px">
+   <div  class="toolbar-item cs toolbar-right" style="margin-right:-11px">
    <select id="doc" name="subject" class="form-control custom-select" style="width:200px;float:left !important;" >
        <?php if($tax_form == "scale" || $tax_form == "line") :?>
        <option value="kpir"><?= e(trans('eprog.manager::lang.kpir')) ?></option>
@@ -194,9 +133,66 @@ if($nip == SettingConfig::get("nip")) $tax_form = SettingConfig::get("tax_form")
    </select> 
    </div>
 
+   <button
+   data-request="onDoc"
+   class="btn btn-primary oc-icon-download btn-toolbar toolbar-right"
+   data-request-confirm="<?= e(trans('eprog.manager::lang.doc_confirm')) ?>"
+   data-request-data="savefile:0"
+   data-load-indicator="<?= e(trans('eprog.manager::lang.sending')) ?>"
+   style="margin-right:5px;padding-left:17px !important;padding-right:7px!important;position:relative;z-Index:121"
+   ></button>
 
+   <button
+       type="button"
+       class="btn btn-primary oc-icon-floppy-o btn-toolbar toolbar-right"
+       onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/feed/savetaxfile/accounting/' + document.getElementById('doc').value + '/' + $('#month').val() + '_' + $('#year').val() + '/onprepareDoc', '<?= e(trans('eprog.manager::lang.taxfile_confirm')) ?>', 450, 300)"
+       style=";margin-left:0px;padding-left:17px !important;padding-right:7px!important;margin-right:20px;"
+   ></button>
 
- 
+   <div  class="toolbar-item cs toolbar-right" style="margin-right:-11px;;margin-bottom:5px;position:relative;z-Index:120">
+   <select id="jpk" name="subject" class="form-control custom-select" style="width:120px;float:left !important;" >
+       <option value="jpkv7m">JPK_V7M</option>
+   </select> 
+   </div>
+
+   <button
+   data-request="onJpk"
+   class="btn btn-primary oc-icon-plus btn-toolbar toolbar-right"
+   data-request-confirm="<?= e(trans('eprog.manager::lang.jpk_confirm')) ?>"
+   data-load-indicator="<?= e(trans('eprog.manager::lang.sending')) ?>"
+   style="margin-right:22px;padding-left:17px !important;padding-right:7px!important;position:relative;z-Index:121;"
+   >
+   </button>
+
+   <button
+   class="btn btn-primary oc-icon-files-o btn-toolbar toolbar-right"
+   onclick= "files()"
+
+   >
+   <?= e(trans('eprog.manager::lang.files')) ?>
+   </button>
+
+   <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_xml")) :?>
+   <button
+   id="export"
+   class="btn btn-primary oc-icon-file-code-o btn-toolbar toolbar-right"
+   data-request="onExport"
+   data-request-confirm="<?= e(trans('eprog.manager::lang.export_xml_all_confirm')) ?>"
+   data-trigger-action="enable"
+
+   >
+   <?= e(trans('eprog.manager::lang.export_xml')) ?>
+   </button>
+   <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_importxml")) :?>
+   <button
+   class="btn btn-primary oc-icon-file-code-o btn-toolbar toolbar-right"
+   onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/import/accounting','<?= e(trans('eprog.manager::lang.import_xml')) ?>', 600, 420)"
+
+   >
+   <?= e(trans('eprog.manager::lang.import_xml')) ?>
+   </button>
+   <?php endif; ?>
+   <?php endif ?>
 
 
 </div>
@@ -205,22 +201,137 @@ if($nip == SettingConfig::get("nip")) $tax_form = SettingConfig::get("tax_form")
 
 <style>
 
-.select2-container--default .select2-selection--single .select2-selection__rendered {    
-    padding-top: 2px !important;    
+
+
+@media (min-width: 1850px) {
+
+  .control-toolbar .loading-indicator-container {
+      display: flex;
+      align-items: center;       
+      justify-content: flex-end;  
+      gap: 0px;              
+  }
+
+  .control-toolbar .loading-indicator-container input.search {
+      flex: 0 0 auto;   
+      min-width: 100px;     
+  }
+
+
+  .toolbar-right::before {
+      display: inline-block;      
+      vertical-align: middle;     
+      line-height: 1;             
+      font-size: 1em;             
+      margin-right: 10px;         
+      transform: translateY(2px); 
+  }
+
+  .toolbar-right {
+    //margin-top: 8px;
+    //margin-right:5px;
+
+  }
+
+  div.toolbar-right {
+    margin-top: 7px;
+      height: 36px;       
+
+  }
+
+  .toolbar-right > select {
+      margin-top:1px;    
+
+  }
+
+
+  button.toolbar-right {
+      height: 34px;       
+      padding: 6px 12px;  
+      margin-top: 4px;
+  }
+
+ .control-toolbar input.search {margin-top: -2px}
+ .loading-indicator-container.size-input-text { margin-top: -7px !important; }
+
+}
+
+@media (min-width: 1580px) and (max-width: 1849px) {
+
+  
+  .control-toolbar .loading-indicator-container {
+      display: flex;
+      align-items: center;       
+      justify-content: flex-end;  
+      gap: 0px;              
+  }
+
+  .control-toolbar .loading-indicator-container input.search {
+      flex: 0 0 auto;   
+      min-width: 100px;     
+  }
+
+
+  .toolbar-right::before {
+      display: inline-block;      
+      vertical-align: middle;     
+      line-height: 1;             
+      font-size: 1em;             
+      margin-right: 10px;         
+      transform: translateY(2px); 
+  }
+
+  .toolbar-right {
+    //margin-top: 8px;
+    //margin-right:5px;
+
+  }
+
+  div.toolbar-right {
+    margin-top: 49px !important;
+      height: 36px;       
+
+  }
+
+  .toolbar-right > select {
+      margin-top:1px;    
+
+  }
+
+
+  button.toolbar-right {
+      height: 34px;       
+      padding: 6px 12px;  
+      margin-top: 46px !important;
+  }
+
+  .control-toolbar input.search {margin-top: 40px}
+  .loading-indicator-container.size-input-text {margin-top: 0px !important;}
+
 }
 
 
-.loading-indicator-container.size-input-text { margin-top: -7px !important; }
 
-@media (max-width: 450px){
+@media (min-width: 769px) and (max-width: 1579px) {
+  .loading-indicator-container.size-input-text {margin-top: 0px !important;}
+}
 
-#csyear {margin-left:0px !important;}
-#csmonth {margin-left:0px !important;}
+@media (max-width: 768px){
 
-.loading-indicator-container.size-input-text {margin-top: -33px !important;}
+.toolbar-item {margin-left:0px  !important;width:180px !important}
+.loading-indicator-container.size-input-text {margin-top: 0px !important;}
 
 }
 
+
+.toolbar-left {float:left;margin-bottom:5px;margin-right:-25px}
+
+
+.select2-container--default .select2-selection--single .select2-selection__rendered { padding-top: 2px !important;heigth:34px !important;  }
+
+.control-toolbar .loading-indicator-container .loading-indicator {
+  transform: translate(2px, 6px);
+}
 
 </style>
 

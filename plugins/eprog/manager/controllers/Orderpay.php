@@ -35,7 +35,7 @@ class Orderpay extends Controller
     public $listConfig = 'config_list.yaml';
     public $folder;
 
-    public $requiredPermissions = ['eprog.manager.access_order'];
+    public $requiredPermissions = ['eprog.manager.access_pay'];
 
     public function __construct()
     {

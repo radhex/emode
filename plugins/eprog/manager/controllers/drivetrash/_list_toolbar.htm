@@ -1,5 +1,6 @@
 <div data-control="toolbar">
 
+    <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
     <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions"
     <?php if(!BackendAuth::getUser()->hasAccess('eprog.manager.manage_drive')) : ?>
         style="display:none"
@@ -41,11 +42,12 @@
         </ul>
 
     </div>
-
+    </div>
 
 
 
     <?php if(isset($_SESSION['folder'])): ?>
+    <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
     <?php foreach($_SESSION['folder'] as $folder): ?>
     <?php if(Input::get("folder") != $folder['gid']): ?>
     <a href="/<?= config('cms.backendUri') ?>/eprog/manager/drivetrash?folder=<?= $folder['gid'] ?>&name=<?= $folder['name'] ?>" class="btn btn-primary oc-icon-folder btn-toolbar" ><?= $folder['name'] ?></a>
@@ -53,10 +55,22 @@
     <div class="btn btn-primary oc-icon-folder btn-toolbar" style="cursor:default !important;pointer-events: none;background:var(--mlcolor)!important;color:var(--mcolor)!important"><?= $folder['name'] ?></div>
     <?php endif ?>
     <?php endforeach ?>
+    </div>
     <?php endif ?>
 
-    <a href="javascript:" onmousedown="actionDrive(this,'logout',null,'<?= e(trans('eprog.manager::lang.drive_logout_confirm')) ?>')" class="btn btn-primary oc-icon-unlock-alt btn-toolbar" style="margin-right:10px;float:right"><?= e(trans('eprog.manager::lang.logout')) ?></a>
+    <div  class="toolbar-item toolbar-right" style="margin-right:-10px">
+    <a href="javascript:" onmousedown="actionDrive(this,'logout',null,'<?= e(trans('eprog.manager::lang.drive_logout_confirm')) ?>')" class="btn btn-primary oc-icon-unlock-alt btn-toolbar"  style="height:34px"><?= e(trans('eprog.manager::lang.logout')) ?></a>
+    </div>
 
 
 </div>  
 
+<link rel="stylesheet" href="/plugins/eprog/manager/assets/css/toolbar.css">
+
+
+<style>
+
+.control-toolbar .loading-indicator-container .loading-indicator {
+  transform: translate(2px, 6px);
+}
+</style>

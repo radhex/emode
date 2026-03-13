@@ -5,7 +5,7 @@
         <li><?= e(trans('eprog.manager::lang.create')) ?></li>
     </ul>
 <?php Block::endPut() ?>
-<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.edit_scheduler")) : ?>
+<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_scheduler")) : ?>
 <?php if (!$this->fatalError): ?>
 
     <?= Form::open(['class' => 'layout']) ?>

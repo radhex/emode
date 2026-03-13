@@ -34,6 +34,7 @@
 	 	//ul { padding-bottom:10px; margin-left:-40px;font-family:Arials}
  		//ul  li  {list-style: none;margin-left: 3px;margin-bottom:5px; padding-left:12px;padding-top: 3px;padding-right: 12px;padding-bottom:3px; background:var(--mlcolor); font-size:12px}
 		//ul  li a {color:59a1d1;text-decoration:none} 
+		.form-control {height:38px !important}
 
 		.select2-container--default .select2-selection--single .select2-selection__rendered {
 		    

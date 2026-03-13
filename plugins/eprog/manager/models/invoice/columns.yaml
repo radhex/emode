@@ -94,7 +94,7 @@ columns:
     payment:
         label: 'eprog.manager::lang.ksef.payment'
         type: partial
-        searchable: true
+        searchable: false
     paid:
         label: 'eprog.manager::lang.paid'
         type: partial

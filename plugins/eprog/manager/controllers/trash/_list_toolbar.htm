@@ -1,7 +1,13 @@
 <div data-control="toolbar">
     <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_inbox')) : ?>
+
+    <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
     <a href="<?= Backend::url('eprog/manager/inbox/create') ?>" class="btn btn-primary oc-icon-envelope"><?= e(trans('eprog.manager::lang.create')) ?></a>
+    </div>  
+
     <?php endif ?>
+
+    <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
     <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions"
     <?php if(!BackendAuth::getUser()->hasAccess('eprog.manager.manage_inbox')) : ?>
         style="display:none"
@@ -15,7 +21,7 @@
             data-trigger-action="enable"
             data-trigger=".control-list input[type=checkbox]"
             data-trigger-condition="checked"
-            data-request-success="$(this).prop('disabled', true).next().prop('disabled', true);"
+            data-request-success="$(this).prop('disabled', true).next().prop('disabled', true);updateInbox();"
             data-stripe-load-indicator>
             <?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>
         </button>
@@ -32,15 +38,10 @@
         <ul class="dropdown-menu" data-dropdown-title="<?= e(trans('rainlab.user::lang.users.bulk_actions')) ?>">
             <li>
                 <a href="javascript:;" class="oc-icon-trash-o" data-action="delete" data-confirm="<?= e(trans('eprog.manager::lang.trash_delete_confirm')) ?>">
-                    <?= e(trans('eprog.manager::lang.inbox_delete')) ?>
+                    <?= e(trans('eprog.manager::lang.del')) ?>
                 </a>
             </li>
             <li role="separator" class="divider"></li>
-            <li>
-                <a href="javascript:;" class="oc-icon-inbox" data-action="inbox" data-confirm="<?= e(trans('eprog.manager::lang.move_confirm')) ?> <?= e(trans('eprog.manager::lang.inbox')) ?>?">
-                    <?= e(trans('eprog.manager::lang.move_label')) ?> <?= e(trans('eprog.manager::lang.inbox')) ?>
-                </a>
-            </li>
             <li>
                 <a href="javascript:;" class="oc-icon-paper-plane" data-action="sent" data-confirm="<?= e(trans('eprog.manager::lang.move_confirm')) ?> <?= e(trans('eprog.manager::lang.sent')) ?>?">
                     <?= e(trans('eprog.manager::lang.move_label')) ?> <?= e(trans('eprog.manager::lang.sent')) ?>
@@ -75,5 +76,15 @@
         </ul>
 
     </div>
+    </div>  
 </div>  
 
+
+<link rel="stylesheet" href="/plugins/eprog/manager/assets/css/toolbar.css">
+
+<style>
+
+.control-toolbar .loading-indicator-container .loading-indicator {
+  transform: translate(2px, -2px);
+}
+</style>

@@ -11,9 +11,10 @@ $year = date("Y", time());
 ?>
 
 
+<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_accounting")) : ?>
 <div data-control="toolbar">
 
-        <div id="csnip" class="toolbar-item"  style="float:left;margin-top:2px;margin-bottom:5px">
+        <div id="csnip" class="toolbar-item toolbar-left" >
         <select id="nip" name="nip" class="form-control custom-select" style="width:200px;float:right !important" >
             <optgroup>
             <option value="<?= str_replace("-","", SettingKsef::get("nip")) ?>" <?= Session::has("selected.nip") && Session::get("selected.nip") == str_replace("-","", SettingKsef::get("nip")) ? "selected" : "" ?>><?= SettingConfig::get("firm") ?? trans("eprog.manager::lang.ksef.my") ?></option>
@@ -26,9 +27,13 @@ $year = date("Y", time());
         </select> 
         </div>   
 
-        <a href="<?= Backend::url('eprog/manager/advance/create') ?>" class="btn btn-primary oc-icon-plus-circle btn-toolbar"><?= e(trans('backend::lang.form.create')) ?></a>
+        <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
+        <a id="create" href="<?= Backend::url('eprog/manager/advance/create') ?>" class="btn btn-primary oc-icon-plus-circle btn-toolbar"><?= e(trans('backend::lang.form.create')) ?></a>
+        </div> 
+
+        <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
         <button
-        class="btn btn-default oc-icon-trash-o btn-toolbar"
+        class="btn btn-default oc-icon-trash-o"
         disabled="disabled"
         onclick="$(this).data('request-data', {
             checked: $('.control-list').listWidget('getChecked')
@@ -41,44 +46,40 @@ $year = date("Y", time());
         data-request-success="$(this).prop('disabled', true)"
         data-stripe-load-indicator>
         <?= e(trans('eprog.manager::lang.del')) ?>
-    </button>
+        </button>
+        </div> 
 
-    <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_xml")) :?>
+        <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_xml")) :?>        
+        <button
+        id="export"
+        class="btn btn-primary oc-icon-file-code-o btn-toolbar  toolbar-right"
+        data-request="onExport"
+        data-request-confirm="<?= e(trans('eprog.manager::lang.export_xml_all_confirm')) ?>"
+        data-trigger-action="enable"
+        style="margin-right:10px"
+        >
+        <?= e(trans('eprog.manager::lang.export_xml')) ?>
+        </button>
 
-    <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_importxml")) :?>
-    <button
-    class="btn btn-primary oc-icon-file-code-o btn-toolbar"
-    onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/import/advance','<?= e(trans('eprog.manager::lang.import_xml')) ?>', 600, 420)"
-    style="float:right"
-    >
-    <?= e(trans('eprog.manager::lang.import_xml')) ?>
-    </button>
-    <?php endif; ?>
-    
-    <button
-    id="export"
-    class="btn btn-primary oc-icon-file-code-o btn-toolbar"
-    data-request="onExport"
-    data-request-confirm="<?= e(trans('eprog.manager::lang.export_xml_all_confirm')) ?>"
-    data-trigger-action="enable"
-    style="float:right;margin-right:10px"
-    >
-    <?= e(trans('eprog.manager::lang.export_xml')) ?>
-    </button>
+        <?php if(BackendAuth::getUser()->hasAccess("eprog.manager.access_importxml")) :?>
+        <button
+        class="btn btn-primary oc-icon-file-code-o btn-toolbar toolbar-right"
+        onclick= "modal_url('/<?= config('cms.backendUri') ?>/eprog/manager/import/advance','<?= e(trans('eprog.manager::lang.import_xml')) ?>', 600, 420)"
+        >
+        <?= e(trans('eprog.manager::lang.import_xml')) ?>
+        </button>
+        <?php endif; ?>
+        <?php endif ?>
 
-    <?php endif; ?>
     
 </div>
+<?php endif; ?>
 
+
+<link rel="stylesheet" href="/plugins/eprog/manager/assets/css/toolbar.css">
 <style>
 
 .select2-container--default .select2-selection--single .select2-selection__rendered { padding-top: 2px !important; }
-
-@media (max-width: 450px){
-
-.loading-indicator-container.size-input-text {margin-top: 39px !important;}
-
-}
 
 </style>
 

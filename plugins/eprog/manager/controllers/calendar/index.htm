@@ -342,7 +342,7 @@ use Rainlab\User\Models\User;
 			eventColor: '#68a42e',
 			selectable: true,
 
-			<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.edit_scheduler")) : ?>
+			<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_scheduler")) : ?>
 			select: function(date) { 
 
 				 var start = date.start.getFullYear() + '-' + twoDigits(date.start.getMonth()+1) + '-' + twoDigits(date.start.getDate()) + ' ' + twoDigits(date.start.getHours())  + ':' + twoDigits(date.start.getMinutes()) ; 

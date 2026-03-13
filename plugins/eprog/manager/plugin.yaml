@@ -17,7 +17,7 @@ navigation:
         url: eprog/manager/invoicepay
         icon: icon-money
         permissions:
-            - eprog.manager.access_payment
+            - eprog.manager.access_pay
         order: '514'
         sideMenu:
             invoicepay:
@@ -25,13 +25,13 @@ navigation:
                 url: eprog/manager/invoicepay
                 icon: icon-file-text-o
                 permissions:
-                    - eprog.manager.access_payment
+                    - eprog.manager.access_pay
             orderpay:
                 label: 'eprog.manager::lang.order'
                 url: eprog/manager/orderpay
                 icon: icon-plus-circle
                 permissions:
-                    - eprog.manager.access_payment
+                    - eprog.manager.access_pay
     work:
         label: 'eprog.manager::lang.work'
         url: eprog/manager/work

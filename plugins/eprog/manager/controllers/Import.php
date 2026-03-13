@@ -255,7 +255,7 @@ class Import extends Controller
         if($type != "text/xml" || $type == "" || !is_array($raport)) {
           
             echo '<form  method="post"  action="" enctype="multipart/form-data">';
-            echo '<input type="file" name="file" style="border:0" required>';
+            echo '<input type="file" class="btn btn-secondary" name="file" style="border:0;height:40px" required>';
             //echo '<input type="radio" name="type" value="1" checked> '.trans('eprog.manager::lang.import_add');
             //echo '<input type="radio" name="type" value="2" style="margin-left:20px" '.($config['key'] == "User" ? 'disabled' : '').'> '.trans('eprog.manager::lang.import_override');
             echo '<input type="hidden" name="_token" value="'.csrf_token().'" />';

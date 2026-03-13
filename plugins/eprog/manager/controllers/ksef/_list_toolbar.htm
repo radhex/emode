@@ -15,7 +15,8 @@ $users =  User::where("tax",1)->orderBy("firm_name")->get();
 
     <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_accounting') || BackendAuth::getUser()->hasAccess('eprog.manager.manage_ksef')) : ?>
 
-    <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions" style="margin-top:-3px;">
+    <div  class="toolbar-item toolbar-left" style="margin-right:-10px">
+    <div class="btn-group dropdown dropdown-fixed" data-control="bulk-actions">
         <button
             data-primary-button
             type="button"
@@ -66,52 +67,23 @@ $users =  User::where("tax",1)->orderBy("firm_name")->get();
             <?php endif ?>
         </ul>
     </div>
+    </div>
     <?php endif ?>
 
     <?php if(BackendAuth::getUser()->hasAccess('eprog.manager.manage_ksef')) : ?>
+    <div class="toolbar-item toolbar-left" >
     <button
     id="clear"
-    class="btn btn-default oc-icon-minus-circle btn-toolbar"
+    class="btn btn-default oc-icon-minus-circle"
     data-request="onClear"
     data-request-confirm="<?= e(trans('eprog.manager::lang.ksef.clear_confirm')) ?>"
     data-request-success="onClear(data)"
     >
     <?= e(trans('eprog.manager::lang.ksef.clear')) ?>
     </button>
-   
-
-    <button
-    id="KsefDownload"
-    data-request="onKsefDownload"
-    data-request-data="from: '', to: ''"
-    class="btn btn-primary oc-icon-cloud-download btn-toolbar"
-    data-request-confirm="<?= e(trans('eprog.manager::lang.ksef.ksef_confirm')) ?>"
-    data-load-indicator="<?= e(trans('eprog.manager::lang.sending')) ?>"
-    data-request-success="onKsefDownload(data)"
-    style="float:right"
-    >
-    <?= e(trans('eprog.manager::lang.ksef.ksef_download')) ?>
-    </button>
-    <?php endif ?>
-
-    <div id="spinner-toolbar" class="spinner-toolbar" ></div>
-
-    <input type="text" id="toolbar-datepicker-to" placeholder="Do" class="form-control" value="<?= Session::has("selected.to") ?  Session::get("selected.to") : date("Y-m-d", time())?>" style="margin-top:-5px;float:right;width:100px!important">
-    <input type="text" id="toolbar-datepicker-from" placeholder="Od" class="form-control"   value="<?=  Session::has("selected.from") ?  Session::get("selected.from") : date("Y-m-d", strtotime("-1 months"))?>" style="margin-top:-5px;float:right;width:100px!important">
-    
-
-
-    <div  id="cssubject"  class="toolbar-item cs" style="float:right;margin-top:0px">
-    <select id="subject" name="subject" class="form-control custom-select" style="width:270px;float:right !important;" >
-        <option value="Subject1" <?= Session::has("selected.subject") && Session::get("selected.subject") == "Subject1" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subject1") ?></option>
-        <option value="Subject2" <?= Session::has("selected.subject") && Session::get("selected.subject") == "Subject2" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subject2") ?></option>
-        <option value="Subject3" <?= Session::has("selected.subject") && Session::get("selected.subject") == "Subject3" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subject3") ?></option>
-        <option value="SubjectAuthorized" <?= Session::has("selected.subject") && Session::get("selected.subject") == "SubjectAuthorized" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subjectauthorized") ?></option>
-    </select> 
-    </div>
-    
-    <div id="csnip" class="toolbar-item"  style="float:right;margin-top:0px">
-    <select id="nip" name="nip" class="form-control custom-select" style="width:270px;float:right !important;" >
+   </div>
+    <div id="csnip" class="toolbar-item toolbar-right"  style="margin-top:5px">
+    <select id="nip" name="nip" class="form-control custom-select" style="width:270px;margin-top:0px" >
         <optgroup>
         <option value="<?= str_replace("-","", SettingConfig::get("nip")) ?>" <?= Session::has("selected.nip") && Session::get("selected.nip") == str_replace("-","", SettingConfig::get("nip")) ? "selected" : "" ?>><?= SettingConfig::get("firm") ?? trans("eprog.manager::lang.ksef.my") ?></option>
         </optgroup>
@@ -125,32 +97,166 @@ $users =  User::where("tax",1)->orderBy("firm_name")->get();
     </select> 
     </div>
 
+    <div  id="cssubject"  class="toolbar-item cs toolbar-right" style="margin-top:5px">
+    <select id="subject" name="subject" class="form-control custom-select" style="width:270px;margin-top:0px" >
+        <option value="Subject1" <?= Session::has("selected.subject") && Session::get("selected.subject") == "Subject1" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subject1") ?></option>
+        <option value="Subject2" <?= Session::has("selected.subject") && Session::get("selected.subject") == "Subject2" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subject2") ?></option>
+        <option value="Subject3" <?= Session::has("selected.subject") && Session::get("selected.subject") == "Subject3" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subject3") ?></option>
+        <option value="SubjectAuthorized" <?= Session::has("selected.subject") && Session::get("selected.subject") == "SubjectAuthorized" ? "selected" : "" ?>><?= trans("eprog.manager::lang.ksef.subjectauthorized") ?></option>
+    </select> 
+    </div>
+    
+    <div class="toolbar-item  toolbar-right" style="margin-top:4px;margin-right:-15px">
+    <input type="text" id="toolbar-datepicker-from" placeholder="Od" class="form-control"   value="<?=  Session::has("selected.from") ?  Session::get("selected.from") : date("Y-m-d", strtotime("-1 months"))?>" style="width:100px!important;margin-right:10px;">
+    <input type="text" id="toolbar-datepicker-to" placeholder="Do" class="form-control" value="<?= Session::has("selected.to") ?  Session::get("selected.to") : date("Y-m-d", time())?>" style="width:100px!important;margin-right:10px;">
+    
+    <div id="spinner-toolbar" class="spinner-toolbar" ></div>
+    </div>
+
+    <button
+    id="KsefDownload"
+    data-request="onKsefDownload"
+    data-request-data="from: '', to: ''"
+    class="btn btn-primary oc-icon-cloud-download btn-toolbar toolbar-right"
+    data-request-confirm="<?= e(trans('eprog.manager::lang.ksef.ksef_confirm')) ?>"
+    data-request-success="onKsefDownload(data)"
+    style="margin-top:0px"
+    >
+    <?= e(trans('eprog.manager::lang.ksef.ksef_download')) ?>
+    </button>
+    <?php endif ?>
+
+
+
 
 </div>
 
 
 <style>
 
-    @media (max-width: 600px) {
-        #csnip {
-            width: auto;
-            margin-top:6px !important;
-            margin-right:0px  !important;
-            padding-right:0px  !important;
-        }
-        #cssubject {
-            width: auto;
-            margin-top:10px !important;
-            margin-right:-20px  !important;
-        }
+
+@media (min-width: 1450px) {
+
+  .control-toolbar .loading-indicator-container {
+      display: flex;
+      align-items: center;       
+      justify-content: flex-end;  
+      gap: 0px;              
+  }
+
+  .control-toolbar .loading-indicator-container input.search {
+      flex: 0 0 auto;   
+      min-width: 100px;     
+  }
 
 
-    }
-    .select2-container--default .select2-selection--single .select2-selection__rendered {
+  .toolbar-right::before {
+      display: inline-block;      
+      vertical-align: middle;     
+      line-height: 1;             
+      font-size: 1em;             
+      margin-right: 10px;         
+      transform: translateY(2px); 
+  }
 
-        padding-top:1px
+  .toolbar-right {
+    //margin-top: 8px;
+    //margin-right:5px;
 
-    }
+  }
+
+  div.toolbar-right {
+    margin-top: 7px;
+      height: 36px;       
+
+  }
+
+  .toolbar-right > select {
+      margin-top:1px;    
+
+  }
+
+
+  button.toolbar-right {
+      height: 34px;       
+      padding: 6px 12px;  
+      margin-top: 4px;
+  }
+
+ .control-toolbar input.search {margin-top: -4px}
+ .loading-indicator-container.size-input-text { margin-top: -7px !important; }
+
+}
+
+@media (min-width: 1200px) and (max-width: 1449px) {
+
+  
+  .control-toolbar .loading-indicator-container {
+      display: flex;
+      align-items: center;       
+      justify-content: flex-end;  
+      gap: 0px;              
+  }
+
+  .control-toolbar .loading-indicator-container input.search {
+      flex: 0 0 auto;   
+      min-width: 100px;     
+  }
+
+
+  .toolbar-right::before {
+      display: inline-block;      
+      vertical-align: middle;     
+      line-height: 1;             
+      font-size: 1em;             
+      margin-right: 10px;         
+      transform: translateY(2px); 
+  }
+
+  .toolbar-right {
+    //margin-top: 8px;
+    //margin-right:5px;
+
+  }
+
+  div.toolbar-right {
+    margin-top: 49px !important;
+      height: 36px;       
+
+  }
+
+  .toolbar-right > select {
+      margin-top:1px;    
+
+  }
+
+
+  button.toolbar-right {
+      height: 34px;       
+      padding: 6px 12px;  
+      margin-top: 46px !important;
+  }
+
+  .control-toolbar input.search {margin-top: 40px}
+  .loading-indicator-container.size-input-text {margin-top: 0px !important;}
+
+}
+
+
+
+@media (min-width: 769px) and (max-width: 1199px) {
+  .loading-indicator-container.size-input-text {margin-top: 0px !important;}
+}
+
+@media (max-width: 768px){
+
+.toolbar-item {margin-left:0px  !important;width:180px !important}
+.loading-indicator-container.size-input-text {margin-top: 0px !important;}
+
+}
+
+
+.toolbar-left {float:left;margin-bottom:5px;margin-right:-25px}
 
     #done[disabled] {
       color: var(--mcolor) !important;             
@@ -183,11 +289,11 @@ $users =  User::where("tax",1)->orderBy("firm_name")->get();
     .spinner-toolbar {
 
         float:right;
-        margin-top:6px;
+        margin-top:5px;
         margin-right:10px;
         width: 24px;
         height: 24px;
-        border: 3px solid #eee;
+        border: 2px solid  var(--mlcolor);
         border-top-color: var(--mcolor);
         border-radius: 50%;
         animation: spin 1s linear infinite;
@@ -195,7 +301,7 @@ $users =  User::where("tax",1)->orderBy("firm_name")->get();
         /* Ustawienia dla toolbar */
         margin-left: 10px; /* oddziel od przycisków */
         vertical-align: middle;
-        display:none;
+         display:none;
     }
 
     @keyframes spin {
@@ -227,6 +333,10 @@ $users =  User::where("tax",1)->orderBy("firm_name")->get();
     }
 
     .loading-indicator-container.size-input-text { margin-top: -7px !important; }
+
+    .control-toolbar .loading-indicator-container .loading-indicator {
+      transform: translate(2px, 4px);
+    }
 
 </style>
 

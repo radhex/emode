@@ -11,15 +11,7 @@ columns:
         span: storm
         type: partial
         cssClass: "col-sm-1 w10"
-        width: 80%  
-    desc:
-        label: 'eprog.manager::lang.desc'
-        oc.commentPosition: ''
-        span: storm
-        type: text
-        invisible: true
-        searchable: true
-        cssClass: "col-sm-1 w10"      
+        width: 80%    
     disp:
         label: 'eprog.manager::lang.public'
         type: partial

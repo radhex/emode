@@ -13,6 +13,25 @@ spam = document.getElementById("eprog-load").getAttribute("spam");
 trash = document.getElementById("eprog-load").getAttribute("trash");
 backend = document.getElementById("eprog-load").getAttribute("backend");
 
+
+$(document).render(function () {
+
+	var btn = $('.toolbar-right');
+	var searchContainer = $('.control-toolbar input.search').parent();
+
+	if (btn.length && searchContainer.length) {
+	    btn.prependTo(searchContainer);
+	  	$('.toolbar-right').each(function() {
+	      	this.style.setProperty('display', 'flex', 'important');
+	  	});
+
+	}
+
+	$('.control-toolbar input.search').attr('style', 'display: table !important');
+	$('#Toolbar-listToolbar').css('visibility', 'visible');
+});
+
+
 $(function() {
 
 
@@ -389,14 +408,16 @@ $(function() {
 
 			$(".loadmodal").hide();
 			$(el).css("display","block");	
-			$(el).contents().find('#layout-mainmenu').hide(); 
-			$(el).contents().find('#layout-sidenav').hide();   
-			$(el).contents().find('.layout-sidenav-container').hide();   
-			$(el).contents().find('.layout-cell.w-120').hide();     
-			$(el).contents().find('.oc-icon-file-code-o').hide();    
+			$(el).contents().find('#layout-mainmenu').addClass('display-none');
+			$(el).contents().find('#layout-sidenav').addClass('display-none');  
+			$(el).contents().find('.layout-sidenav-container').addClass('display-none');  
+			$(el).contents().find('.layout-cell.w-120').addClass('display-none');     
+			$(el).contents().find('.oc-icon-file-code-o').addClass('display-none');   
 			 	
 
 	}
+
+
 
 
 	function ajax_update(table) {

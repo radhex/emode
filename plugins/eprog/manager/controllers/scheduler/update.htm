@@ -17,7 +17,7 @@ if($scheduler) $period = date("m",strtotime($scheduler->created_at))."_".date("Y
 <?php Block::endPut() ?>
 
 
-<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.edit_scheduler")) : ?>
+<?php if(BackendAuth::getUser()->hasAccess("eprog.manager.manage_scheduler")) : ?>
 <?php if (!$this->fatalError): ?>
 
     <?= Form::open(['class' => 'layout']) ?>

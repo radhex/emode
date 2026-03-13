@@ -462,7 +462,7 @@ img.svg-icon {display:none !important}
     white-space: nowrap !important;
 }
 
-.btn-toolbar {margin-bottom:3px;margin-left: 0px;}
+.btn-toolbar {margin-bottom:0px;margin-left: 0px;}
 
 li:has(span[data-menu-id="mail/user_sent"]) {
   border-bottom:1px solid #ddd !important;
@@ -603,13 +603,13 @@ nav#layout-mainmenu.navbar-mode-inline ul li .mainmenu-accountmenu a:active {
 
 .loading-indicator > span {
 
-
-    background: transparent url(images/loader.gif) no-repeat 0 50%;
+  background:#fff;
+    /* background: transparent url(images/loader.gif) no-repeat 0 50%; */
     display: block;
     height: 40px;
     left: 0;
     margin-top: -20px;
-    border: 2px solid #fff;
+    border: 2px solid var(--mlcolor);
     border-top: 2px solid var(--mcolor);
     border-radius: 50%;
     animation: spin 1s linear infinite;
@@ -779,30 +779,20 @@ nav#layout-mainmenu .menu-toggle .menu-toggle-icon {
 
 
 
-.control-toolbar {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-}
-
-.control-toolbar .toolbar-item {
-    display: flex !important;
-}
-
-
-//#export {margin-left:50px !important}
-
 .display-none {
     display: none !important;
 }
 
-nav#layout-mainmenu .toolbar-item-account {margin-top: 9px !important;}
 
 
-@media (max-width: 450px){
+.toolbar-right { display: none !important; margin-bottom:5px !important}
+.control-toolbar input.search { display: none !important}
+#Toolbar-listToolbar { visibility: hidden; }
+.toolbar-left {float:left;margin-bottom:5px;margin-right:-25px}
 
-nav#layout-mainmenu .toolbar-item-account {margin-top: -2px !important;}
+.permissioneditor table tr:hover td {  
 
-.loading-indicator-container.size-input-text {margin-top: 33px !important;}
-
+  background: var(--mcolor) !important; 
+  
 }
+

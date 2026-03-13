@@ -89,7 +89,7 @@ session_start();
              .navbar {min-height:49px}      
             .layout > .my-size {height:80px}
             .layout > .fright {float:right}
-            .layout #layout-mainmenu.navbar {background-color: #59a1d1;}
+            .layout #layout-mainmenu.navbar {background-color: var(--navcolor);}
             //.layout #layout-mainmenu.navbar ul li a img {display:none}
             .layout #layout-mainmenu.navbar ul li a span {color:#fff;text-shadow:none;font-weight:normal }
             .layout #layout-mainmenu.navbar ul li a i {color:#fff;text-shadow:none;font-size: 2.5rem;display: inline-block;margin: 0;}
@@ -104,8 +104,8 @@ session_start();
             .layout #layout-mainmenu.navbar ul li.active a span  {color: #fff}
             
              h3, h3 a {font-weight:normal; }
-            .btn-primary{font-weight:normal;background:#59a1d1}
-            .btn-primary:hover,.btn-default:hover {background:#458fc0}
+             .btn-primary{font-weight:normal;background:var(--mcolor)}
+             .btn-primary:hover,.btn-default:hover {background:var(--m2color)}
             .btn-primary .badge{color:#59a1d1;background:#ffffff}
             
             .flash-message{position:fixed;width: 350px !important;left:50% !important;top:65px !important;margin-left:-175px !important; color:#ffffff;font-size:14px;text-shadow:none !important;box-shadow:none !important;-webkit-box-shadow:none !important}
@@ -113,7 +113,7 @@ session_start();
             .flash-message.success{background: #edf8ff !important;border: 1px solid #59a1d1; color: #59a1d1}
             .flash-message.error{background:#fee5e5 !important;border: 1px solid red; color: red}
             .flash-message.warning{background:#ffecd2 !important;border: 1px solid #db8509; color: #db8509}
-            .flash-message.info{background: #edf8ff !important;border: 1px solid #59a1d1; color: #59a1d1}
+            .flash-message.info{background: var(--mlcolor);border: 1px solid var(--mcolor); color: var(--mcolor)}
             .flash-message button{float:none;position:absolute;right:10px;top:8px;color:#777 !important;outline:none}
             .flash-message button:hover{color:white}
             .flash-message.static{position:static !important;width:auto !important;display:block !important;margin-left:0 !important;-webkit-box-shadow:none;box-shadow:none}
@@ -153,7 +153,7 @@ session_start();
 
         <section id="layout-content" >  
             <div class="container" ><div class="text-center" style="margin-top:16px;height:400px;padding-top:70px">
-     <h1> <i class="icon-exclamation-triangle" style="color:#59a1d1;font-size:75px" ondblclick="$('#desc').show()"></i></h1> <br>
+     <h1> <i class="icon-exclamation-triangle" style="color:var(--mcolor);font-size:75px" ondblclick="$('#desc').show()"></i></h1> <br>
     <h4><?= $_SESSION['error']?></h4>
     <p id="desc" style="display:none"><?= $desc ?></p>
     <p><a href="/"  class="btn btn-primary oc-icon-arrow-left" style="margin-top:20px">Powr&oacute;t</a></p>   
